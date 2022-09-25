@@ -23,4 +23,6 @@ The chrome extension was built in HTML / JS. DuOSU was built for Ohio State Univ
 Contributing
 ------------
 
-Feel free to submit pull requests or do anything you'd like with the code. Just keep in mind that the purpose of this repository is to share knowledge on how to make Duo Mobile more accessible than it already offers, not to spread information that could lead to abusing / circumventing Duo Mobile's authentication system.
+Feel free to help develop for DuOSU! Please submit pull requests to help with formatting, styling, or general execution of the chrome extension.
+
+You are also encouraged to adapt this repository into another project. Just keep in mind that the purpose of this project is to share knowledge on how to make Duo Mobile more accessible than it already offers, not to spread information that could lead to abusing / circumventing Duo Mobile's authentication system. Credit to the original would be appreciated.
