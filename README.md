@@ -3,10 +3,7 @@ Bypass Duo Mobile push with a click of a button.
 
 Opening Duo Mobile on your phone to login is too time consuming. Duo doesn't offer the ability to accept push notifications on your computer, so this chrome extension offers that support.
 
-The chrome extension was built in HTML / JS, but I've included a Java example program on how to incorporate this in a full-scale application. The Java application uses the following Maven repositories:
-
-• Jackson JSON Library
-• Apache HTTP Client
+The chrome extension was built in HTML / JS, designed for use for Ohio State University students. I've also included an example Java program on how to incorporate this in a full-scale application. Include the following Maven repositories in your pom.xml:
 
 ```xml
 <dependency>
@@ -15,9 +12,13 @@ The chrome extension was built in HTML / JS, but I've included a Java example pr
   <version>2.13.3</version>
 </dependency>
 <dependency>
-	<groupId>org.apache.httpcomponents</groupId>
-	<artifactId>httpclient</artifactId>
-	<version>4.5.13</version>
+  <groupId>org.apache.httpcomponents</groupId>
+  <artifactId>httpclient</artifactId>
+  <version>4.5.13</version>
 </dependency>
 ```
 
+Contributing
+------------
+
+Feel free to submit pull requests or do anything you'd like with the code. Just keep in mind that the purpose of this repository is to share knowledge on how to make Duo Mobile more accessible than it already offers, not to spread information that could lead to abusing / circumventing Duo Mobile's authentication system.
