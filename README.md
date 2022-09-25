@@ -1,5 +1,5 @@
 # DuOSU
-Bypass Duo Mobile push with a click of a button.
+Bypass Duo Mobile push requests on your browser.
 
 Opening Duo Mobile on your phone to login is too time consuming. Duo doesn't offer the ability to accept push notifications on your computer, so this chrome extension offers that support.
 
