@@ -1,5 +1,9 @@
+package examples;
+
 import java.io.File;
 import java.io.IOException;
+
+import duo.DuOSU;
 
 public class AutoPush {
 	
