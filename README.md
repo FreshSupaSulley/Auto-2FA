@@ -28,9 +28,9 @@ Credits
 -------
 Here are the repositories studied to help make this possible:
 
-• Easy Duo Authentication (Chrome extension that dynamically creates HOTPs for users) - https://github.com/SparkShen02/Easy-Duo-Authentication
-• Duo One Time Password Generator (Python Library for creating HOTPs) - https://github.com/revalo/duo-bypass
-• Ruo (Python Library for activating / passing Duo push requests) - https://github.com/falsidge/ruo
+- Easy Duo Authentication (Chrome extension that dynamically creates HOTPs for users) - https://github.com/SparkShen02/Easy-Duo-Authentication
+- Duo One Time Password Generator (Python Library for creating HOTPs) - https://github.com/revalo/duo-bypass
+- Ruo (Python Library for activating / passing Duo push requests) - https://github.com/falsidge/ruo
 
 Contributing
 ------------
