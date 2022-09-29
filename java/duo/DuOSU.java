@@ -242,6 +242,8 @@ public class DuOSU {
 	public void replyTransaction(String urgID, boolean approve) throws IOException
 	{
 		SimpleEntry<String, BasicNameValuePair[]> entry = buildRequest("POST", "/push/v2/device/transactions/" + urgID, new BasicNameValuePair("answer", approve ? "approve" : "deny"));
+		
+		// We need to add the txId header
 		BasicNameValuePair[] arrays = new BasicNameValuePair[entry.getValue().length + 1];
 		arrays[0] = new BasicNameValuePair("txId", urgID);
 		
@@ -270,14 +272,9 @@ public class DuOSU {
 	 */
 	private SimpleEntry<String, BasicNameValuePair[]> buildRequest(String method, String path, BasicNameValuePair... additionalParams)
 	{
-		// Parameters to include in canon request
-		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("akey", activation.akey);
-		params.put("fips_status", "1");
-		params.put("hsm_status", "true");
-		params.put("pkpush", "rsa-sha512");
-		
 		// Add optional parameters, if any
+		HashMap<String, String> params = new HashMap<String, String>();
+		
 		for(BasicNameValuePair pair : additionalParams)
 		{
 			params.put(pair.getName(), pair.getValue());
@@ -314,9 +311,9 @@ public class DuOSU {
 		BasicNameValuePair auth = new BasicNameValuePair("Authorization", "Basic " + new String(Base64.getEncoder().encode((activation.pkey + ":" + new String(Base64.getEncoder().encode(signed), charset)).getBytes(charset)), charset));
 		
 		// Required headers
-		BasicNameValuePair[] headers = {auth, new BasicNameValuePair("x-duo-date", date), new BasicNameValuePair("host", activation.host)};
+		BasicNameValuePair[] headers = {auth, new BasicNameValuePair("x-duo-date", date)};
 		
-		return new SimpleEntry<String, BasicNameValuePair[]>("https://" + activation.host + path + "?" + createQueryString(params), headers);
+		return new SimpleEntry<String, BasicNameValuePair[]>("https://" + activation.host + path + (params.isEmpty() ? "" : "?" + createQueryString(params)), headers);
 	}
 	
 	/**
@@ -347,6 +344,8 @@ public class DuOSU {
 	 */
 	private String createQueryString(Map<String, String> params)
 	{
+		if(params.isEmpty()) return "";
+		
 		// Duo requires URL pairs to be sorted alphabetically
 		ArrayList<String> keys = new ArrayList<String>(params.keySet());
 		Collections.sort(keys);

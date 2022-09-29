@@ -10,14 +10,14 @@ public class AutoPush {
 	public static void main(String[] args)
 	{
 		DuOSU osu = null;
-		File file = new File("ENTER FILE PATH HERE");
+		File file = new File("src/keys/tokens.json");
 		
 		try {
 			// Load device info from file
-//			osu = new DuOSU(file);
+			osu = new DuOSU(file);
 			
 			// Activate client device using Duo activation code. Saves device info to file
-			osu = new DuOSU("9jSM1d5W1MWOSECcY5CX-YXBpLWRlOGM3MDE3LmR1b3NlY3VyaXR5LmNvbQ", file);
+//			osu = new DuOSU("ENTER ACTIVATION CODE HERE", file);
 		} catch(Throwable e) {
 			e.printStackTrace();
 		}
@@ -26,6 +26,8 @@ public class AutoPush {
 		while(true)
 		{
 			try {
+				System.out.println("Retrieving transactions...");
+				
 				// Loop through array of active transactions
 				for(String id : osu.getTransactions())
 				{
