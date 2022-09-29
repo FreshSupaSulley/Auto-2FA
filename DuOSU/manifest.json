@@ -1,0 +1,33 @@
+{
+  "name": "DuOSU",
+  "description": "Login through Duo Mobile in your browser with ease.",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "background": {
+    "type": "module"
+  },
+  "permissions": [
+    "storage",
+    "scripting"
+  ],
+  // Allow cross-origin requests only through duosecurity API
+  "host_permissions": [
+    "https://*.duosecurity.com/"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "/images/duo16.png",
+      "32": "/images/duo32.png",
+      "48": "/images/duo48.png",
+      "128": "/images/duo128.png"
+    }
+  },
+  "icons": {
+    "16": "/images/duo16.png",
+    "32": "/images/duo32.png",
+    "48": "/images/duo48.png",
+    "128": "/images/duo128.png"
+  },
+  "options_page": "options.html"
+}

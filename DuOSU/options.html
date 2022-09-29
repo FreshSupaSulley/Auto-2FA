@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html {
+        font-family: sans-serif;
+      }
+
+      h1 {
+        text-align: center;
+        padding: 20px;
+      }
+
+      table {
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: rgb(240,240,240);
+        width: 30%;
+        margin-left: auto;
+        margin-right: auto;
+        table-layout: fixed;
+      }
+
+      tr, th, td {
+        padding: 5px;
+      }
+
+      button {
+        border: 1px solid;
+        border-radius: 3px;
+        border-color: black;
+        padding: 10px;
+        background-color: rgb(230,0,0);
+        color: white;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>DuOSU Options</h1>
+
+    <table>
+      <tr>
+        <td style="text-align: center;"><button type="submit" id="resetButton">Reset</button></td>
+        <td><p>Deletes all device information for this extension and allows you to re-register with Duo.</p></td>
+      </tr>
+    </table>
+    </body>
+  </body>
+  
+  <script src="options.js"></script>
+</html>
