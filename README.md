@@ -26,7 +26,7 @@ How it Works
 ------------
 DuOSU is a simple 2-step program:
 
-1. Activate DuOSU as a new Duo Mobile device. DuOSU communicates with Duo's API activation endpoint and registers itself as a new Android device. The new device information is synced to the user's Google account (see Privacy).
+1. Activate DuOSU as a new Duo Mobile device. DuOSU communicates with Duo's API activation endpoint and registers itself as a new Android device. The new device information is synced to the user's Google account (see [Privacy](#privacy)).
 2. Login. When the extension is clicked, DuOSU approves all active push requests returned by the transactions API endpoint for this device.
 
 Privacy
