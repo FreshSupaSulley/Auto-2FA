@@ -5,7 +5,7 @@ Using the Duo Mobile app to login is frustrating and time consuming. To make mat
 
 This chrome extension offers that ease of access students want. By simply clicking on the extension, you are immediately logged into your account without hesistation. Unlike other extensions offered on the [Web Store](https://chrome.google.com/webstore), DuOSU doesn't make you copy and paste a password to login.
 
-DuOSU was built in HTML / JavaScript. It's built for Ohio State University students, but it works for all organizations too. An example Java program is packaged in this repository as well to guide programmers on how to incorporate this in a full-scale application. To use, include the following Maven repositories in your pom.xml:
+DuOSU was built in HTML / JavaScript. It's designed for Ohio State University students, but it works for all organizations too. An example Java program is packaged in this repository as well to guide programmers on how to incorporate this in a full-scale application. To use, include the following Maven repositories in your pom.xml:
 
 ```xml
 <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
