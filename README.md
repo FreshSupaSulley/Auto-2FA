@@ -1,7 +1,7 @@
 # DuOSU
 Login through Duo Mobile in your browser.
 
-Using the Duo Mobile app to login is frustrating and time consuming. To make matters worse, Duo doesn't offer the ability to approve push requests on your computer.
+Using the Duo Mobile app to login is frustrating and time consuming. To make matters worse, Duo doesn't offer the ability to approve push requests on your computer and forces usage of their app.
 
 This chrome extension offers that ease of access students want. By simply clicking on the extension, you are immediately logged into your account without hesistation. Unlike other extensions offered on the [Web Store](https://chrome.google.com/webstore), DuOSU doesn't make you copy and paste a password to login.
 
