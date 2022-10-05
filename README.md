@@ -5,16 +5,16 @@ Using the Duo Mobile app to login is frustrating and time consuming. To make mat
 
 This chrome extension offers that ease of access students want. By simply clicking on the extension, you are immediately logged into your account without hesistation. Unlike other extensions offered on the [Web Store](https://chrome.google.com/webstore), DuOSU doesn't make you copy and paste a password to login.
 
-DuOSU was built in HTML / JavaScript. It's designed for Ohio State University students, but it works for all Duo Mobile users. An example Java program is packaged in this repository as well to guide programmers on how to incorporate this in a full-scale application. To use, include the following Maven repositories in your pom.xml:
+DuOSU was built in HTML / JavaScript. It's designed for Ohio State University students, but it works for all Duo Mobile users. An example Java program is packaged in this repository as well to guide programmers on how to incorporate this in a full-scale application. To use, include the following Maven repositories in your pom.xml (or adapt your own implementations of these two repositories):
 
 ```xml
-<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+<!-- Jackson JSON Library - https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
 <dependency>
   <groupId>com.fasterxml.jackson.core</groupId>
   <artifactId>jackson-databind</artifactId>
   <version>2.13.3</version>
 </dependency>
-<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+<!-- Apache HTTP Sending / Receiving - https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
 <dependency>
   <groupId>org.apache.httpcomponents</groupId>
   <artifactId>httpclient</artifactId>
@@ -26,8 +26,8 @@ How it Works
 ------------
 DuOSU is a simple 2-step program:
 
-1. Activate DuOSU as a new Duo Mobile device. DuOSU communicates with Duo's API activation endpoint and registers itself as a new Android device. The new device information is synced to the user's Google account (see [Privacy](#privacy)).
-2. Login. When the extension is clicked, DuOSU approves all active push requests returned by the transactions API endpoint for this device.
+1. DuOSU activates itself as a new Duo Mobile device. DuOSU communicates with Duo's API activation endpoint and registers itself as a new Android device. The new device information is synced to the user's Google account (see [Privacy](#privacy)).
+2. Login. When the extension is clicked, DuOSU approves all active push requests returned by the transactions API endpoint. Note that DuOSU can only approve push requests sent to itself (it can't approve a push request sent to a phone app, for example).
 
 Privacy
 -------
@@ -35,15 +35,15 @@ DuOSU stores device information (the data necessary to identify itself to Duo) v
 
 Acknowledgements
 ----------------
-Here are similar repositories that helped make DuOSU possible:
+Here are repositories that helped make DuOSU possible or achieve similar purposes:
 
+- [Ruo](https://github.com/falsidge/ruo) (Python Library for activating / passing Duo push requests)
 - [Easy Duo Authentication](https://github.com/SparkShen02/Easy-Duo-Authentication) (Chrome extension that dynamically creates HOTPs for users)
 - [Bye DUO](https://github.com/yuchenliu15/bye-duo/blob/master/backend/server.py) (Operates same as above)
 - [Duo One Time Password Generator](https://github.com/revalo/duo-bypass) (Python Library for creating HOTPs)
-- [Ruo](https://github.com/falsidge/ruo) (Python Library for activating / passing Duo push requests)
 
 Contributing
 ------------
-Feel free to help develop for DuOSU! Please submit pull requests to help with formatting, styling, or general execution of the extension.
+Feel free to help develop for DuOSU! You can submit pull requests to help with formatting, styling, or general execution of the extension.
 
-You are also encouraged to adapt this repository into a project of your own. Please keep in mind that the purpose of this repository is to share knowledge on how to make Duo Mobile more accessible than it already offers. Credit to the original would be appreciated but not required.
+You are also encouraged to adapt this repository into a project of your own. The purpose of this repository is to share knowledge on how to make Duo Mobile more accessible than it already offers. Credit to the original would be appreciated but not required.
