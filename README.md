@@ -29,6 +29,12 @@ DuOSU is a simple 2-step program:
 1. DuOSU activates itself as a new Duo Mobile device. DuOSU communicates with Duo's API activation endpoint and registers itself as a new Android device. The new device information is synced to the user's Google account (see [Privacy](#privacy)).
 2. Login. When the extension is clicked, DuOSU approves all active push requests returned by the transactions API endpoint. Note that DuOSU can only approve push requests sent to itself (it can't approve a push request sent to a phone app, for example).
 
+Automatic Login Feature
+-----------------------
+DuOSU supports automatic logins when the user browses to the Duo Mobile login page.
+
+This feature requires additional permissions (`webNavigation`) to know when the user browses to the page. If you're trying to setup this feature and your browser prompts you with a scary permissionw warning that allows DuOSU to read your browser history, it's way out of proportion. DuOSU only uses the permission to check for the URL to change to the browser screen.
+
 Privacy
 -------
 DuOSU stores device information (the data necessary to identify itself to Duo) via Chrome's storage API. This means that the information stored by this extension is accessible to all Chrome browsers the user is signed into rather than just the local machine (you can change these preferences [here](https://support.google.com/chromebook/answer/2914794?hl=en)). No information created by this extension is sent anywhere but to Duo's secure API to identify yourself and log you in, so users can rest assured that their data is kept private. Users can clear their data by clicking the gear icon on the top right of the extension and clicking the reset button.
