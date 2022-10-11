@@ -31,9 +31,8 @@ DuOSU is a simple 2-step program:
 
 Automatic Login Feature
 -----------------------
-DuOSU supports automatic logins when the user browses to the Duo Mobile login page.
-
-This feature requires additional permissions (`webNavigation`) to know when the user browses to the page. If you're trying to setup this feature and your browser prompts you with a scary permissionw warning that allows DuOSU to read your browser history, it's way out of proportion. DuOSU only uses the permission to check for the URL to change to the browser screen.
+This optional feature requires an additional permission to know when the user browses to the login page.
+If your browser prompts you with a scary permission warning to "Read your browsing history", it's way out of proportion. DuOSU uses the permission to check for the URL to change to the login page so it knows when to start accepting push requests.
 
 Privacy
 -------
