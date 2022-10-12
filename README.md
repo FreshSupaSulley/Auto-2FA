@@ -3,7 +3,7 @@ Login through Duo Mobile instantly.
 
 Using the Duo Mobile app is frustrating and time consuming. Duo doesn't offer the ability to approve push requests on your computer either and forces usage of their app.
 
-This extension offers that ease of access Duo Mobile users want. By simply clicking on the extension (or enabling [auto-logins](#automatic-login-feature), you are immediately logged into your account without hesistation. Unlike other extensions, DuOSU doesn't make you copy and paste a code to login.
+This extension offers that ease of access Duo Mobile users want. By simply clicking on the extension (or enabling [auto-logins](#automatic-logins), you are immediately logged into your account without hesistation. Unlike other extensions, DuOSU doesn't make you copy and paste a code to login.
 
 **DuOSU doesn't hack anything.** Put simply, it behaves like the Duo Mobile app: it's just another Duo Mobile device that approves push requests.
 
