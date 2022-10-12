@@ -31,8 +31,7 @@ DuOSU is a simple 2-step program:
 
 Automatic Login Feature
 -----------------------
-This optional feature requires an additional permission to know when the user browses to the login page.
-If your browser prompts you with a scary permission warning to "Read your browsing history", it's way out of proportion. DuOSU uses the permission to check for the URL to change to the login page so it knows when to start accepting push requests.
+DuOSU supports automatically logins when it detects you visiting the login screen. This is disabled by default for security. To enable, click the checkbox on the home page.
 
 Privacy
 -------
