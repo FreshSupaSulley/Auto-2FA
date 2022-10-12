@@ -45,7 +45,7 @@ Here are repositories that helped make DuOSU possible or achieve similar purpose
 
 - [Ruo](https://github.com/falsidge/ruo) (Python Library for activating / passing Duo push requests)
 - [Easy Duo Authentication](https://github.com/SparkShen02/Easy-Duo-Authentication) (Chrome extension that dynamically creates HOTPs for users)
-- [Bye DUO](https://github.com/yuchenliu15/bye-duo/blob/master/backend/server.py) (Operates same as above)
+- [Bye DUO](https://github.com/yuchenliu15/bye-duo) (Operates same as above)
 - [Duo One Time Password Generator](https://github.com/revalo/duo-bypass) (Python Library for creating HOTPs)
 
 Contributing
