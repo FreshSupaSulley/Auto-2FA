@@ -1,11 +1,13 @@
 # DuOSU
-Login through Duo Mobile in your browser.
+Login through Duo Mobile instantly.
 
-Using the Duo Mobile app to login is frustrating and time consuming. To make matters worse, Duo doesn't offer the ability to approve push requests on your computer and forces usage of their app.
+Using the Duo Mobile app is frustrating and time consuming. Duo doesn't offer the ability to approve push requests on your computer either and forces usage of their app.
 
-This chrome extension offers that ease of access students want. By simply clicking on the extension, you are immediately logged into your account without hesistation. Unlike other extensions offered on the [Web Store](https://chrome.google.com/webstore), DuOSU doesn't make you copy and paste a password to login.
+This extension offers that ease of access Duo Mobile users want. By simply clicking on the extension (or enabling [auto-logins](#automatic-login-feature), you are immediately logged into your account without hesistation. Unlike other extensions, DuOSU doesn't make you copy and paste a code to login.
 
-DuOSU was built in HTML / JavaScript. It's designed for Ohio State University students, but it works for all Duo Mobile users. An example Java program is packaged in this repository as well to guide programmers on how to incorporate this in a full-scale application. To use, include the following Maven repositories in your pom.xml (or adapt your own implementations of these two repositories):
+**DuOSU doesn't hack anything.** Put simply, it behaves like the Duo Mobile app: it's just another Duo Mobile device that approves push requests.
+
+DuOSU was built in HTML / JavaScript. It's designed for Ohio State University students, but it works for all Duo Mobile users. An example Java program is packaged in this repository as a guide on how to incorporate this in a full-scale application. To use, include the following Maven repositories in your pom.xml (or adapt your own implementations of these two repositories):
 
 ```xml
 <!-- Jackson JSON Library - https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
@@ -27,11 +29,11 @@ How it Works
 DuOSU is a simple 2-step program:
 
 1. DuOSU activates itself as a new Duo Mobile device. DuOSU communicates with Duo's API activation endpoint and registers itself as a new Android device. The new device information is synced to the user's Google account (see [Privacy](#privacy)).
-2. Login. When the extension is clicked, DuOSU approves all active push requests returned by the transactions API endpoint. Note that DuOSU can only approve push requests sent to itself (it can't approve a push request sent to a phone app, for example).
+2. Login. When invoked, DuOSU approves all active push requests returned by the transactions API endpoint. Note that DuOSU can only approve push requests sent to itself (it can't approve a push request sent to a phone app, for example).
 
-Automatic Login Feature
------------------------
-DuOSU supports automatically logins when it detects you visiting the login screen. This is disabled by default for security. To enable, click the checkbox on the home page.
+Automatic Logins
+----------------
+DuOSU supports automatic logins when it detects the browser on the login screen. This is disabled by default for security. To enable, click the checkbox on the home page.
 
 Privacy
 -------
