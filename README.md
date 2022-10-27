@@ -9,7 +9,7 @@ To be clear, **DuOSU isn't malicious.** It behaves almost identically to the Duo
 Supported Browsers
 ------------------
 
-**[Chrome, Edge](https://chrome.google.com/webstore/detail/duosu/bnfooenhhgcnhdkdjelgmmkpaemlnoek), and [Firefox](https://chrome.google.com/webstore/detail/duosu/bnfooenhhgcnhdkdjelgmmkpaemlnoek)** are the browsers DuOSU is available on. Check out their respective webstores to download.<br>
+**[Chrome, Edge](https://chrome.google.com/webstore/detail/duosu/bnfooenhhgcnhdkdjelgmmkpaemlnoek), and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/duosu/)** are the browsers DuOSU is available on. Check out their respective webstores to download.<br>
 **Safari** was considered, but Apple requires $100 to register as a developer (that's not happening). If you are a registered developer with Apple and would like to publish this to Safari, contact me.
 
 DuOSU was built in HTML / JS. It's designed for Ohio State University students, but it works for all Duo Mobile users.<br>
