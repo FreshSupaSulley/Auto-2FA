@@ -302,6 +302,7 @@ async function changeScreen(id) {
     if(info == null) {
       autoLogin.disabled = true;
     } else {
+      autoLogin.disabled = false;
       if(info.autoLogin) {
         autoLogin.checked = true;
       } else {
