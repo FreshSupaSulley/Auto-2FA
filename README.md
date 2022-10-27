@@ -39,8 +39,8 @@ DuOSU supports automatic logins when it detects the browser on a Duo Mobile logi
 
 Privacy
 -------
-DuOSU stores device information via the browser's storage API. The information can be accessible to all Chrome browsers the user is signed into if their sync preferences support extensions / add-ons.
-No information created by this extension is sent anywhere but to Duo's secure API to identify yourself and log you in. Users can rest assured that their login data is kept private to their browsers.
+DuOSU stores device information via the browser's storage API. The information can be accessible to all browsers that the user is signed into if their sync preferences support extensions / add-ons.
+No information created by this extension is sent anywhere but to Duo's secure API to identify yourself and log you in. There are no servers or outside code involved. Users can rest assured that their login data is kept private to their browsers.
 
 Acknowledgements
 ----------------
