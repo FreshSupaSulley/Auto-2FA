@@ -1,13 +1,15 @@
 # DuOSU
-Login through Duo Mobile instantly.
+Login through Duo Mobile with ease.
 
 Using the Duo Mobile app is frustrating and time consuming. Duo doesn't offer the ability to approve push requests on your computer either and forces usage of their app.
 
-This extension offers that ease of access Duo Mobile users want. By simply clicking on the extension (or enabling [auto-logins](#automatic-logins), you are immediately logged into your account without hesistation. Unlike other extensions, DuOSU doesn't make you copy and paste a code to login.
+This extension offers that ease of access Duo Mobile users want. By clicking on the extension (or enabling [auto-logins](#automatic-logins), you are logged into your account without hesistation.
 
-**DuOSU doesn't hack anything.** Put simply, it behaves like the Duo Mobile app: it's just another Duo Mobile device that approves push requests.
+To be clear, **DuOSU isn't malicious.** It behaves almost identically to the Duo Mobile app.
 
-DuOSU was built in HTML / JavaScript. It's designed for Ohio State University students, but it works for all Duo Mobile users. An example Java program is packaged in this repository as a guide on how to incorporate this in a full-scale application. To use, include the following Maven repositories in your pom.xml (or adapt your own implementations of these two repositories):
+DuOSU was built in HTML / JS. It's designed for Ohio State University students, but it works for all Duo Mobile users.
+
+An example Java program is packaged in this repository as a guide on how to incorporate this in a full-scale application. To use, include the following Maven repositories in your pom.xml (these are both optional, you may adapt your own implementations):
 
 ```xml
 <!-- Jackson JSON Library - https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
@@ -28,16 +30,17 @@ How it Works
 ------------
 DuOSU is a simple 2-step program:
 
-1. DuOSU activates itself as a new Duo Mobile device. DuOSU communicates with Duo's API activation endpoint and registers itself as a new Android device. The new device information is synced to the user's Google account (see [Privacy](#privacy)).
-2. Login. When invoked, DuOSU approves all active push requests returned by the transactions API endpoint. Note that DuOSU can only approve push requests sent to itself (it can't approve a push request sent to a phone app, for example).
+1. DuOSU activates itself as a new Duo Mobile device. When the user clicks activate, DuOSU communicates with Duo's API activation endpoint and registers itself as a new Android device. The new device information is synced to the user's Google account (see [Privacy](#privacy)).
+2. Login. When invoked, DuOSU approves all active push requests returned by the transactions endpoint. Keep in mind that DuOSU can only approve push requests sent to itself (it can't approve a push request sent to the user's phone, for example).
 
 Automatic Logins
 ----------------
-DuOSU supports automatic logins when it detects the browser on the login screen. This is disabled by default for security. To enable, click the checkbox on the home page.
+DuOSU supports automatic logins when it detects the browser on a Duo Mobile login screen. You can enable this in settings.
 
 Privacy
 -------
-DuOSU stores device information (the data necessary to identify itself to Duo) via Chrome's storage API. This means that the information stored by this extension is accessible to all Chrome browsers the user is signed into rather than just the local machine (you can change these preferences [here](https://support.google.com/chromebook/answer/2914794?hl=en)). No information created by this extension is sent anywhere but to Duo's secure API to identify yourself and log you in, so users can rest assured that their data is kept private. Users can clear their data by clicking the gear icon on the top right of the extension and clicking the reset button.
+DuOSU stores device information via the browser's storage API. The information can be accessible to all Chrome browsers the user is signed into if their sync preferences support extensions / add-ons.
+No information created by this extension is sent anywhere but to Duo's secure API to identify yourself and log you in. Users can rest assured that their login data is kept private to their browsers.
 
 Acknowledgements
 ----------------
@@ -50,6 +53,5 @@ Here are repositories that helped make DuOSU possible or achieve similar purpose
 
 Contributing
 ------------
-Feel free to help develop for DuOSU! You can submit pull requests to help with formatting, styling, or general execution of the extension.
-
-You are also encouraged to adapt this repository into a project of your own. The purpose of this repository is to share knowledge on how to make Duo Mobile more accessible than it already offers. Credit to the original would be appreciated but not required.
+Although development has (for the most part) concluded, feel free to submit pull requests for ideas on how to improve DuOSU.
+You are also encouraged to adapt this repository into a project of your own. Credit to the original would be appreciated but not required.
