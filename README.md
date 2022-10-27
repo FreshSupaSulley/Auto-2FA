@@ -9,10 +9,10 @@ To be clear, **DuOSU isn't malicious.** It behaves almost identically to the Duo
 Supported Browsers
 ------------------
 
-Chrome, Edge, and Firefox are the browsers DuOSU is available on. Check out their respective webstores to download.
-Safari was considered, but Apple requires $100 to register as a developer (that's not happening). If you are a registered developer with Apple and would like to publish this to Safari, contact me.
+**Chrome, Edge, and Firefox** are the browsers DuOSU is available on. Check out their respective webstores to download.\n
+**Safari** was considered, but Apple requires $100 to register as a developer (that's not happening). If you are a registered developer with Apple and would like to publish this to Safari, contact me.
 
-DuOSU was built in HTML / JS. It's designed for Ohio State University students, but it works for all Duo Mobile users.
+DuOSU was built in HTML / JS. It's designed for Ohio State University students, but it works for all Duo Mobile users.\n
 An example Java program is packaged in this repository as a guide on how to incorporate this in a full-scale application. To use, include the following Maven repositories in your pom.xml (these are both optional, you may adapt your own implementations):
 
 ```xml
