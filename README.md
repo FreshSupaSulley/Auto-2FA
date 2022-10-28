@@ -39,7 +39,13 @@ DuOSU is a simple 2-step program:
 
 Automatic Logins
 ----------------
-DuOSU supports automatic logins when it detects the browser on a Duo Mobile login screen. You can enable this in settings.
+DuOSU supports automatic logins when it detects the browser on a Duo Mobile login site. You can enable this in settings.
+
+**THIS DOES NOT WORK FOR ALL ORGANIZATIONS.**<br>
+Ohio State uses the URL scheme "*https://*.duosecurity.com/frame/v4/auth/prompt_\**" for their own Duo login page. By visiting website with this URL scheme, DuOSU will log you in.<br>
+Some colleges, like the University of Cincinnati, have their own unique URL login scheme that don't match DuOSU's Auto-Login URL scheme. As of now, there is no way to change this in the settings for each organization.<br><br>
+
+If your college has a login website that doesn't match "*https://*.duosecurity.com/frame/v4/auth/prompt_\**", you're out of luck.
 
 Privacy
 -------
