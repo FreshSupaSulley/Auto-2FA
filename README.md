@@ -46,7 +46,6 @@ Ohio State uses the URL scheme *https://\*.duosecurity.com/frame/v4/auth/prompt\
 Some colleges, like the University of Cincinnati, have unique login websites that do not match DuOSU's Auto-Login URL. As of now, it's not possible to dynamically change this for each user due to extension permission reasons.<br><br>
 
 If your college has a login website that doesn't match *https://\*.duosecurity.com/frame/v4/auth/prompt\**, DuOSU will continue to work when you tap on it, but you're out of luck with Auto-Logins.<br>
-If you're a developer, feel free to adapt this repository to your college's own unique extension. Please credit the original!
 
 Privacy
 -------
