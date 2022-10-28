@@ -41,11 +41,11 @@ Automatic Logins
 ----------------
 DuOSU supports automatic logins when it detects the browser on a Duo Mobile login site. You can enable this in settings.
 
-**THIS DOES NOT WORK FOR ALL ORGANIZATIONS.**<br>
-Ohio State uses the URL scheme "\*https://\*.duosecurity.com/frame/v4/auth/prompt\*" for their unique Duo login page. By visiting a website with this URL scheme, DuOSU knows when to log you in.<br>
-Some colleges, like the University of Cincinnati, have their own unique URL login scheme that don't match DuOSU's Auto-Login URL scheme. As of now, there is no way to change this in the settings for each organization.<br><br>
+**<ins>THIS DOES NOT WORK FOR ALL ORGANIZATIONS.</ins>**<br>
+Ohio State uses the URL scheme *\*https://\*.duosecurity.com/frame/v4/auth/prompt\** for their unique Duo login page. Only when you visit a website with this URL scheme does DuOSU know when to log you in.<br>
+Some colleges, like the University of Cincinnati, have unique login websites that do not match DuOSU's Auto-Login URL. As of now, it's not possible to dynamically change this for each user due to extension permission reasons.<br><br>
 
-If your college has a login website that doesn't match "\*https://\*.duosecurity.com/frame/v4/auth/prompt\*", you're out of luck.<br>
+If your college has a login website that doesn't match *\*https://\*.duosecurity.com/frame/v4/auth/prompt\**, DuOSU will continue to work when you tap on it, but you're out of luck with Auto-Logins.<br>
 If you're a developer, feel free to adapt this repository to your college's own unique extension. Please credit the original!
 
 Privacy
