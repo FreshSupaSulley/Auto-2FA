@@ -1,5 +1,5 @@
 # DuOSU v1.3.2
-Login through Duo Mobile with ease.
+Login through Duo Mobile in your browser.
 
 Using the Duo Mobile app is frustrating and time consuming. Duo doesn't offer the ability to approve push requests on your computer either and forces usage of their app.
 This extension offers that ease of access Duo Mobile users want. By clicking on the extension (or enabling [auto-logins](#automatic-logins), you are logged into your account without hesistation.
