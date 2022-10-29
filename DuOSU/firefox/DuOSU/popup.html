@@ -241,7 +241,7 @@
     <div class="screen" id="activation">
       <h1>Hey there!</h1>
       <hr>
-      <h4 id="errorSplash">Let's set up DuOSU as one of your Duo devices.</h4>
+      <h4 id="errorSplash">Let's make DuOSU your new Duo device:</h4>
 
       <!-- Table to distribute buttons evenly -->
       <table>
@@ -328,12 +328,6 @@
       <table border="1" frame=hsides rules=rows style="padding: 5px;">
         <tr>
           <td>
-            <input type="checkbox" id="autoLogin" name="Auto-Login">
-          </td>
-          <td><h4 id="loginSplash">Automatically login without clicking DuOSU.<br></td>
-        </tr>
-        <tr>
-          <td>
             <input style="width: 80%; margin-bottom: 4px;" placeholder="Paste data here" id="importText">
             <button type="submit" id="importButton">Import</button>
           </td>
@@ -348,6 +342,15 @@
           </td>
           <td>
             <h4 style="margin-top: 35px; margin-bottom: 35px">Export login data.</h4>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input type="checkbox" id="autoLogin" name="Auto-Login" style="margin-top: 20px">
+            <h4 style="font-size: 9px; margin-top: 0px">*Does not work for all organizations (<a target="_blank" href="https://github.com/FreshSupaSulley/DuOSU#automatic-logins">why?</a>)</h4>
+          </td>
+          <td>
+            <h4 id="loginSplash">Automatically login without clicking DuOSU.<br></h4>
           </td>
         </tr>
         <tr>
