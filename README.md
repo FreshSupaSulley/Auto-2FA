@@ -49,8 +49,8 @@ If your college has a login website that doesn't match *https://\*.duosecurity.c
 
 Privacy
 -------
-DuOSU stores device information via the browser's storage API. The information can be accessible to all browsers that the user is signed into if their sync preferences support extensions / add-ons.
-No information created by this extension is sent anywhere but to Duo's secure API to identify yourself and log you in. There are no servers or outside code involved. Users can rest assured that their login data is kept private to their browsers.
+DuOSU stores device information via the browser's storage API. The information is accessible to all browsers that the user is signed into if their sync preferences support extensions / add-ons.
+No information created by this extension is sent anywhere but to Duo Mobile to log you in, and there are no servers or outside code involved. Users can rest assured that their login data is secure.
 
 Acknowledgements
 ----------------
@@ -63,5 +63,5 @@ Here are repositories that helped make DuOSU possible or achieve similar purpose
 
 Contributing
 ------------
-Although development has (for the most part) concluded, feel free to submit pull requests for ideas on how to improve DuOSU.
+Although development for the most part has concluded, feel free to submit pull requests for ideas on how to improve DuOSU.
 You are also encouraged to adapt this repository into a project of your own. Credit to the original would be appreciated but not required.
