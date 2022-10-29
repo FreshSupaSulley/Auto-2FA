@@ -1,4 +1,4 @@
-# DuOSU v1.3.1
+# DuOSU v1.3.2
 Login through Duo Mobile with ease.
 
 Using the Duo Mobile app is frustrating and time consuming. Duo doesn't offer the ability to approve push requests on your computer either and forces usage of their app.
