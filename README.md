@@ -37,6 +37,18 @@ DuOSU is a simple 2-step program:
 1. DuOSU activates itself as a new Duo Mobile device. When the user clicks activate, DuOSU communicates with Duo's API activation endpoint and registers itself as a new Android device. The new device information is synced to the user's account (see [Privacy](#privacy)).
 2. Login. When invoked, DuOSU approves all active push requests returned by the transactions endpoint. Keep in mind that DuOSU can only approve push requests sent to itself (it can't approve a push request sent to the user's phone, for example).
 
+Security
+--------
+While DuOSU is a genuine alternative to Duo's in-app two-factor authentication, it introduces unique security vulnerabilities that should be addressed:
+
+1. The hacker could time their login in sync with the user. Because DuOSU approves all push requests when clicked, if an attacker were to steal their victim's account information and try to log in at the same time the user clicks the extension (~30-second window before their push request expires), they would be able to gain access.
+2. The user could be socially engineered. DuOSU provides the ability for users to export their login data to use it on another extension. The user could be socially engineered to send a hacker their login data.
+3. The user's Google account could be compromised. DuOSU uses the browser's storage sync API to keep information synced to their account. This means that all browsers the user is signed into share the same DuOSU login data (this can be changed according to the account's sync policy). If the hacker has access to the user's Google account and their login credentials, they could gain access as well.
+
+These scenarios require the hacker to obtain their victim's login credentials _and_ have knowledge that their victim uses the extension. A foreign hacker would be no way of knowing this without some sort of inside information.
+
+This extension uses the browser's storage API to protect the user's login data. Google Chrome and Firefox use a system of "Isolated Worlds" to separate extensions from each other and from web page JavaScript. It's ensured by the browser that extensions cannot be accessed in any way by malicious JavaScript code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)).
+
 Automatic Logins
 ----------------
 DuOSU supports automatic logins when it detects the browser on a Duo Mobile login site. You can enable this in settings.
