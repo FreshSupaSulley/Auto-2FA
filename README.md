@@ -53,7 +53,7 @@ The largest threat to your Duo account is you. Because DuOSU supports importing 
 If only 1 push request is active, that login attempt is approved and its details are displayed to the user (a button will be added to make this optional).
 If 2 or more push requests are active, the login attempts are not approved and are listed to the user where they can weed out the unauthorized login attempts by comparing IP addresses, locations, integrations, etc. This ensures the user doesn't mistakingly approve an unauthorized push request.
 
-### What happened to Auto-Logins?
+#### What happened to Auto-Logins?
 Auto-Logins was a feature supported in v1.3.2 and earlier. Without increasing the permissions required by DuOSU to monitor the Duo authentication flow, Auto-Logins had to be removed because they approved all push requests rather than only the authorized one. It's unlikely this feature will return, as the permissions required to use this feature safely would concern users.
 
 Privacy
