@@ -12,8 +12,10 @@ Supported Browsers
 **[Chrome, Edge](https://chrome.google.com/webstore/detail/duosu/bnfooenhhgcnhdkdjelgmmkpaemlnoek), and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/duosu/)** are the browsers DuOSU is available on. Check out their respective webstores to download.<br>
 **Safari** was considered, but Apple requires $100 to register as a developer (that's not happening). If you are a registered developer with Apple and would like to publish this to Safari, contact me.
 
-DuOSU was built in HTML / JS. It's designed for Ohio State University students, but it works for all Duo Mobile users.<br>
-An example Java program is packaged in this repository as a guide on how to incorporate this in a full-scale application. To use, include the following Maven repositories in your pom.xml (these are both optional, you may adapt your own implementations):
+DuOSU was built in HTML / JS. Although originally designed for Ohio State University students, it works for all Duo Mobile users.
+
+## Java Developers
+This authentication flow was first built in Java before transferring it to JS. This Java program is included in this repository as a guide on how to incorporate this in a full-scale application. To use, include the following Maven repositories in your pom.xml (both are optional, you may adapt your own implementations):
 
 ```xml
 <!-- Jackson JSON Library - https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
@@ -42,8 +44,7 @@ Security
 DuOSU is a digital two-factor authenticator that serves an alternative to the mobile app. This extension doesn't hack or bypass Duo Mobile's security; it creates a digital device in your browser that's used to approve push requests, just like your phone.
 
 #### Are extensions safe to be used as 2-factor authenticators?
-Yes. Google Chrome and Firefox use a system of "Isolated Worlds" to separate extensions from each other and from web page JavaScript. It's ensured by the browser that extensions cannot be accessed in any way by malicious code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)).
-The user's login data (the data used to authenticate DuOSU with Duo, created during activation) is also protected by the browser, ensuring the data is kept private.
+Yes. Google Chrome and Firefox use a system of "Isolated Worlds" to separate extensions from each other and from web page JavaScript. It's ensured by the browser that extensions cannot be accessed in any way by malicious code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)). The user's login data (the data used to authenticate DuOSU with Duo, created during activation) is also protected by the browser, ensuring the data is kept private.
 
 #### Can my Duo account be hacked?
 No. DuOSU is protected by the security of your browser and cannot approve any push requests unless you directly tell it to. If a hacker was attempting to hijack your account, they would need access to the extension to approve the login. This is only possible if they have physical possession of your computer, or they've hacked into your Google account and are syncing the DuOSU data to their computer. As long as your Google account has a strong password and your computer isn't stolen, your Duo account is safe.
@@ -55,7 +56,7 @@ If only 1 push request is active, that login attempt is approved and its details
 If 2 or more push requests are active, they are listed to the user to filter out the suspicious login attempts by comparing IP addresses, locations, integrations, etc.
 
 #### What happened to Auto-Logins?
-Auto-Login was a feature introduced in v1.3.1. By utilizing a content script, DuOSU was able to detect when the user navigates to a specific Duo login URL and would automatically approve all push requests. Due to the nature of content scripts, it's not possible to approve the user's login without approving all push requests, which may include an unauthorized login attempt; that is, without more extension permissions that could allow DuOSU to monitor all web traffic on the login website. Obviously, an extension asking for such a permission can leave users skeptical. Combined with the fact that the login URL changes depending on the organization, it simply isn't a smart decision to ask for more permissions for a feature that can be utilized by only a portion of the users. It's unlikely this feature will return, unless a safe alternative is discovered (pull requests are open!).
+Auto-Login was a feature introduced in v1.3.1. By utilizing a content script, DuOSU was able to detect when the user navigates to the OSU Duo login URL and would automatically approve all push requests. Due to the limitations of this extension's permissions, it's not possible to approve the user's login without approving all push requests, which may include unauthorized login attempts; that is, without more extension permissions that could allow DuOSU to monitor all web traffic on the login website. Obviously, an extension asking for such a permission can leave users skeptical. Combined with the fact that the login URL doesn't work for every organization, it simply isn't a smart decision to ask for more permissions for a feature that can be utilized by only a portion of the users. It's unlikely this feature will return, unless a safe alternative is discovered (pull requests are open!).
 
 Privacy
 -------
