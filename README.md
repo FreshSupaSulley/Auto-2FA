@@ -1,4 +1,4 @@
-# DuOSU v1.3.2
+# DuOSU v1.3.3
 Login through Duo Mobile in your browser.
 
 Using the Duo Mobile app is frustrating and time consuming. Duo doesn't offer the ability to approve push requests on your computer either and forces usage of their app.
@@ -39,25 +39,22 @@ DuOSU is a simple 2-step program:
 
 Security
 --------
-While DuOSU is a genuine alternative to Duo's in-app two-factor authentication, it introduces unique security vulnerabilities that should be addressed:
+DuOSU is a secure digital two-factor authenticator that serves an alternative to using the mobile app. This extension doesn't hack or bypass Duo Mobile's security; it creates a digital device in your browser that's used to approve push requests.
 
-1. The hacker could time their login in sync with the user. Because DuOSU approves all push requests when clicked, if an attacker were to steal their victim's account information and try to log in at the same time the user clicks the extension (~30-second window before their push request expires), they would be able to gain access.
-2. The user could be socially engineered. DuOSU provides the ability for users to export their login data to use it on another extension. The user could be socially engineered to send a hacker their login data.
-3. The user's Google account could be compromised. DuOSU uses the browser's storage sync API to keep information synced to their account. This means that all browsers the user is signed into share the same DuOSU login data (this can be changed according to the account's sync policy). If the hacker has access to the user's Google account and their login credentials, they could gain access as well.
+### Is this extension safe to use?
+Yes. This extension uses the browser's storage API to protect the user's login data. Google Chrome and Firefox use a system of "Isolated Worlds" to separate extensions from each other and from web page JavaScript. It's ensured by the browser that extensions cannot be accessed in any way by malicious JavaScript code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)).
 
-These scenarios require the hacker to obtain their victim's login credentials _and_ have knowledge that their victim uses the extension. A foreign hacker would be no way of knowing this without some sort of inside information.
+### Can my Duo account be hacked?
+DuOSU cannot approve any push requests unless you directly tell it to. If a hacker was attempting to hijack your account, they would need access to the extension to approve the login. This is only possible if they have physical possession of your computer, or they've hacked into your Google account and are syncing the DuOSU data to their computer. If your Google account has a strong password and your computer can't be stolen, your Duo account is safe.
 
-This extension uses the browser's storage API to protect the user's login data. Google Chrome and Firefox use a system of "Isolated Worlds" to separate extensions from each other and from web page JavaScript. It's ensured by the browser that extensions cannot be accessed in any way by malicious JavaScript code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)).
+The largest threat to your Duo account is you. Because DuOSU supports importing / exporting your login information, it's possible to be socially engineered to send this data to an unauthorized party. **DO NOT SEND YOUR LOGIN INFORMATION TO ANYONE**. This information allows DuOSU to authenticate with Duo. Only export your login data to use on another machine you own. DO NOT use this login information on a public machine that can be accessed by others.
 
-Automatic Logins
-----------------
-DuOSU supports automatic logins when it detects the browser on a Duo Mobile login site. You can enable this in settings.
+### What happens when I click DuOSU?
+If only 1 push request is active, that login attempt is approved and its details are displayed to the user (a button will be added to make this optional).
+If 2 or more push requests are active, the login attempts are not approved and are listed to the user where they can weed out the unauthorized login attempts by comparing IP addresses, locations, integrations, etc. This ensures the user doesn't mistakingly approve an unauthorized push request.
 
-**<ins>THIS DOES NOT WORK FOR ALL ORGANIZATIONS.</ins>**<br>
-Ohio State uses the URL scheme *https://\*.duosecurity.com/frame/v4/auth/prompt\** for their unique Duo login page. Only when you visit a website with this URL scheme does DuOSU know when to log you in.<br>
-Some colleges, like the University of Cincinnati, have unique login websites that do not match DuOSU's Auto-Login URL. As of now, it's not possible to dynamically change this for each user due to extension permission reasons.<br>
-
-If your college has a login website that doesn't match *https://\*.duosecurity.com/frame/v4/auth/prompt\**, DuOSU will continue to work when you tap on it, but you're out of luck with Auto-Logins.<br>
+### What happened to Auto-Logins?
+Auto-Logins was a feature supported in v1.3.2 and earlier. Without increasing the permissions required by DuOSU to monitor the Duo authentication flow, Auto-Logins had to be removed because they approved all push requests rather than only the authorized one. It's unlikely this feature will return, as the permissions required to use this feature safely would concern users.
 
 Privacy
 -------
