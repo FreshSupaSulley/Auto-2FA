@@ -41,15 +41,15 @@ Security
 --------
 DuOSU is a secure digital two-factor authenticator that serves an alternative to using the mobile app. This extension doesn't hack or bypass Duo Mobile's security; it creates a digital device in your browser that's used to approve push requests.
 
-### Is this extension safe to use?
+#### Is this extension safe to use?
 Yes. This extension uses the browser's storage API to protect the user's login data. Google Chrome and Firefox use a system of "Isolated Worlds" to separate extensions from each other and from web page JavaScript. It's ensured by the browser that extensions cannot be accessed in any way by malicious JavaScript code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)).
 
-### Can my Duo account be hacked?
+#### Can my Duo account be hacked?
 DuOSU cannot approve any push requests unless you directly tell it to. If a hacker was attempting to hijack your account, they would need access to the extension to approve the login. This is only possible if they have physical possession of your computer, or they've hacked into your Google account and are syncing the DuOSU data to their computer. If your Google account has a strong password and your computer can't be stolen, your Duo account is safe.
 
 The largest threat to your Duo account is you. Because DuOSU supports importing / exporting your login information, it's possible to be socially engineered to send this data to an unauthorized party. **DO NOT SEND YOUR LOGIN INFORMATION TO ANYONE**. This information allows DuOSU to authenticate with Duo. Only export your login data to use on another machine you own. DO NOT use this login information on a public machine that can be accessed by others.
 
-### What happens when I click DuOSU?
+#### What happens when I click DuOSU?
 If only 1 push request is active, that login attempt is approved and its details are displayed to the user (a button will be added to make this optional).
 If 2 or more push requests are active, the login attempts are not approved and are listed to the user where they can weed out the unauthorized login attempts by comparing IP addresses, locations, integrations, etc. This ensures the user doesn't mistakingly approve an unauthorized push request.
 
