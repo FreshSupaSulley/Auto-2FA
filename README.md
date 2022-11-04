@@ -76,4 +76,4 @@ Here are repositories that helped make DuOSU possible or achieve similar purpose
 Contributing
 ------------
 Although development for the most part has concluded, feel free to submit pull requests for ideas on how to improve DuOSU.
-You are also encouraged to adapt this repository into a project of your own. Credit to the original would be appreciated but not required.
+You are also encouraged to adapt this repository into a project of your own.
