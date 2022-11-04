@@ -1,15 +1,11 @@
 {
   "name": "DuOSU",
   "description": "Login through Duo Mobile in your browser.",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "manifest_version": 3,
   "permissions": [
     "storage"
   ],
-  "content_scripts": [{
-    "matches": ["https://*.duosecurity.com/frame/v4/auth/prompt*"],
-    "js": ["contentScript.js"]
-  }],
   "host_permissions": ["https://*.duosecurity.com/*"],
   "background": {
     "service_worker": "worker.js"

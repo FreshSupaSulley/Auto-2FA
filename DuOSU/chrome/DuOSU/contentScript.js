@@ -2,7 +2,7 @@
 chrome.storage.sync.get('deviceInfo', (info) => {
   // If data exists and auto-login is enabled
   if(info.deviceInfo != null && info.deviceInfo.autoLogin == true) {
-    autoLogin();
+    autoLogin(info.deviceInfo);
   }
 });
 
@@ -10,46 +10,36 @@ chrome.storage.sync.get('deviceInfo', (info) => {
 const waitTime = 1000;
 const maxAttempts = 5;
 
-async function autoLogin() {
+async function autoLogin(info) {
   let success = false;
   try {
-    // Get device info from storage
-    let info = await new Promise(function(resolve) {
-      chrome.storage.sync.get('deviceInfo', function(json) {
-        resolve(json.deviceInfo);
-      });
-    });
-
-    // Return if we don't have any data
-    if(info == null) {
-      return;
-    }
     // Attempt loop
     for(let i = 0; i < maxAttempts; i++) {
       console.log("Attempt " + (i + 1));
       // Get transactions
       let transactions = (await buildRequest(info, "GET", "/push/v2/device/transactions")).response.transactions;
-      // If we have transactions
-      if(transactions.length != 0) {
-        // Push all of them
-        for(let j = 0; j < transactions.length; j++) {
-          let urgID = transactions[j].urgid;
-          let response = await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, {"answer": "approve"}, {"txId": urgID});
-          if(response.stat != "OK") {
-            console.error(response);
-            throw "Duo returned error status " + response.stat + " while trying to login";
-          }
+      // Only safe if we have 1 transaction
+      if(transactions.length == 1) {
+        let urgID = transactions[0].urgid;
+        let response = await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, {"answer": "approve"}, {"txId": urgID});
+        if(response.stat != "OK") {
+          console.error(response);
+          throw "Duo returned error status " + response.stat + " while trying to login";
         }
-        // Push requests are completed. Break the loop
+        // On success, break the loop
         success = true;
         break;
-      }
-      // Change icon (wait waitTime before trying again)
-      for(let j = 0; j < 3; j++) {
-        chrome.runtime.sendMessage({
-          value: "load" + (j + 1)
-        });
-        await new Promise(res => setTimeout(res, waitTime / 3));
+      } else if(transactions.length > 1) {
+        // Break out of attempt loop. Keep success false
+        break;
+      } else {
+        // Change icon (wait waitTime before trying again)
+        for(let j = 0; j < 3; j++) {
+          chrome.runtime.sendMessage({
+            value: "load" + (j + 1)
+          });
+          await new Promise(res => setTimeout(res, waitTime / 3));
+        }
       }
     }
   } catch(error) {
