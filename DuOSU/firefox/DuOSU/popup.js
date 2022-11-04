@@ -17,8 +17,6 @@ async function initialize() {
   } else {
     // Set to main screen
     changeScreen("main");
-    // Auto press the button on open
-    pushButton.click();
   }
 }
 
@@ -57,7 +55,7 @@ activateButton.addEventListener("click", async function() {
     // Make request. Throws an error if an error occurs
     await activateDevice(host, identifier);
     // Hide setup page and show success page
-    changeScreen("success");
+    changeScreen("activationSuccess");
   } catch(error) {
     if(error == "Expired") {
       errorSplash.innerText = "Activation code expired. Create a new activation link and try again.";
@@ -75,9 +73,12 @@ activateButton.addEventListener("click", async function() {
 });
 
 // Switch to main page after success button is pressed
-document.getElementById("successButton").addEventListener("click", function() {
-  changeScreen("main");
-});
+let mainButtons = document.getElementsByClassName("toMainScreen");
+for(let i = 0; i < mainButtons.length; i++) {
+  mainButtons[i].addEventListener("click", function() {
+    changeScreen("main");
+  });
+}
 
 async function activateDevice(host, identifier) {
   let url = 'https://' + host + '/push/v2/activation/' + identifier;
@@ -166,19 +167,19 @@ gear.addEventListener("click", async function() {
 });
 
 let splash = document.getElementById("splash");
-let checkmark = document.getElementById("checkmark");
+let successDetails = document.getElementById("successDetails");
+let transactionsSplash = document.getElementById("transactionsSplash");
 let pushButton = document.getElementById("pushButton");
+let approveTable = document.getElementById("approveTable");
+let failedReason = document.getElementById("failedReason");
 let failedAttempts = 0;
 
-// When the push button is pressed on the main screen
+// When the push button is pressed on the main screen (or on open)
 pushButton.addEventListener("click", async function() {
   // Disable button while making Duo request
   pushButton.disabled = true;
   pushButton.innerText = "Working...";
-  splash.innerHTML = "Checking for Duo Mobile logins...";
-  // Hide checkmark
-  checkmark.style.display = "none";
-
+  splash.innerHTML = "Checking for Duo logins...";
   try {
     // Get device info from storage
     let info = await getDeviceInfo();
@@ -188,30 +189,70 @@ pushButton.addEventListener("click", async function() {
       failedAttempts++;
       splash.innerHTML = "No logins found. Did you send a push to DuOSU (name is \"Android\")?";
     }
-    // Push every transaction
+    // Expected response: Only 1 transaction should exist
+    else if(transactions.length == 1) {
+      // Push the single transaction
+      // Throws an error if something goes wrong
+      await approveTransaction(info, transactions[0].urgid);
+      // Switch to success screen
+      successDetails.innerHTML = traverse(transactions[0].attributes);
+      failedAttempts = 0;
+      changeScreen("success");
+    }
+    // There shouldn't be more than one transaction
+    // Present all to the user
     else {
+      transactionsSplash.innerHTML = "There's " + transactions.length + " login attempts.<br>Which one are you?";
+      // Switch to transactions screen
+      changeScreen("transactions");
       // For each transaction
       for(let i = 0; i < transactions.length; i++) {
-        let urgID = transactions[i].urgid;
-        let response = await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, {"answer": "approve"}, {"txId": urgID});
-
-        if(response.stat != "OK") {
-          console.error(response);
-          throw "Duo returned error status " + response.stat + " while trying to login";
+        let row = document.createElement("tr");
+        // First column
+        let c1 = document.createElement("td");
+        let approve = document.createElement("button");
+        approve.innerHTML = "&#x2713;";
+        approve.className = "approve";
+        approve.onclick = async () => {
+          // Catch any possible errors
+          try {
+            // Display loading
+            approveTable.style.display = "none";
+            transactionsSplash.innerText = "Working...";
+            // Approve the transaction
+            await approveTransaction(info, transactions[i].urgid);
+            successDetails.innerHTML = traverse(transactions[i].attributes);
+            changeScreen("success");
+          } catch(e) {
+            console.error(e);
+            failedReason.innerText = `"${e}"`;
+            changeScreen("failure");
+          } finally {
+            // Reset elements
+            approveTable.style.display = "block";
+          }
         }
+        c1.appendChild(approve);
+
+        // 2nd column
+        let c2 = document.createElement("td");
+        let p = document.createElement("p");
+        // I have no way of knowing if array sizes vary per organization, so pick and choose isn't an option
+        // The solution is to traverse through the JSON and find all key/value pairs
+        p.innerHTML = traverse(transactions[i].attributes);
+        p.style = "text-align: left; font-size: 12px; margin: 10px 0px";
+        c2.appendChild(p);
+
+        row.appendChild(c1);
+        row.appendChild(c2);
+        approveTable.appendChild(row);
       }
-      // If successful, print this message
-      splash.innerHTML = "Logged in!";
-      failedAttempts = 0;
-      // Show checkmark
-      checkmark.style.display = "block";
     }
   } catch(error) {
+    failedReason.innerText = `"${error}"`;
     failedAttempts = 0;
     console.error(error);
-    splash.innerHTML = "Failed to login.<br><br>" +
-      "Did you delete DuOSU from your devices?\n" +
-      "<b>Reset DuOSU by clicking the gear icon and pressing reset.</b>";
+    changeScreen("failure");
   }
 
   // Re-enable button
@@ -224,6 +265,75 @@ pushButton.addEventListener("click", async function() {
     changeScreen("failedAttempts");
   }
 });
+
+function traverse(json) {
+  // If JSON is an array
+  if(json !== null && Array.isArray(json)) {
+    // If first object is a string (it's a key)
+    if(json.length == 2 && typeof json[0] === 'string') {
+      let key = json[0];
+      let value = json[1];
+      // Toss out the unnecessary key/value pairs
+      switch (json[0]) {
+        // These values should stay the same regardless of the login, because it's the same account
+        case "Username": case "Organization":
+          return null;
+        // Convert time to better form
+        case "Time":
+          // Epoch millis are returned as seconds
+          // Convert to millis
+          let d = new Date(Math.round(value) * 1000);
+          // Day month year
+          let display = (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
+          display += " at ";
+          let AMPM = (d.getHours() > 11) ? "PM" : "AM";
+          // Convert from military time
+          display += (d.getHours() % 12 == 0 ? 12 : d.getHours() - 12) + ":" + twoDigits(d.getMinutes()) + ":" + twoDigits(d.getSeconds()) + " " + AMPM;
+          value = display;
+          break;
+      }
+      return `<b>${key}</b>: ${value}<br>`;
+    } else {
+      // Traverse
+      let data = "";
+      for(let i = 0; i < json.length; i++) {
+        let branch = traverse(json[i]);
+        if(branch !== null) {
+          data += branch;
+        }
+      }
+      return data;
+    }
+  } else {
+    // Wrong format (shouldn't happen)
+    console.error("Unexpected JSON format: " + json);
+    return null;
+  }
+}
+
+// Approves the transaction ID provided, denies all others
+// Throws an exception if no transactions are active
+async function approveTransaction(info, txID) {
+  let transactions = (await buildRequest(info, "GET", "/push/v2/device/transactions")).response.transactions;
+  if(transactions.length == 0) {
+    throw "No transactions found (request expired)";
+  }
+  for(let i = 0; i < transactions.length; i++) {
+    let urgID = transactions[i].urgid;
+    if(txID == urgID) {
+      // Only approve this one
+      let response = await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, {"answer": "approve"}, {"txId": urgID});
+      if(response.stat != "OK") {
+        console.error(response);
+        throw "Duo returned error status " + response.stat + " while approving login";
+      }
+    } else {
+      // Deny all others
+      // Don't bother handling the response
+      buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, {"answer": "deny"}, {"txId": urgID});
+    }
+  }
+}
 
 // When the user presses the 'Got it' button on the failure screen
 document.getElementById("failureButton").addEventListener("click", function() {
@@ -295,7 +405,12 @@ async function buildRequest(info, method, path, extraParam = {}, extraHeader = {
     method: method,
     headers: headers
   }).then(response => {
-    return response.json();
+    if(!response.ok) {
+      console.error(response);
+      throw "Duo denied handling request at " + path + " (was the device deleted?)";
+    } else {
+      return response.json();
+    }
   });
 
   return result;
@@ -312,23 +427,9 @@ async function changeScreen(id) {
     // Initialize the active slide (this is necessary on startup)
     updateSlide(slideIndex);
   }
-  else if(id == "settings") {
-    // Set the autoLogin box if enabled or not
-    let info = await getDeviceInfo();
-    if(info == null) {
-      autoLogin.disabled = true;
-    } else {
-      autoLogin.disabled = false;
-      if(info.autoLogin) {
-        autoLogin.checked = true;
-      } else {
-        autoLogin.checked = false;
-      }
-    }
-    // Make sure when we go to settings, we reset the main page
-    checkmark.style.display = "none";
-    splash.innerHTML = "Click to approve Duo Mobile logins.";
-    pushButton.innerText = "Login";
+  // Auto press the button on open
+  else if(id == "main") {
+    pushButton.click();
   }
 
   let screens = document.getElementsByClassName("screen");
@@ -390,25 +491,6 @@ function arrayBufferToBase64(buffer) {
   return window.btoa(binary);
 }
 
-// Auto-login
-let loginSplash = document.getElementById("loginSplash");
-let autoLogin = document.getElementById("autoLogin");
-autoLogin.addEventListener('change', async (event) => {
-  let data = await getDeviceInfo();
-  if(data != null) {
-    // If enabled
-    if(autoLogin.checked) {
-      data.autoLogin = true;
-      loginSplash.innerText = "Auto-login enabled.";
-    } else {
-      data.autoLogin = false;
-      loginSplash.innerText = "Auto-login disabled.";
-    }
-    // Set new data
-    await browser.storage.sync.set({"deviceInfo": data});
-  }
-});
-
 // Import button
 let importText = document.getElementById("importText");
 let importSplash = document.getElementById("importSplash");
@@ -423,15 +505,6 @@ document.getElementById("importButton").addEventListener("click", async function
     // If an error wasn't thrown, set new data in chrome sync
     browser.storage.sync.set({"deviceInfo": json});
     importSplash.innerText = "Data imported! DuOSU will now login with this data.";
-    autoLogin.disabled = false;
-    // If autoLogin is enabled
-    if(json.autoLogin) {
-      autoLogin.checked = true;
-      loginSplash.innerText = "Auto-login enabled.";
-    } else {
-      autoLogin.checked = false;
-      loginSplash.innerText = "Auto-login disabled.";
-    }
   } catch(e) {
     console.error(e);
     // Tell the user this is an invalid code
@@ -459,8 +532,6 @@ document.getElementById("resetButton").addEventListener("click", function() {
   // Delete browser local / sync data
   browser.storage.sync.clear(function() {
     browser.storage.local.clear(function() {
-      // Disable check box
-      autoLogin.disabled = true;
       // Reset main page
       slideIndex = 0;
       errorSplash.innerText = "Let's set up DuOSU as one of your Duo devices.";

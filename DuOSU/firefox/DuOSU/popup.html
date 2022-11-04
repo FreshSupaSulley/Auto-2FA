@@ -6,7 +6,7 @@
       html {
         min-height: 30px; /*Hack to make the the logo evenly spaced while storage is being loaded*/
         width: 300px;
-        font-family: sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
       }
       body {
         padding: 0;
@@ -38,8 +38,8 @@
       }
       h1 {
         font-size: 24px;
-        margin-top: 10px;
-        margin-bottom: 10px;
+        margin-top: 5px;
+        margin-bottom: 12px;
         text-align: center;
         font-weight: lighter;
       }
@@ -144,6 +144,24 @@
         /* Total time, start time */
         animation: stroke 0.3s linear 0.7s forwards;
       }
+      .approve {
+        width: 65%;
+        padding: 0;
+        color: green;
+        border: none;
+        background: none;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        font-size: 35px;
+        font-weight: bold;
+        transition: 0.15s ease-in-out;
+      }
+      .approve:hover {
+        transform: scale(1.15);
+        background-color: rgba(30,215,30,0.5);
+      }
+      .approve:active {
+        color: black;
+      }
 
       /* IDs */
       #prev, #next {
@@ -173,8 +191,9 @@
         pointer-events: bounding-box;
       }
       #gear, #gearChange {
+        position: absolute;
+        right: 7px;
         transform-origin: center;
-        float: right;
         transition: transform .25s ease-in-out;
       }
       #gear:hover {
@@ -204,10 +223,10 @@
       }
       /* SVG checkmark */
       #checkmark {
-        width: 44px;
-        height: 44px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
-        display: none;
+        display: inherit;
         stroke-width: 3;
         stroke: #fff;
         stroke-miterlimit: 10;
@@ -216,8 +235,8 @@
         animation: fill 0.3s ease-in-out 0.2s forwards,
         scale 1s ease-in-out 0.1s both;
         position: absolute;
-        top: 49%;
-        left: 77%;
+        top: 8px;
+        left: 68%;
       }
       @keyframes scale {
         0%, 100% {transform: none} 50% {transform: scale3d(1.1, 1.1, 1)};
@@ -228,11 +247,28 @@
       @keyframes stroke {
         100% {stroke-dashoffset: 0}
       }
+      #approveTable {
+        border: 1px solid gray;
+        border-radius: 5px;
+        /*background-color: whitesmoke;*/
+      }
+      #approveTable td:nth-child(2n+1) {
+        width: 30%;
+      }
+      #successDetails {
+        font-size: 10px;
+        margin-left: 15%;
+        margin-right: 15%;
+        margin-bottom: 15px;
+      }
+      #failedReason {
+        text-decoration: underline;
+      }
     </style>
   </head>
   <body>
     <!-- DuOSU logo -->
-    <a href="https://addons.mozilla.org/en-US/firefox/addon/duosu/" target="_blank"><img src="/images/duo32.png" class="expand"></a>
+    <a style="position: absolute;" href="https://addons.mozilla.org/en-US/firefox/addon/duosu/" target="_blank"><img src="/images/duo32.png" class="expand"></a>
     <!-- Gear SVG -->
     <svg id="gear" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" width="16px" height="16px" viewBox="0 0 24 24" fill="black">
       <rect fill="none" height="24" width="24"></rect>
@@ -288,7 +324,8 @@
       </div>
     </div>
 
-    <div class="screen" id="success">
+    <!-- Activation success page -->
+    <div class="screen" id="activationSuccess">
       <h1>Success!</h1>
       <hr>
       <p>Next time you login, send a push to "Android".</p>
@@ -296,21 +333,28 @@
         <img src="/images/tutorial.png">
         <p>Then click on this extension to approve the login.</p>
       </div>
-      <button type="submit" id="successButton">Got it</button>
+      <button type="submit" class="toMainScreen">Got it</button>
     </div>
 
+    <!-- Home screen -->
     <div class="screen" id="main">
       <h1>DuOSU</h1>
       <hr>
-      <p id="splash">Click to approve Duo Mobile logins.</p>
+      <!-- Elements dynamically altered in JS -->
+      <p id="splash"></p>
       <button type="submit" id="pushButton">Login</button>
-      <!-- Checkmark animation when login succeeds -->
-      <svg id="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-        <circle class="checkmarkCircle" cx="26" cy="26" r="25" fill="none"/>
-        <path class="checkmarkCheck" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-      </svg>
     </div>
 
+    <!-- Multiple push requests are active -->
+    <div class="screen" id="transactions">
+      <h1>Hold up...</h1>
+      <hr>
+      <!-- Elements dynamically altered in JS -->
+      <p id="transactionsSplash"></p>
+      <table id="approveTable"></table>
+    </div>
+
+    <!-- User fails to login multiple times -->
     <div class="screen" id="failedAttempts">
       <h1>DuOSU</h1>
       <hr>
@@ -323,9 +367,33 @@
       <button type="submit" id="failureButton">Got it</button>
     </div>
 
+    <!-- Success -->
+    <div class="screen" id="success">
+      <h1>DuOSU</h1>
+      <hr>
+      <!-- Elements dynamically altered in JS -->
+      <p style="margin-bottom: 15px">Logged in!</p>
+      <p id="successDetails"></p>
+      <button type="submit" class="toMainScreen">Try Again</button>
+      <svg id="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+        <circle class="checkmarkCircle" cx="26" cy="26" r="25" fill="none"/>
+        <path class="checkmarkCheck" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+      </svg>
+    </div>
+
+    <!-- Failure -->
+    <div class="screen" id="failure">
+      <h1>Failed</h1>
+      <hr>
+      <p id="failedReason"></p>
+      <p>If the error persists, reset DuOSU in settings.</p>
+      <button type="submit" class="toMainScreen">Try Again</button>
+    </div>
+
     <div class="screen" id="settings">
       <h1>Settings</h1>
-      <table border="1" frame=hsides rules=rows style="padding: 5px;">
+      <hr>
+      <table>
         <tr>
           <td>
             <input style="width: 80%; margin-bottom: 4px;" placeholder="Paste data here" id="importText">
@@ -345,22 +413,11 @@
           </td>
         </tr>
         <tr>
-          <td>
-            <input type="checkbox" id="autoLogin" name="Auto-Login" style="margin-top: 20px">
-            <h4 style="font-size: 9px; margin-top: 0px">*Does not work for all organizations (<a target="_blank" href="https://github.com/FreshSupaSulley/DuOSU#automatic-logins">why?</a>)</h4>
-          </td>
-          <td>
-            <h4 id="loginSplash">Automatically login without clicking DuOSU.<br></h4>
-          </td>
-        </tr>
-        <tr>
           <td><button type="submit" id="resetButton">Reset</button></td>
           <td><h4 id="resetSplash">Delete all data. You'll need to reactivate or import data.</h4></td>
         </tr>
       </table>
-      <p>Need help? Read FAQs <a href="https://addons.mozilla.org/en-US/firefox/addon/duosu/" target="_blank">here</a>.</p>
     </div>
-
     <script type="module" src="popup.js"></script>
   </body>
 </html>
