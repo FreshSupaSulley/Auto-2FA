@@ -39,27 +39,29 @@ DuOSU is a simple 2-step program:
 
 Security
 --------
-DuOSU is a secure digital two-factor authenticator that serves an alternative to using the mobile app. This extension doesn't hack or bypass Duo Mobile's security; it creates a digital device in your browser that's used to approve push requests.
+DuOSU is a digital two-factor authenticator that serves an alternative to the mobile app. This extension doesn't hack or bypass Duo Mobile's security; it creates a digital device in your browser that's used to approve push requests, just like your phone.
 
 #### Are extensions safe to be used as 2-factor authenticators?
-Yes. Google Chrome and Firefox use a system of "Isolated Worlds" to separate extensions from each other and from web page JavaScript. It's ensured by the browser that extensions cannot be accessed in any way by malicious JavaScript code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)). The user's login data is also protected by the browser's storage API, ensuring it can't be accessed by malicious code.
+Yes. Google Chrome and Firefox use a system of "Isolated Worlds" to separate extensions from each other and from web page JavaScript. It's ensured by the browser that extensions cannot be accessed in any way by malicious code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)).
+The user's login data (the data used to authenticate DuOSU with Duo, created during activation) is also protected by the browser, ensuring the data is kept private.
 
 #### Can my Duo account be hacked?
-DuOSU cannot approve any push requests unless you directly tell it to. If a hacker was attempting to hijack your account, they would need access to the extension to approve the login. This is only possible if they have physical possession of your computer, or they've hacked into your Google account and are syncing the DuOSU data to their computer. If your Google account has a strong password and your computer can't be stolen, your Duo account is safe.
+No. DuOSU is protected by the security of your browser and cannot approve any push requests unless you directly tell it to. If a hacker was attempting to hijack your account, they would need access to the extension to approve the login. This is only possible if they have physical possession of your computer, or they've hacked into your Google account and are syncing the DuOSU data to their computer. As long as your Google account has a strong password and your computer isn't stolen, your Duo account is safe.
 
-The largest threat to your Duo account is you. Because DuOSU supports importing / exporting your login information, it's possible to be socially engineered to send this data to an unauthorized party. **DO NOT SEND YOUR LOGIN INFORMATION TO ANYONE**. This information allows DuOSU to authenticate with Duo. Only export your login data to use on another machine you own. DO NOT use this login information on a public machine that can be accessed by others.
+The most serious threat to your Duo account is you. Because DuOSU supports importing / exporting your login information, it's possible that this information could fall into the hands of an unauthorized party. This won't happen as long as you keep your login data private, so **DO NOT SEND YOUR LOGIN INFORMATION TO ANYONE**. You should only transfer your login data to a machine you own. DO NOT transfer your login information to a public machine that can be accessed by others.
 
-#### What happens when I click DuOSU?
-If only 1 push request is active, that login attempt is approved and its details are displayed to the user (a button will be added to make this optional).
-If 2 or more push requests are active, the login attempts are not approved and are listed to the user where they can weed out the unauthorized login attempts by comparing IP addresses, locations, integrations, etc. This ensures the user doesn't mistakingly approve an unauthorized push request.
+#### What exactly happens when I click DuOSU?
+If only 1 push request is active, that login attempt is approved and its details are displayed to the user (a button will soon be added to make this optional).
+If 2 or more push requests are active, they are listed to the user to filter out the suspicious login attempts by comparing IP addresses, locations, integrations, etc.
 
 #### What happened to Auto-Logins?
-Auto-Logins was a feature supported in v1.3.2 and earlier. Without increasing the permissions required by DuOSU to monitor the Duo authentication flow, Auto-Logins had to be removed because they approved all push requests rather than only the authorized one. It's unlikely this feature will return, as the permissions required to use this feature safely would concern users.
+Auto-Login was a feature introduced in v1.3.1. By utilizing a content script, DuOSU was able to detect when the user navigates to a specific Duo login URL and would automatically approve all push requests. Due to the nature of content scripts, it's not possible to approve the user's login without approving all push requests, which may include an unauthorized login attempt; that is, without more extension permissions that could allow DuOSU to monitor all web traffic on the login website. Obviously, an extension asking for such a permission can leave users skeptical. Combined with the fact that the login URL changes depending on the organization, it simply isn't a smart decision to ask for more permissions for a feature that can be utilized by only a portion of the users. It's unlikely this feature will return, unless a safe alternative is discovered (pull requests are open!).
 
 Privacy
 -------
 DuOSU stores device information via the browser's storage API. The information is accessible to all browsers that the user is signed into if their sync preferences support extensions / add-ons.
 No information created by this extension is sent anywhere but to Duo Mobile to log you in, and there are no servers or outside code involved. Users can rest assured that their login data is secure.
+Keep in mind, however, that it's possible to export login data to other DuOSU extensions. It's the user's responsibility to keep this data secure and to never send it to an unauthorized party.
 
 Acknowledgements
 ----------------
