@@ -41,8 +41,8 @@ Security
 --------
 DuOSU is a secure digital two-factor authenticator that serves an alternative to using the mobile app. This extension doesn't hack or bypass Duo Mobile's security; it creates a digital device in your browser that's used to approve push requests.
 
-#### Is this extension safe to use?
-Yes. This extension uses the browser's storage API to protect the user's login data. Google Chrome and Firefox use a system of "Isolated Worlds" to separate extensions from each other and from web page JavaScript. It's ensured by the browser that extensions cannot be accessed in any way by malicious JavaScript code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)).
+#### Are extensions safe to be used as 2-factor authenticators?
+Yes. Google Chrome and Firefox use a system of "Isolated Worlds" to separate extensions from each other and from web page JavaScript. It's ensured by the browser that extensions cannot be accessed in any way by malicious JavaScript code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)). The user's login data is also protected by the browser's storage API, ensuring it can't be accessed by malicious code.
 
 #### Can my Duo account be hacked?
 DuOSU cannot approve any push requests unless you directly tell it to. If a hacker was attempting to hijack your account, they would need access to the extension to approve the login. This is only possible if they have physical possession of your computer, or they've hacked into your Google account and are syncing the DuOSU data to their computer. If your Google account has a strong password and your computer can't be stolen, your Duo account is safe.
