@@ -1,10 +1,9 @@
 # DuOSU v1.3.5
 Login through Duo Mobile in your browser.
 
-Using the Duo Mobile app is frustrating and time consuming. Duo doesn't offer the ability to approve push requests on your computer either and forces usage of their app.
-This extension offers that ease of access Duo Mobile users want. By simply clicking on the extension, you are logged into your account without hesistation.
+Using the Duo Mobile app can be frustrating; you may end up looking for your phone you buried somewhere or get distracted by social media. To make matters worse, Duo doesn't offer the ability to approve push requests on your computer and forces usage of their app.
 
-To be clear, **DuOSU isn't malicious.** It behaves almost identically to the Duo Mobile app. DuOSU can't login when you don't want it to, and none of your login data is sent anywhere but to Duo (see [Privacy](#privacy)).
+This extension offers that ease of access Duo Mobile users want. By simply clicking on the extension, you are logged into your account without hesistation.
 
 Supported Browsers
 ------------------
@@ -44,7 +43,7 @@ Security
 DuOSU is a digital two-factor authenticator that serves an alternative to the mobile app. This extension doesn't hack or bypass Duo Mobile's security; it creates a digital device in your browser that's used to approve push requests, just like your phone.
 
 #### Are extensions safe to be used as 2-factor authenticators?
-Yes. Google Chrome and Firefox use a system of "Isolated Worlds" to separate extensions from each other and from web page JavaScript. It's ensured by the browser that extensions cannot be accessed in any way by malicious code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)). The user's login data (the data used to authenticate DuOSU with Duo, created during activation) is also protected by the browser, ensuring the data is kept private.
+Yes. Modern web browsers use a system of "Isolated Worlds" to separate extensions from each other and from web page JavaScript. It's ensured by the browser that extensions cannot be accessed in any way by malicious code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)). The user's login data (the data used to authenticate DuOSU with Duo, created during activation) is also protected by the browser, ensuring the data is kept private.
 
 #### Can my Duo account be hacked?
 No. DuOSU is protected by the security of your browser and cannot approve any push requests unless you directly tell it to. If a hacker was attempting to hijack your account, they would need access to the extension to approve the login. This is only possible if they have physical possession of your computer, or they've hacked into your Google account and are syncing the DuOSU data to their computer. As long as your Google account has a strong password and your computer isn't stolen, your Duo account is safe.
@@ -60,7 +59,7 @@ Auto-Login was a feature introduced in v1.3.1. By utilizing a content script, Du
 
 One-Click Login
 ---------------
-Approves a login upon clicking the extension. If more than one login attempt is active, no logins are approved to allow the user to filter suspicious logins. This is enabled by default in settings.
+Approves a login attempt immediately upon clicking the extension. If multiple login attempts are active, they are listed to the user to filter out suspicious logins. This is enabled by default in settings. If disabled, DuOSU will ask for approval when clicked rather than immediately pushing it.
 
 Privacy
 -------
@@ -79,5 +78,4 @@ Here are repositories that helped make DuOSU possible or achieve similar purpose
 
 Contributing
 ------------
-Although development for the most part has concluded, feel free to submit pull requests for ideas on how to improve DuOSU.
-You are also encouraged to adapt this repository into a project of your own.
+Although development for the most part has concluded, feel free to submit pull requests for ideas on how to improve DuOSU. You are also encouraged to adapt this repository into a project of your own.
