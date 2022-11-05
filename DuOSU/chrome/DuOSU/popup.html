@@ -120,6 +120,23 @@
       .expand:hover {
         transform: scale(1.15);
       }
+      /* SVG checkmark */
+      .checkmark {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: inherit;
+        stroke-width: 3;
+        stroke: #fff;
+        stroke-miterlimit: 10;
+        box-shadow: inset 0px 0px 0px #7ac142;
+        /* Total time, start time */
+        animation: fill 0.3s ease-in-out 0.2s forwards,
+        scale 1s ease-in-out 0.1s both;
+        position: absolute;
+        top: 8px;
+        left: 68%;
+      }
       /* Circle outline */
       .checkmarkCircle {
         stroke-dasharray: 166;
@@ -140,7 +157,7 @@
         animation: stroke 0.3s linear 0.7s forwards;
       }
       .approve {
-        width: 65%;
+        width: 66%;
         padding: 0;
         color: green;
         border: none;
@@ -216,32 +233,6 @@
       #resetButton:active {
         background-color: rgb(255,100,100);
       }
-      /* SVG checkmark */
-      #checkmark {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        display: inherit;
-        stroke-width: 3;
-        stroke: #fff;
-        stroke-miterlimit: 10;
-        box-shadow: inset 0px 0px 0px #7ac142;
-        /* Total time, start time */
-        animation: fill 0.3s ease-in-out 0.2s forwards,
-        scale 1s ease-in-out 0.1s both;
-        position: absolute;
-        top: 8px;
-        left: 68%;
-      }
-      @keyframes scale {
-        0%, 100% {transform: none} 50% {transform: scale3d(1.1, 1.1, 1)};
-      }
-      @keyframes fill {
-        100% {box-shadow: inset 0px 0px 0px 30px #7ac142}
-      }
-      @keyframes stroke {
-        100% {stroke-dashoffset: 0}
-      }
       #approveTable {
         border: 1px solid gray;
         border-radius: 5px;
@@ -258,6 +249,15 @@
       }
       #failedReason {
         text-decoration: underline;
+      }
+      @keyframes scale {
+        0%, 100% {transform: none} 50% {transform: scale3d(1.1, 1.1, 1)};
+      }
+      @keyframes fill {
+        100% {box-shadow: inset 0px 0px 0px 30px #7ac142}
+      }
+      @keyframes stroke {
+        100% {stroke-dashoffset: 0}
       }
     </style>
   </head>
@@ -370,7 +370,7 @@
       <p style="margin-bottom: 15px">Logged in!</p>
       <p id="successDetails"></p>
       <button type="submit" class="toMainScreen">Try Again</button>
-      <svg id="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+      <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
         <circle class="checkmarkCircle" cx="26" cy="26" r="25" fill="none"/>
         <path class="checkmarkCheck" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
       </svg>
@@ -389,6 +389,14 @@
       <h1>Settings</h1>
       <hr>
       <table>
+        <tr>
+          <td>
+            <input type="checkbox" id="clickLogin" name="One-Click Login">
+          </td>
+          <td>
+            <h4>One-click login (<a target="_blank" href="https://github.com/FreshSupaSulley/DuOSU/blob/main/README.md#one-click-login">what's this?</a>)</h4>
+          </td>
+        </tr>
         <tr>
           <td>
             <input style="width: 80%; margin-bottom: 4px;" placeholder="Paste data here" id="importText">

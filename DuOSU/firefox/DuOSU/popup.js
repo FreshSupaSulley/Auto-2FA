@@ -190,7 +190,7 @@ pushButton.addEventListener("click", async function() {
       splash.innerHTML = "No logins found. Did you send a push to DuOSU (name is \"Android\")?";
     }
     // Expected response: Only 1 transaction should exist
-    else if(transactions.length == 1) {
+    else if(transactions.length == 1 && !info.reviewPush) {
       // Push the single transaction
       // Throws an error if something goes wrong
       await approveTransaction(info, transactions[0].urgid);
@@ -202,9 +202,19 @@ pushButton.addEventListener("click", async function() {
     // There shouldn't be more than one transaction
     // Present all to the user
     else {
-      transactionsSplash.innerHTML = "There's " + transactions.length + " login attempts.<br>Which one are you?";
+      // If one-click logins are disabled
+      if(transactions.length == 1) {
+        transactionsSplash.innerHTML = "Is this your login?";
+      } else {
+        // If multiple login attempts exist
+        transactionsSplash.innerHTML = "There's " + transactions.length + " login attempts.<br>Which one are you?";
+      }
       // Switch to transactions screen
       changeScreen("transactions");
+      // Also reset the transactions page
+      while(approveTable.firstChild) {
+        approveTable.removeChild(approveTable.lastChild);
+      }
       // For each transaction
       for(let i = 0; i < transactions.length; i++) {
         let row = document.createElement("tr");
@@ -287,8 +297,9 @@ function traverse(json) {
           let display = (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
           display += " at ";
           let AMPM = (d.getHours() > 11) ? "PM" : "AM";
+          let scaled = (d.getHours() < 13 ? d.getHours() : d.getHours() - 12);
           // Convert from military time
-          display += (d.getHours() % 12 == 0 ? 12 : d.getHours() - 12) + ":" + twoDigits(d.getMinutes()) + ":" + twoDigits(d.getSeconds()) + " " + AMPM;
+          display += (scaled % 12 == 0 ? 12 : scaled) + ":" + twoDigits(d.getMinutes()) + ":" + twoDigits(d.getSeconds()) + " " + AMPM;
           value = display;
           break;
       }
@@ -427,6 +438,25 @@ async function changeScreen(id) {
     // Initialize the active slide (this is necessary on startup)
     updateSlide(slideIndex);
   }
+  // Settings
+  else if(id == "settings") {
+    // Set the one-click login box if enabled or not
+    let info = await getDeviceInfo();
+    if(info == null) {
+      clickLogin.disabled = true;
+    } else {
+      clickLogin.disabled = false;
+      // If one-click logins are enabled
+      if(!info.reviewPush) {
+        clickLogin.checked = true;
+      } else {
+        clickLogin.checked = false;
+      }
+    }
+    // Make sure when we go to settings, we reset the main page
+    splash.innerHTML = "Click to approve Duo Mobile logins.";
+    pushButton.innerText = "Login";
+  }
   // Auto press the button on open
   else if(id == "main") {
     pushButton.click();
@@ -491,6 +521,17 @@ function arrayBufferToBase64(buffer) {
   return window.btoa(binary);
 }
 
+// One-click login
+let clickLogin = document.getElementById("clickLogin")
+clickLogin.addEventListener('change', async (event) => {
+  let data = await getDeviceInfo();
+  if(data != null) {
+    // Set new data
+    data.reviewPush = !clickLogin.checked;
+    await browser.storage.sync.set({"deviceInfo": data});
+  }
+});
+
 // Import button
 let importText = document.getElementById("importText");
 let importSplash = document.getElementById("importSplash");
@@ -502,9 +543,16 @@ document.getElementById("importButton").addEventListener("click", async function
     importSplash.innerText = "Verifying..."
     // We do this by running it through a transactions call
     let transactions = (await buildRequest(json, "GET", "/push/v2/device/transactions")).response.transactions;
-    // If an error wasn't thrown, set new data in chrome sync
+    // If an error wasn't thrown, set new data in browser's sync
     browser.storage.sync.set({"deviceInfo": json});
     importSplash.innerText = "Data imported! DuOSU will now login with this data.";
+    clickLogin.disabled = false;
+    // If click logins are enabled
+    if(!json.reviewPush) {
+      clickLogin.checked = true;
+    } else {
+      clickLogin.checked = false;
+    }
   } catch(e) {
     console.error(e);
     // Tell the user this is an invalid code
@@ -544,7 +592,7 @@ document.getElementById("resetButton").addEventListener("click", function() {
 // Returns a promise of the device info
 async function getDeviceInfo() {
   return await new Promise(function(resolve) {
-    chrome.storage.sync.get('deviceInfo', function(json) {
+    browser.storage.sync.get('deviceInfo', function(json) {
       resolve(json == null ? null : json.deviceInfo);
     });
   });
