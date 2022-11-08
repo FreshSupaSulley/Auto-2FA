@@ -51,15 +51,14 @@ No. DuOSU is protected by the security of your browser and cannot approve any pu
 The most serious threat to your Duo account is you. Because DuOSU supports importing / exporting your login information, it's possible that this information could fall into the hands of an unauthorized party. This won't happen as long as you keep your login data private, so **DO NOT SEND YOUR LOGIN INFORMATION TO ANYONE**. You should only transfer your login data to a machine you own. DO NOT transfer your login information to a public machine that can be accessed by others.
 
 #### What exactly happens when I click DuOSU?
-If only 1 push request is active, that login attempt is approved and its details are displayed to the user. You can review the push request before it's pushed by disabling one-click logins.
-If 2 or more push requests are active, they are listed to the user to filter out the suspicious login attempts by comparing IP addresses, locations, integrations, etc.
+If only 1 push request is active, that login attempt is approved and its details are displayed to the user. You can review the push request before it's approved by disabling one-click logins in settings. If 2 or more push requests are active, they are listed to the user to filter out the suspicious login attempts by comparing IP addresses, locations, integrations, etc.
 
 #### What happened to Auto-Logins?
 Auto-Login was a feature introduced in v1.3.1. By utilizing a content script, DuOSU was able to detect when the user navigates to the OSU Duo login URL and would automatically approve all push requests. Due to the limitations of this extension's permissions, it's not possible to approve the user's login without approving all push requests, which may include unauthorized login attempts; that is, without more extension permissions that could allow DuOSU to monitor all web traffic on the login website. Obviously, an extension asking for such a permission can leave users skeptical. Combined with the fact that the login URL doesn't work for every organization, it simply isn't a smart decision to ask for more permissions for a feature that can be utilized by only a portion of the users. It's unlikely this feature will return, unless a safe alternative is discovered (pull requests are open!).
 
 One-Click Login
 ---------------
-Approves a login attempt immediately upon clicking the extension. If multiple login attempts are active, they are listed to the user to filter out suspicious logins. This is enabled by default in settings. If disabled, DuOSU will ask for approval when clicked rather than immediately pushing it.
+Approves a single login attempt immediately upon clicking the extension. If multiple login attempts are active, they are listed to the user to filter out suspicious logins. This is enabled by default in settings. If disabled, DuOSU will ask for approval when clicked rather than immediately pushing it.
 
 Privacy
 -------
