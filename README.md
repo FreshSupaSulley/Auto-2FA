@@ -58,7 +58,7 @@ Auto-Login was a feature introduced in v1.3.1. By utilizing a content script, Du
 
 One-Click Login
 ---------------
-Approves a single login attempt immediately upon clicking the extension. If multiple login attempts are active, they are listed to the user to filter out suspicious logins. This is enabled by default in settings. If disabled, DuOSU will ask for approval when clicked rather than immediately pushing it.
+If there's only one active login attempt, it's approved upon clicking the extension. Otherwise, DuOSU will ask for approval for the single login when clicked rather than immediately pushing it.
 
 Privacy
 -------
