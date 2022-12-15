@@ -1,9 +1,7 @@
 # DuOSU v1.3.5
 Login through Duo Mobile in your browser.
 
-Using the Duo Mobile app can be frustrating; you may end up looking for your phone you buried somewhere or get distracted by social media. To make matters worse, Duo doesn't offer the ability to approve push requests on your computer and forces usage of their app.
-
-By simply clicking on the extension, you are logged into your account without hesistation.
+Using the Duo Mobile app can be frustrating; you may end up looking for your phone you buried somewhere or get distracted by social media. To make matters worse, Duo doesn't offer the ability to approve push requests on your computer and forces usage of their app. But by simply clicking on the extension, you are logged into your account without hesistation.
 
 Supported Browsers
 ------------------
@@ -14,9 +12,9 @@ Supported Browsers
 Development
 -----------
 
-DuOSU was built in HTML / JS. Although originally designed for Ohio State University students, it works for all Duo Mobile users.
+DuOSU was built in HTML / JS. Although originally designed for Ohio State University students, it works for all Duo Mobile users. This project is kept open-sourced to reassure users of its integrity and to allow for feedback on the security of this extension.
 
-## Java Programmers
+#### Java Programmers
 The authentication flow was first built in Java for testing before transferring it to JS. This Java program is included in this repository as a guide on how to incorporate this in a full-scale, more robust application. To use, include the following Maven repositories in your pom.xml (both are optional, you may adapt your own implementations):
 
 ```xml
@@ -43,28 +41,34 @@ DuOSU is a simple 2-step program:
 
 Security
 --------
-DuOSU is a secure alternative to the Duo Mobile app. This extension doesn't hack or bypass Duo Mobile's security; it creates a digital Duo Mobile device in your browser that's used to approve push requests just like your phone.
+DuOSU is a secure alternative to the Duo Mobile app, yet ultimately relies on the security practices of the user. If the user's browser account is compromised due to a poor password or failure to log out of a public machine, the extension may also be compromised. Users may also be socially engineered to send their exported Duo Mobile device information to an unauthorized party. It's vital that users understand the importance of maintaining good security practices.
 
 #### Are extensions safe to be used as 2-factor authenticators?
-Yes. Modern web browsers use a system of "Isolated Worlds" to separate extensions from each other and from potentially malicious web page JavaScript. In other words, it's ensured by the browser that extensions cannot be accessed by malicious code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)). The user's Duo Mobile device data (used to approve push requests) is also kept secure by the browser.
+Yes. Modern web browsers use a system of "Isolated Worlds" to separate extensions from each other and from potentially malicious web page JavaScript. In other words, it's ensured by the browser that extensions cannot be accessed by malicious code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)). The user's Duo Mobile device data (used to approve push requests) is also kept secure by this practice.
 
 #### Does using this extension put me at risk for my Duo account to be hacked?
-No (as long as you use this extension on a well-protected computer). DuOSU cannot approve push requests until it's clicked, meaning a hacker would need either physical possession of your computer, or the hacker has hacked into your web browser's account and are syncing the DuOSU data to their computer. Make sure to only use DuOSU on a private computer that only you have access to.
+If you follow good security practices, no. DuOSU resides in your browser account and cannot approve push requests without direct action, meaning a hacker would need either physical possession of a computer with your browser account logged in, or its password. Make sure to only use DuOSU on a private computer that only you have access to.
 
-Because DuOSU allows importing / exporting login information, it's possible that users could mistakenly send this information to an unauthorized party. This won't happen as long as you keep your login data private, so **DO NOT SEND YOUR LOGIN INFORMATION TO ANYONE**. You should only transfer your login data to another machine you own and protect. Do **NOT** use DuOSU on a public machine where anyone can approve push requests for your account.
+Because DuOSU allows importing / exporting login information, it's possible that users could mistakenly send this information to an unauthorized party. This won't happen as long as you keep your login data private, so **DO NOT SEND YOUR LOGIN INFORMATION TO ANYONE**. You should only transfer your login data to another machine you own. Do **NOT** use DuOSU on a public machine where anyone can access your account.
 
 #### What exactly happens when I click DuOSU? What happens if there's multiple login attempts?
-If only 1 push request is active, that login attempt is approved and its details are displayed to the user. You can review the push request before it's approved by disabling one-click logins in settings for extra security. If 2 or more push requests are active, they are listed to the user to filter out the suspicious login attempts by comparing IP addresses, locations, integrations, etc. This way, users can review push requests before and after clicking DuOSU to ensure an unauthorized login isn't approved.
+If only 1 push request is active, that login attempt is approved and its details are displayed. You can review the push request before it's approved by disabling one-click logins in settings for extra security. If 2 or more push requests are active, they are presented to you to filter out the suspicious login attempts by comparing IP addresses, locations, integrations, etc.
+
+#### What's the safest way to use DuOSU?
+1. Disable one-click logins. This allows you to review every login attempt before approving it.
+2. Disable syncing extension / add-ons with your account. DuOSU data will stay local to your machine in case your browser account is compromised.
+3. Protect your browser account. Use strong passwords and always log out of public computers.
+4. Never export and send your Duo Mobile device data to anyone. This is what allows DuOSU to log you in.
 
 One-Click Login
 ---------------
-If there's only one push request, it's immediately approved. Otherwise, DuOSU will ask for approval for the login when clicked. Keep in mind that if there's multiple login attempts, DuOSU will ask you to approve just one for security.
+If there's only one login attempt, it's immediately approved. Otherwise, DuOSU will ask for your permission to approve it. Keep in mind that if there's multiple login attempts, DuOSU will always ask for your permission regardless of one-click logins.
 
 Privacy
 -------
-DuOSU stores its Duo Mobile device information via the browser's storage API. This device information is accessible to all browsers that the user is signed into if their sync preferences support extensions / add-ons. No information created by this extension is sent anywhere but to Duo Mobile to approve push requests, and there are no servers or outside code involved. Users can rest assured that their login data is secure.
+DuOSU syncs its Duo Mobile device information to your browser's account, meaning it's accessible to all browsers that the user is signed into if their sync preferences support extensions / add-ons. Although this is convenient, it allows your Duo Mobile account to be at risk if your browser account is compromised (see [Security](#security)).
 
-Your Duo Mobile device information can be exported in settings. Do **NOT** send your data to anyone!
+No information created by this extension is sent anywhere but to Duo Mobile, and there are no servers or outside code involved. Users can rest assured that their login data is secure. However, your Duo Mobile device information can be exported in settings. Do **NOT** send your data to anyone!
 
 Acknowledgements
 ----------------
@@ -77,4 +81,4 @@ Here are repositories that helped make DuOSU possible or achieve similar purpose
 
 Contributing
 ------------
-Although development for the most part has concluded, feel free to submit pull requests for ideas on how to improve DuOSU. You are also encouraged to adapt this repository into a project of your own. For security concerns, feel free to open an issue.
+Although development for the most part has concluded, feel free to submit pull requests for ideas on how to improve DuOSU. You are also encouraged to adapt this repository into a project of your own. For security concerns, open an issue.
