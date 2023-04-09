@@ -1,13 +1,13 @@
 # DuOSU v1.3.5
 Login through Duo Mobile in your browser.
 
-Using the Duo Mobile app can be frustrating; you may end up looking for your phone you buried somewhere or get distracted by social media. To make matters worse, Duo doesn't offer the ability to approve push requests on your computer and forces usage of their app. But by simply clicking on the extension, you are logged into your account without hesistation.
+Using the Duo Mobile app can be frustrating; you may end up looking for your phone you buried somewhere or get distracted by social media. To make matters worse, Duo doesn't offer the ability to approve push requests on your computer and forces usage of their app. But by simply clicking on this extension, you are logged into your account without hesistation.
 
 Supported Browsers
 ------------------
 
 **[Chrome, Edge](https://chrome.google.com/webstore/detail/duosu/bnfooenhhgcnhdkdjelgmmkpaemlnoek), and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/duosu/)** are the browsers DuOSU is available on. Check out their respective webstores to download.<br>
-**Safari** was considered, but Apple requires $100 to register as a developer (that's not happening). If you are a registered developer with Apple and would like to publish this to Safari, open an issue or a pull request.
+**Safari** was considered, but Apple requires $100 to register as a developer (screw you Apple). Let me know if you are a registered developer with Apple and would like to publish this to Safari.
 
 Development
 -----------
@@ -62,7 +62,7 @@ If only 1 push request is active, that login attempt is approved and its details
 
 One-Click Login
 ---------------
-If there's only one login attempt, it's immediately approved. Otherwise, DuOSU will ask for your permission to approve it. Keep in mind that if there's multiple login attempts, DuOSU will always ask for your permission regardless of one-click logins.
+When enabled, clicking on the extension will approve a login attempt. Otherwise, DuOSU will ask for your permission to approve it. Keep in mind that if there's multiple login attempts, DuOSU will always ask for your permission regardless of this setting.
 
 Privacy
 -------
