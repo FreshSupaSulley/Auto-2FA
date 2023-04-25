@@ -1,5 +1,6 @@
 # DuOSU Setup Tutorial
-Here's how to generate an activation code for your DuOSU extension:
+Before you can start using DuOSU to login with Duo Mobile, you need to make it one of your devices. Just like how your phone approves or denies login attempts, DuOSU will do the same. This requires an activation code.
+Here's how to generate an activation code for your DuOSU extension (~3 minutes):
 
 #### Step 1 - Add a new device
 
