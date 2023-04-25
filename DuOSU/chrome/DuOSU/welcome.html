@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Setup</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        opacity: 0;
+        transition: 0.5s ease-in-out;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      h3, #tutorial {
+        font-weight: normal;
+        font-size: 17px;
+        transition: 1s ease-in-out;
+      }
+      #splash {
+        font-weight: lighter;
+        font-size: 30px;
+      }
+      #tutorial {
+        margin: 10px;
+        border-radius: 15px;
+        border: 2px solid black;
+      }
+      #logo {
+        padding-top: 50px;
+        transition: 0.65s ease-in-out;
+        display: block;
+        margin: auto;
+      }
+      #tutorialDiv, #postTutorial {
+        transition: 1s ease-in-out;
+        background-color: whitesmoke;
+        margin-left: 20%;
+        margin-right: 20%;
+        padding: 20px;
+        border-radius: 20px;
+        opacity: 0;
+      }
+      #postTutorial {
+        background-color: white;
+      }
+      table {
+        table-layout: fixed;
+        width: 100%;
+      }
+      th {
+        text-decoration: underline;
+      }
+      a {
+        color: inherit;
+      }
+      a:hover {
+        color: gray;
+      }
+      h4 {
+        font-weight: normal;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- DuOSU logo -->
+    <img id="logo" src="images/DuOSU.svg" class="expand" width="200">
+    <h1 id="splash">Welcome to DuOSU</h1>
+
+    <div id="tutorialDiv">
+      <h3>You're about to add DuOSU as your new Duo device.<br></h3>
+      <img id="tutorial" src="images/tutorial.gif" width="300px">
+      <h3>This is done with an <b>activation code</b>.<br>Flip through the instructions with the arrow keys to send yourself one (~3 mins).</h3>
+    </div>
+    <div id="postTutorial">
+      <h3><br>Can't find your organization's Duo devices website?<br>Try googling your organization's name followed by "duo devices".</h3>
+      <h4><i>ex. "ohio state duo devices"</i></h4>
+    </div>
+  </body>
+  <script src="welcome.js"></script>
+</html>
