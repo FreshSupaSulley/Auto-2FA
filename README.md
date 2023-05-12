@@ -1,4 +1,4 @@
-# DuOSU v1.3.6
+# DuOSU v1.3.7
 Login through Duo Mobile in your browser.
 
 Using the Duo Mobile app can be frustrating; you may end up looking for your phone you buried somewhere or get distracted by social media. Duo doesn't even offer the ability to approve push requests on your computer and forces usage of their app. But by simply clicking on this extension, you are logged into your account without hesistation.
