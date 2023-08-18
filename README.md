@@ -1,11 +1,11 @@
-# DuOSU v1.3.7
+# DuOSU for Chrome/Edge
 Login through Duo Mobile in your browser.
 
 Using the Duo Mobile app can be frustrating; you may end up looking for your phone you buried somewhere or get distracted by social media. Duo doesn't even offer the ability to approve push requests on your computer and forces usage of their app. But by simply clicking on this extension, you are logged into your account without hesistation.
 
 Supported Browsers
 ------------------
-**[Chrome, Edge](https://chrome.google.com/webstore/detail/duosu/bnfooenhhgcnhdkdjelgmmkpaemlnoek), and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/duosu/)** are the browsers DuOSU is available on. Check out their respective webstores to download.<br>
+**[Chrome, Edge](https://chrome.google.com/webstore/detail/duosu/bnfooenhhgcnhdkdjelgmmkpaemlnoek), and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/duosu/)** (source code in its own branch) are the browsers DuOSU is available on. Check out their respective webstores to download.<br>
 **Safari** was considered, but Apple requires $100 to register as a developer (they can go to hell). If you are a registered developer with Apple and would like to publish this to Safari, let me know.
 
 Development
