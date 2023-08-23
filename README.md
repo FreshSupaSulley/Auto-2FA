@@ -37,29 +37,34 @@ How it Works
 
 Security
 --------
-**I am NOT a cyber security expert**. I have a decent understanding of 2-factor authentication and basic security practices. Therefore, I do not recommend using this extension if Duo Mobile guards incredibly sensitive data. DuOSU should only be used when both the risk and cost of compromising an account is incredibly low.<br><br>
+**I am NOT a cyber security expert**. I have a decent understanding of 2-factor authentication and basic security practices. Therefore, I do not recommend using this extension if Duo Mobile guards incredibly sensitive data. DuOSU should only be used when both the risk and cost of compromising an account is incredibly low.<br>
 
-DuOSU is a *practical* secure alternative to the Duo Mobile app. For typical Duo Mobile users, this extension strikes a great balance between security and convenience. The primary example is students who constantly need to access their university's sites. The perfect counterexample is business accounts that hold access to important records.<br><br>
+DuOSU is a *practical* secure alternative to the Duo Mobile app. For typical Duo Mobile users, this extension strikes a great balance between security and convenience. The primary example is students who constantly need to access their university's sites. The perfect counterexample is business accounts that hold access to important records.<br>
 
 Two-step verification is something you know, and something you have. The premise of this extension is that you *know* your password, and you *have* DuOSU as proof it's you. By using DuOSU, you're introducing a greater risk of being compromised if your browser account (such as your Google profile) is hacked or if you failed to log out of a public machine that DuOSU for your account is present on. Users could also be socially engineered to click DuOSU during a malicious login attempt or export their Duo Mobile device information to an unauthorized party.
 
 #### Does this extension hack my Duo account to work?
-**No**. DuOSU does nothing out of the ordinary during activation – it establishes itself as a new device, just as you would with your iPhone.
+**No**. DuOSU establishes itself as a new device, just as you would with your iPhone.
 
 #### Are browser extensions safe to be used as 2-factor authenticators?
-**Probably**, at least for practical purposes. The good news is that extensions are protected by modern web browsers, as they use a system of "Isolated Worlds" to separate them from each other and from potentially malicious web page JavaScript. In other words, it's ensured by the browser that extensions cannot be accessed by malicious code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)). The bad news, however, is that browsers can be hacked to poor security practices and people can be socially engineered. Keep your passwords secure, and there should be no need to worry.
+**Probably**, at least for practical purposes. The good news is that extensions are protected by modern web browsers, as they use a system of "Isolated Worlds" to separate them from each other and from potentially malicious web page JavaScript. In other words, it's ensured by the browser that extensions cannot be accessed by malicious code (you can read more [here](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world)). The bad news, however, is that browsers can be hacked due to a user's poor security practices.
 
 #### What exactly happens when I click DuOSU? What happens if there's multiple login attempts?
 If only 1 push request is active, that login attempt is approved and its details are displayed (time, location, etc.). You can review the push request before it's approved by disabling one-click logins in settings for extra security. If 2 or more push requests are active, they are presented to you to filter out the suspicious login attempts by comparing their details.
 
 #### What's the safest way to use DuOSU?
 1. Disable one-click logins. This allows you to review every login attempt before approving it.
-2. Disable syncing extension / add-ons with your account. DuOSU device information will stay local to your machine in case your browser account is compromised.
+2. Disable syncing extension/add-on data with your account. DuOSU device information will stay local to your machine in case your browser account is compromised.
 3. Use strong passwords, and never export your device information to anyone.
+
+It's Not Working
+----------------
+If DuOSU keeps saying "No logins found!", it means no push requests were sent to the device it created during activation. This means it was likely sent to another device (like your phone). When logging in through Duo Mobile, Duo will automatically pick **just one** of your registered devices to send a push request to. DuOSU cannot approve a push request that was sent to any other device.<br>
+You need to select "Other options" on the Duo login page, and choose "Android" (that is the default name of DuOSU) to properly send the push request to DuOSU. It's only then that you can click DuOSU and login.
 
 One-Click Login
 ---------------
-When enabled (on by default), clicking on the extension will approve a single push request. If disabled, DuOSU will ask for your permission to approve one. Keep in mind that if there's multiple login attempts happening simultaneously, DuOSU will always prompt you with their details to select the correct one.
+When enabled (on by default), clicking on the extension will approve a single push request. If disabled, DuOSU will ask for your permission to approve one. Keep in mind that if there are multiple login attempts happening simultaneously, DuOSU will always prompt you with their details to select the correct one regardless of this setting.
 
 Privacy
 -------
