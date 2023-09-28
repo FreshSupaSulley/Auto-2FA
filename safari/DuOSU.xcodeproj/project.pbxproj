@@ -1,0 +1,842 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A1B1710E2AC5FB61009D1917 /* worker.js in Resources */ = {isa = PBXBuildFile; fileRef = A1B1710D2AC5FB61009D1917 /* worker.js */; };
+		A1B171122AC5FC0A009D1917 /* welcome.html in Resources */ = {isa = PBXBuildFile; fileRef = A1B171102AC5FC0A009D1917 /* welcome.html */; };
+		A1B171132AC5FE49009D1917 /* welcome.js in Resources */ = {isa = PBXBuildFile; fileRef = A1B1710F2AC5FC0A009D1917 /* welcome.js */; };
+		A1F66F852AC5B1DC002BA367 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F66F842AC5B1DC002BA367 /* AppDelegate.swift */; };
+		A1F66F892AC5B1DC002BA367 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = A1F66F872AC5B1DC002BA367 /* Main.html */; };
+		A1F66F8B2AC5B1DC002BA367 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A1F66F8A2AC5B1DC002BA367 /* Icon.png */; };
+		A1F66F8D2AC5B1DC002BA367 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = A1F66F8C2AC5B1DC002BA367 /* Style.css */; };
+		A1F66F8F2AC5B1DC002BA367 /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = A1F66F8E2AC5B1DC002BA367 /* Script.js */; };
+		A1F66F912AC5B1DC002BA367 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F66F902AC5B1DC002BA367 /* ViewController.swift */; };
+		A1F66F942AC5B1DC002BA367 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A1F66F922AC5B1DC002BA367 /* Main.storyboard */; };
+		A1F66F962AC5B1DD002BA367 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1F66F952AC5B1DD002BA367 /* Assets.xcassets */; };
+		A1F66FA22AC5B1DD002BA367 /* DuOSUTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F66FA12AC5B1DD002BA367 /* DuOSUTests.swift */; };
+		A1F66FAC2AC5B1DD002BA367 /* DuOSUUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F66FAB2AC5B1DD002BA367 /* DuOSUUITests.swift */; };
+		A1F66FAE2AC5B1DD002BA367 /* DuOSUUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F66FAD2AC5B1DD002BA367 /* DuOSUUITestsLaunchTests.swift */; };
+		A1F66FB42AC5B1DD002BA367 /* DuOSU Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A1F66FB32AC5B1DD002BA367 /* DuOSU Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A1F66FB92AC5B1DD002BA367 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F66FB82AC5B1DD002BA367 /* SafariWebExtensionHandler.swift */; };
+		A1F66FBC2AC5B1DD002BA367 /* _locales in Resources */ = {isa = PBXBuildFile; fileRef = A1F66FBB2AC5B1DD002BA367 /* _locales */; };
+		A1F66FBE2AC5B1DE002BA367 /* images in Resources */ = {isa = PBXBuildFile; fileRef = A1F66FBD2AC5B1DE002BA367 /* images */; };
+		A1F66FC02AC5B1DE002BA367 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = A1F66FBF2AC5B1DE002BA367 /* manifest.json */; };
+		A1F66FC62AC5B1DE002BA367 /* popup.html in Resources */ = {isa = PBXBuildFile; fileRef = A1F66FC52AC5B1DE002BA367 /* popup.html */; };
+		A1F66FC82AC5B1DE002BA367 /* popup.css in Resources */ = {isa = PBXBuildFile; fileRef = A1F66FC72AC5B1DE002BA367 /* popup.css */; };
+		A1F66FCA2AC5B1DE002BA367 /* popup.js in Resources */ = {isa = PBXBuildFile; fileRef = A1F66FC92AC5B1DE002BA367 /* popup.js */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A1F66F9E2AC5B1DD002BA367 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1F66F792AC5B1DC002BA367 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A1F66F802AC5B1DC002BA367;
+			remoteInfo = DuOSU;
+		};
+		A1F66FA82AC5B1DD002BA367 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1F66F792AC5B1DC002BA367 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A1F66F802AC5B1DC002BA367;
+			remoteInfo = DuOSU;
+		};
+		A1F66FB52AC5B1DD002BA367 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1F66F792AC5B1DC002BA367 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A1F66FB22AC5B1DD002BA367;
+			remoteInfo = "DuOSU Extension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A1F66FD22AC5B1DE002BA367 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A1F66FB42AC5B1DD002BA367 /* DuOSU Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A1B1710D2AC5FB61009D1917 /* worker.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = worker.js; sourceTree = "<group>"; };
+		A1B1710F2AC5FC0A009D1917 /* welcome.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = welcome.js; sourceTree = "<group>"; };
+		A1B171102AC5FC0A009D1917 /* welcome.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = welcome.html; sourceTree = "<group>"; };
+		A1F66F812AC5B1DC002BA367 /* DuOSU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DuOSU.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1F66F842AC5B1DC002BA367 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A1F66F882AC5B1DC002BA367 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = ../Base.lproj/Main.html; sourceTree = "<group>"; };
+		A1F66F8A2AC5B1DC002BA367 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		A1F66F8C2AC5B1DC002BA367 /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
+		A1F66F8E2AC5B1DC002BA367 /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
+		A1F66F902AC5B1DC002BA367 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		A1F66F932AC5B1DC002BA367 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		A1F66F952AC5B1DD002BA367 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A1F66F972AC5B1DD002BA367 /* DuOSU.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DuOSU.entitlements; sourceTree = "<group>"; };
+		A1F66F982AC5B1DD002BA367 /* DuOSU.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DuOSU.entitlements; sourceTree = "<group>"; };
+		A1F66F9D2AC5B1DD002BA367 /* DuOSUTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DuOSUTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1F66FA12AC5B1DD002BA367 /* DuOSUTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuOSUTests.swift; sourceTree = "<group>"; };
+		A1F66FA72AC5B1DD002BA367 /* DuOSUUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DuOSUUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1F66FAB2AC5B1DD002BA367 /* DuOSUUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuOSUUITests.swift; sourceTree = "<group>"; };
+		A1F66FAD2AC5B1DD002BA367 /* DuOSUUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuOSUUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		A1F66FB32AC5B1DD002BA367 /* DuOSU Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "DuOSU Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1F66FB82AC5B1DD002BA367 /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		A1F66FBB2AC5B1DD002BA367 /* _locales */ = {isa = PBXFileReference; lastKnownFileType = folder; path = _locales; sourceTree = "<group>"; };
+		A1F66FBD2AC5B1DE002BA367 /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = images; sourceTree = "<group>"; };
+		A1F66FBF2AC5B1DE002BA367 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = manifest.json; sourceTree = "<group>"; };
+		A1F66FC52AC5B1DE002BA367 /* popup.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = popup.html; sourceTree = "<group>"; };
+		A1F66FC72AC5B1DE002BA367 /* popup.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = popup.css; sourceTree = "<group>"; };
+		A1F66FC92AC5B1DE002BA367 /* popup.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = popup.js; sourceTree = "<group>"; };
+		A1F66FCB2AC5B1DE002BA367 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A1F66FCC2AC5B1DE002BA367 /* DuOSU_Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DuOSU_Extension.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A1F66F7E2AC5B1DC002BA367 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1F66F9A2AC5B1DD002BA367 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1F66FA42AC5B1DD002BA367 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1F66FB02AC5B1DD002BA367 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A1F66F782AC5B1DC002BA367 = {
+			isa = PBXGroup;
+			children = (
+				A1F66F832AC5B1DC002BA367 /* DuOSU */,
+				A1F66FA02AC5B1DD002BA367 /* DuOSUTests */,
+				A1F66FAA2AC5B1DD002BA367 /* DuOSUUITests */,
+				A1F66FB72AC5B1DD002BA367 /* DuOSU Extension */,
+				A1F66F822AC5B1DC002BA367 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A1F66F822AC5B1DC002BA367 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A1F66F812AC5B1DC002BA367 /* DuOSU.app */,
+				A1F66F9D2AC5B1DD002BA367 /* DuOSUTests.xctest */,
+				A1F66FA72AC5B1DD002BA367 /* DuOSUUITests.xctest */,
+				A1F66FB32AC5B1DD002BA367 /* DuOSU Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A1F66F832AC5B1DC002BA367 /* DuOSU */ = {
+			isa = PBXGroup;
+			children = (
+				A1F66F842AC5B1DC002BA367 /* AppDelegate.swift */,
+				A1F66F902AC5B1DC002BA367 /* ViewController.swift */,
+				A1F66F922AC5B1DC002BA367 /* Main.storyboard */,
+				A1F66F952AC5B1DD002BA367 /* Assets.xcassets */,
+				A1F66F972AC5B1DD002BA367 /* DuOSU.entitlements */,
+				A1F66F982AC5B1DD002BA367 /* DuOSU.entitlements */,
+				A1F66F862AC5B1DC002BA367 /* Resources */,
+			);
+			path = DuOSU;
+			sourceTree = "<group>";
+		};
+		A1F66F862AC5B1DC002BA367 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A1F66F872AC5B1DC002BA367 /* Main.html */,
+				A1F66F8A2AC5B1DC002BA367 /* Icon.png */,
+				A1F66F8C2AC5B1DC002BA367 /* Style.css */,
+				A1F66F8E2AC5B1DC002BA367 /* Script.js */,
+				A1B1710F2AC5FC0A009D1917 /* welcome.js */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		A1F66FA02AC5B1DD002BA367 /* DuOSUTests */ = {
+			isa = PBXGroup;
+			children = (
+				A1F66FA12AC5B1DD002BA367 /* DuOSUTests.swift */,
+			);
+			path = DuOSUTests;
+			sourceTree = "<group>";
+		};
+		A1F66FAA2AC5B1DD002BA367 /* DuOSUUITests */ = {
+			isa = PBXGroup;
+			children = (
+				A1F66FAB2AC5B1DD002BA367 /* DuOSUUITests.swift */,
+				A1F66FAD2AC5B1DD002BA367 /* DuOSUUITestsLaunchTests.swift */,
+			);
+			path = DuOSUUITests;
+			sourceTree = "<group>";
+		};
+		A1F66FB72AC5B1DD002BA367 /* DuOSU Extension */ = {
+			isa = PBXGroup;
+			children = (
+				A1F66FB82AC5B1DD002BA367 /* SafariWebExtensionHandler.swift */,
+				A1F66FCB2AC5B1DE002BA367 /* Info.plist */,
+				A1F66FCC2AC5B1DE002BA367 /* DuOSU_Extension.entitlements */,
+				A1F66FBA2AC5B1DD002BA367 /* Resources */,
+			);
+			path = "DuOSU Extension";
+			sourceTree = "<group>";
+		};
+		A1F66FBA2AC5B1DD002BA367 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A1F66FBB2AC5B1DD002BA367 /* _locales */,
+				A1F66FBD2AC5B1DE002BA367 /* images */,
+				A1F66FBF2AC5B1DE002BA367 /* manifest.json */,
+				A1F66FC52AC5B1DE002BA367 /* popup.html */,
+				A1F66FC72AC5B1DE002BA367 /* popup.css */,
+				A1F66FC92AC5B1DE002BA367 /* popup.js */,
+				A1B171102AC5FC0A009D1917 /* welcome.html */,
+				A1B1710D2AC5FB61009D1917 /* worker.js */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A1F66F802AC5B1DC002BA367 /* DuOSU */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1F66FD32AC5B1DE002BA367 /* Build configuration list for PBXNativeTarget "DuOSU" */;
+			buildPhases = (
+				A1F66F7D2AC5B1DC002BA367 /* Sources */,
+				A1F66F7E2AC5B1DC002BA367 /* Frameworks */,
+				A1F66F7F2AC5B1DC002BA367 /* Resources */,
+				A1F66FD22AC5B1DE002BA367 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A1F66FB62AC5B1DD002BA367 /* PBXTargetDependency */,
+			);
+			name = DuOSU;
+			productName = DuOSU;
+			productReference = A1F66F812AC5B1DC002BA367 /* DuOSU.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A1F66F9C2AC5B1DD002BA367 /* DuOSUTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1F66FD62AC5B1DE002BA367 /* Build configuration list for PBXNativeTarget "DuOSUTests" */;
+			buildPhases = (
+				A1F66F992AC5B1DD002BA367 /* Sources */,
+				A1F66F9A2AC5B1DD002BA367 /* Frameworks */,
+				A1F66F9B2AC5B1DD002BA367 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A1F66F9F2AC5B1DD002BA367 /* PBXTargetDependency */,
+			);
+			name = DuOSUTests;
+			productName = DuOSUTests;
+			productReference = A1F66F9D2AC5B1DD002BA367 /* DuOSUTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		A1F66FA62AC5B1DD002BA367 /* DuOSUUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1F66FD92AC5B1DE002BA367 /* Build configuration list for PBXNativeTarget "DuOSUUITests" */;
+			buildPhases = (
+				A1F66FA32AC5B1DD002BA367 /* Sources */,
+				A1F66FA42AC5B1DD002BA367 /* Frameworks */,
+				A1F66FA52AC5B1DD002BA367 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A1F66FA92AC5B1DD002BA367 /* PBXTargetDependency */,
+			);
+			name = DuOSUUITests;
+			productName = DuOSUUITests;
+			productReference = A1F66FA72AC5B1DD002BA367 /* DuOSUUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		A1F66FB22AC5B1DD002BA367 /* DuOSU Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1F66FCF2AC5B1DE002BA367 /* Build configuration list for PBXNativeTarget "DuOSU Extension" */;
+			buildPhases = (
+				A1F66FAF2AC5B1DD002BA367 /* Sources */,
+				A1F66FB02AC5B1DD002BA367 /* Frameworks */,
+				A1F66FB12AC5B1DD002BA367 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "DuOSU Extension";
+			productName = "DuOSU Extension";
+			productReference = A1F66FB32AC5B1DD002BA367 /* DuOSU Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A1F66F792AC5B1DC002BA367 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1320;
+				LastUpgradeCheck = 1320;
+				TargetAttributes = {
+					A1F66F802AC5B1DC002BA367 = {
+						CreatedOnToolsVersion = 13.2.1;
+					};
+					A1F66F9C2AC5B1DD002BA367 = {
+						CreatedOnToolsVersion = 13.2.1;
+						TestTargetID = A1F66F802AC5B1DC002BA367;
+					};
+					A1F66FA62AC5B1DD002BA367 = {
+						CreatedOnToolsVersion = 13.2.1;
+						TestTargetID = A1F66F802AC5B1DC002BA367;
+					};
+					A1F66FB22AC5B1DD002BA367 = {
+						CreatedOnToolsVersion = 13.2.1;
+					};
+				};
+			};
+			buildConfigurationList = A1F66F7C2AC5B1DC002BA367 /* Build configuration list for PBXProject "DuOSU" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A1F66F782AC5B1DC002BA367;
+			productRefGroup = A1F66F822AC5B1DC002BA367 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A1F66F802AC5B1DC002BA367 /* DuOSU */,
+				A1F66F9C2AC5B1DD002BA367 /* DuOSUTests */,
+				A1F66FA62AC5B1DD002BA367 /* DuOSUUITests */,
+				A1F66FB22AC5B1DD002BA367 /* DuOSU Extension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A1F66F7F2AC5B1DC002BA367 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1F66F8B2AC5B1DC002BA367 /* Icon.png in Resources */,
+				A1F66F942AC5B1DC002BA367 /* Main.storyboard in Resources */,
+				A1B171132AC5FE49009D1917 /* welcome.js in Resources */,
+				A1F66F8F2AC5B1DC002BA367 /* Script.js in Resources */,
+				A1F66F892AC5B1DC002BA367 /* Main.html in Resources */,
+				A1F66F962AC5B1DD002BA367 /* Assets.xcassets in Resources */,
+				A1F66F8D2AC5B1DC002BA367 /* Style.css in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1F66F9B2AC5B1DD002BA367 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1F66FA52AC5B1DD002BA367 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1F66FB12AC5B1DD002BA367 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1F66FC82AC5B1DE002BA367 /* popup.css in Resources */,
+				A1F66FC62AC5B1DE002BA367 /* popup.html in Resources */,
+				A1F66FBE2AC5B1DE002BA367 /* images in Resources */,
+				A1B1710E2AC5FB61009D1917 /* worker.js in Resources */,
+				A1F66FC02AC5B1DE002BA367 /* manifest.json in Resources */,
+				A1B171122AC5FC0A009D1917 /* welcome.html in Resources */,
+				A1F66FBC2AC5B1DD002BA367 /* _locales in Resources */,
+				A1F66FCA2AC5B1DE002BA367 /* popup.js in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A1F66F7D2AC5B1DC002BA367 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1F66F912AC5B1DC002BA367 /* ViewController.swift in Sources */,
+				A1F66F852AC5B1DC002BA367 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1F66F992AC5B1DD002BA367 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1F66FA22AC5B1DD002BA367 /* DuOSUTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1F66FA32AC5B1DD002BA367 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1F66FAC2AC5B1DD002BA367 /* DuOSUUITests.swift in Sources */,
+				A1F66FAE2AC5B1DD002BA367 /* DuOSUUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1F66FAF2AC5B1DD002BA367 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1F66FB92AC5B1DD002BA367 /* SafariWebExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A1F66F9F2AC5B1DD002BA367 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A1F66F802AC5B1DC002BA367 /* DuOSU */;
+			targetProxy = A1F66F9E2AC5B1DD002BA367 /* PBXContainerItemProxy */;
+		};
+		A1F66FA92AC5B1DD002BA367 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A1F66F802AC5B1DC002BA367 /* DuOSU */;
+			targetProxy = A1F66FA82AC5B1DD002BA367 /* PBXContainerItemProxy */;
+		};
+		A1F66FB62AC5B1DD002BA367 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A1F66FB22AC5B1DD002BA367 /* DuOSU Extension */;
+			targetProxy = A1F66FB52AC5B1DD002BA367 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		A1F66F872AC5B1DC002BA367 /* Main.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A1F66F882AC5B1DC002BA367 /* Base */,
+			);
+			name = Main.html;
+			sourceTree = "<group>";
+		};
+		A1F66F922AC5B1DC002BA367 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A1F66F932AC5B1DC002BA367 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A1F66FCD2AC5B1DE002BA367 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.7;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A1F66FCE2AC5B1DE002BA367 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.7;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		A1F66FD02AC5B1DE002BA367 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "DuOSU Extension/DuOSU_Extension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GS4Y5WTC7K;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "DuOSU Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "DuOSU Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.supasulley.DuOSU.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A1F66FD12AC5B1DE002BA367 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "DuOSU Extension/DuOSU_Extension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GS4Y5WTC7K;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "DuOSU Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "DuOSU Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.supasulley.DuOSU.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A1F66FD42AC5B1DE002BA367 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DuOSU/DuOSU.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GS4Y5WTC7K;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = DuOSU;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.supasulley.DuOSU;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A1F66FD52AC5B1DE002BA367 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DuOSU/DuOSU.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GS4Y5WTC7K;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = DuOSU;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.supasulley.DuOSU;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A1F66FD72AC5B1DE002BA367 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GS4Y5WTC7K;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.supasulley.DuOSUTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DuOSU.app/Contents/MacOS/DuOSU";
+			};
+			name = Debug;
+		};
+		A1F66FD82AC5B1DE002BA367 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GS4Y5WTC7K;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.supasulley.DuOSUTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DuOSU.app/Contents/MacOS/DuOSU";
+			};
+			name = Release;
+		};
+		A1F66FDA2AC5B1DE002BA367 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GS4Y5WTC7K;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.supasulley.DuOSUUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = DuOSU;
+			};
+			name = Debug;
+		};
+		A1F66FDB2AC5B1DE002BA367 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GS4Y5WTC7K;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.supasulley.DuOSUUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = DuOSU;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A1F66F7C2AC5B1DC002BA367 /* Build configuration list for PBXProject "DuOSU" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1F66FCD2AC5B1DE002BA367 /* Debug */,
+				A1F66FCE2AC5B1DE002BA367 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1F66FCF2AC5B1DE002BA367 /* Build configuration list for PBXNativeTarget "DuOSU Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1F66FD02AC5B1DE002BA367 /* Debug */,
+				A1F66FD12AC5B1DE002BA367 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1F66FD32AC5B1DE002BA367 /* Build configuration list for PBXNativeTarget "DuOSU" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1F66FD42AC5B1DE002BA367 /* Debug */,
+				A1F66FD52AC5B1DE002BA367 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1F66FD62AC5B1DE002BA367 /* Build configuration list for PBXNativeTarget "DuOSUTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1F66FD72AC5B1DE002BA367 /* Debug */,
+				A1F66FD82AC5B1DE002BA367 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1F66FD92AC5B1DE002BA367 /* Build configuration list for PBXNativeTarget "DuOSUUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1F66FDA2AC5B1DE002BA367 /* Debug */,
+				A1F66FDB2AC5B1DE002BA367 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A1F66F792AC5B1DC002BA367 /* Project object */;
+}

@@ -1,0 +1,10 @@
+{
+    "extension_name": {
+        "message": "DuOSU Extension",
+        "description": "The display name for the extension."
+    },
+    "extension_description": {
+        "message": "Login through Duo Mobile in your browser.",
+        "description": "Login through Duo Mobile in your browser 2."
+    }
+}

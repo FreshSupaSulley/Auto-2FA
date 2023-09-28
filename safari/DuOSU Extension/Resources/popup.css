@@ -1,0 +1,339 @@
+/*:root {
+    color-scheme: light dark;
+}
+
+body {
+    width: 100px;
+    padding: 10px;
+
+    font-family: system-ui;
+    text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+}*/
+
+/* Elements */
+html {
+    min-height: 30px; /*Hack to make the the logo evenly spaced while storage is being loaded*/
+    width: 300px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+body {
+    padding: 0;
+}
+button {
+    padding: 8px 2px;
+    border: 1px solid black;
+    border-radius: 20px;
+    user-select: none;
+    width: 40%;
+    transition: 0.15s ease-in-out;
+}
+button:hover {
+    cursor: pointer;
+    background-color: rgba(30,215,30,0.5);
+    border-color: rgb(30,215,30);
+    color: white;
+}
+button:active {
+    background-color: rgba(173,219,173,0.5);
+}
+hr {
+    margin: 0;
+    padding: 0;
+    border: 1px solid gray;
+    border-top: none;
+}
+h1 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: left;
+    font-weight: lighter;
+    font-size: 22px;
+}
+h4 {
+    text-align: center;
+    font-weight: normal;
+    padding: 2px 20px;
+    font-size: 13px;
+}
+p {
+    font-size: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+img {
+    display: block;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    border: 3px solid rgb(240,240,240);
+    border-radius: 5px;
+    margin-bottom: 10px;
+    user-select: none;
+}
+table {
+    padding-bottom: 5px;
+}
+tr, th, td, table {
+    text-align: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    table-layout: fixed;
+}
+input {
+    text-align: center;
+    border: 1px solid gray;
+    border-radius: 2px;
+    min-height: 25px;
+    font-size: 12px;
+    width: 90%;
+}
+a {
+    color: inherit;
+}
+a:hover {
+    color: gray;
+}
+
+/* Classes */
+.screen {
+    display: none;
+    text-align: center;
+}
+.steps {
+    position: relative;
+    margin: auto;
+}
+.slide, .oneSlide {
+    color: black;
+    background-color: gray;
+    display: none;
+    padding: 5px;
+    border-radius: 5px;
+    /*border: 1px solid black;*/
+    background-color: rgb(250,250,250);
+    margin: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.oneSlide {
+    display: block;
+}
+.expand {
+    transition: all .2s ease-in-out;
+    width: 30px;
+    border: none;
+}
+.expand:hover {
+    transform: scale(1.1);
+    margin-right: 2px;
+}
+/* SVG checkmark */
+.checkmark {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inherit;
+    stroke-width: 3;
+    stroke: #fff;
+    stroke-miterlimit: 10;
+    box-shadow: inset 0px 0px 0px #7ac142;
+    /* Total time, start time */
+    animation: fill 0.3s ease-in-out 0.2s forwards,
+    scale 1s ease-in-out 0.1s both;
+    position: absolute;
+    top: 6px;
+    left: 66%;
+}
+/* Circle outline */
+.checkmarkCircle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke: #7ac142;
+    fill: none;
+    /* Total time, start time */
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1), forwards
+}
+/* Inner white checkmark  */
+.checkmarkCheck {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    /* Total time, start time */
+    animation: stroke 0.3s linear 0.7s forwards;
+}
+.approve {
+    width: 66%;
+    color: green;
+    font-family: inherit;
+    font-size: 30px;
+    font-weight: bold;
+    transition: 0.15s ease-in-out;
+}
+
+/* IDs */
+#prev, #next {
+    padding: 3px 0px;
+    text-align: center;
+    width: 100%;
+    font-size: 18px;
+}
+#counter {
+    padding: 0;
+    margin: 0;
+}
+/* Buttons */
+#activateButton {
+    width: auto;
+    text-align: center;
+    padding: 6px 10px;
+    border: 1px solid black;
+    font-weight: bold;
+    border-radius: 8px;
+}
+#helpButton {
+    width: 26px;
+    position: absolute;
+    right: 4px;
+    bottom: 0px;
+    transform-origin: center;
+    transition: transform .25s ease-out;
+    border: none;
+    color: inherit;
+}
+#helpButton:hover {
+    cursor: pointer;
+    transform: scale(1.15);
+    transition: transform .25s ease-out;
+}
+#gear {
+    pointer-events: bounding-box;
+}
+#gear, #gearChange {
+    position: absolute;
+    right: 7px;
+    transform-origin: center;
+    transition: transform .25s ease-out;
+}
+#gear:hover #daynight:hover {
+    cursor: pointer;
+}
+#daynight {
+    position: absolute;
+    margin: 0;
+    border: none;
+    top: 9px;
+    width: 24px;
+    right: 40px;
+    transition: transform .25s ease-out;
+}
+#daynight:hover {
+    transform: scale(1.15) rotate(180deg);
+}
+#daynight:active {
+    transform: rotate(200deg);
+}
+/* Only the inner gear should change size */
+#gear:hover #gearChange {
+    transform: scale(1.15) rotate(180deg);
+}
+#gear:active #gearChange {
+    transform: scale(0.9);
+    transform: rotate(180deg);
+}
+#splash {
+    margin-bottom: 15px;
+}
+/* Settings */
+#importButton, #exportButton {
+    padding: 6px 12px;
+    width: 84%;
+    border-radius: 2px;
+}
+#resetButton {
+    padding: 6px 12px;
+    width: auto;
+    border-radius: 5px;
+}
+#resetButton:hover {
+    background-color: red;
+}
+#resetButton:active {
+    background-color: rgb(255,100,100);
+}
+#approveTable {
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+#approveTable td:nth-child(2n+1) {
+    width: 30%;
+}
+#pushButton {
+    margin-bottom: 2px;
+}
+#successDetails {
+    font-size: 12px;
+    margin-left: 5%;
+    margin-right: 5%;
+    text-align: left;
+    border: 1px solid;
+    border-radius: 10px;
+    padding: 10px;
+}
+#failedReason {
+    text-decoration: underline;
+}
+#clickLogin {
+    /* Safari has ugly checkbox styling, so we need to add our own implementation */
+    -webkit-appearance: none;
+    /* Probably not required */
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    border: 2px solid lightgray;
+    color: white;
+    transition: background .1s ease-out;
+}
+#clickLogin:hover {
+    background-color: #eee;
+}
+#clickLogin:checked {
+    background-image: url("/images/checkbox.svg");
+    background-color: #0074ff;
+}
+#clickLogin:checked:hover {
+    background-color: #0069e7 !important;
+}
+@keyframes scale {
+    0%, 100% {transform: none} 50% {transform: scale3d(1.1, 1.1, 1)};
+}
+@keyframes fill {
+    100% {box-shadow: inset 0px 0px 0px 30px #7ac142}
+}
+@keyframes stroke {
+    100% {stroke-dashoffset: 0}
+}
+html[dark-theme=true] {;
+    color: rgb(230,230,230);
+    background-color: rgb(40,40,40);
+}
+html[dark-theme=true] button {
+    color: white;
+    background-color: #707070;
+    border-color: #a6a6a6;
+}
+html[dark-theme=true] button:hover {
+    background-color: #8a8a8a;
+    border-color: #ff6161;
+}
+html[dark-theme=true] #clickLogin:hover {
+    background-color: #444;
+}
