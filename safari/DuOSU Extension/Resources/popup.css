@@ -298,7 +298,7 @@ a:hover {
     width: 40px;
     height: 40px;
     border-radius: 5px;
-    border: 2px solid lightgray;
+    border: 1px solid lightgray;
     color: white;
     transition: background .1s ease-out;
 }
