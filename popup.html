@@ -99,11 +99,9 @@
       }
       .slide, .oneSlide {
         color: black;
-        background-color: gray;
         display: none;
         padding: 5px;
         border-radius: 5px;
-        /*border: 1px solid black;*/
         background-color: rgb(250,250,250);
         margin: 10px;
         padding-left: 20px;
@@ -180,11 +178,9 @@
       /* Buttons */
       #activateButton {
         width: auto;
-        text-align: center;
         padding: 6px 10px;
-        border: 1px solid black;
         font-weight: bold;
-        border-radius: 8px;
+        border-radius: 3px;
       }
       #helpButton {
         width: 26px;
@@ -239,6 +235,10 @@
       #splash {
         margin-bottom: 15px;
       }
+      #errorSplash {
+        padding: 0;
+        margin: 12px 0;
+      }
       /* Settings */
       #importButton, #exportButton {
         padding: 6px 12px;
@@ -252,6 +252,7 @@
       }
       #resetButton:hover {
         background-color: red;
+        border-color: rgb(255,100,100);
       }
       #resetButton:active {
         background-color: rgb(255,100,100);
@@ -265,6 +266,12 @@
       }
       #pushButton {
         margin-bottom: 2px;
+      }
+      #pushButton:disabled {
+        background-color: #ddd;
+        border-color: #aaa;
+        color: #888;
+        cursor: wait;
       }
       #successDetails {
         font-size: 12px;
@@ -290,18 +297,31 @@
       @keyframes stroke {
         100% {stroke-dashoffset: 0}
       }
-      html[dark-theme=true] {;
+      html[dark-theme=true] {
         color: rgb(230,230,230);
         background-color: rgb(40,40,40);
       }
       html[dark-theme=true] button {
         color: white;
-        background-color: #707070;
+        background-color: #555;
         border-color: #a6a6a6;
       }
       html[dark-theme=true] button:hover {
         background-color: #8a8a8a;
         border-color: #ff6161;
+      }
+      html[dark-theme=true] button:disabled {
+        color: #AAA;
+        background-color: #505050;
+        border-color: #a6a6a6;
+      }
+      html[dark-theme=true] .slide {
+        color: white;
+        background-color: #333;
+      }
+      html[dark-theme=true] .oneSlide {
+        color: white;
+        background-color: #333;
       }
     </style>
   </head>
@@ -322,9 +342,9 @@
 
     <!-- Welcome screen -->
     <div class="screen" id="intro">
-      <h2>You're almost done.</h2>
-      <h4>Before you can use DuOSU, you'll need to get an activation code.</h4>
-      <button type="submit" id="introButton">Let's go</button>
+      <h2>Connect DuOSU to Duo</h2>
+      <h4>Let's to get a code to register DuOSU to your Duo account.</h4>
+      <button type="submit" id="introButton">Ok</button>
     </div>
 
     <!-- Activation screen -->
@@ -342,7 +362,8 @@
 
       <div class="steps">
         <div class="slide">
-          <p>Find your Duo Mobile devices website. Add a new device.<br><br>(OSU students <a href="https://osu.login.duosecurity.com/devices?link_clicked=true/" target="_blank">click here</a>)</p>
+          <p style="margin-bottom: 10px">Start by finding your Duo website. Then add a new device.</p>
+          <h5 style="margin-top: 0px; font-weight: normal">(<a href="https://osu.login.duosecurity.com/devices?link_clicked=true/" target="_blank">link for OSU students</a>)</h5>
           <img src="/images/image0.png">
         </div>
         <div class="slide">
@@ -358,11 +379,12 @@
           <img src="/images/image3.png">
         </div>
         <div class="slide">
-          <p>Click "Get an activation link instead".</p>
+          <p id="qrSearchText">Searching for a QR code...</p>
           <img src="/images/image4.png">
+          <h5 style="font-weight: normal">DuOSU will scan the QR code for you.<br><br>If you don't see a QR code, you can send yourself the code on Step 6.</h5>
         </div>
         <div class="slide">
-          <p>Enter your email address.</p>
+          <p>If you can't find the QR code, send the code to your email.</p>
           <img src="/images/image5.png">
         </div>
         <div class="slide">
@@ -385,8 +407,8 @@
 
     <!-- Activation success page -->
     <div class="screen" id="activationSuccess">
-      <p><b>DuOSU Activated!</b></p>
-      <p>Next time you login through Duo, click "Other Options" -> "Send to Android"</p>
+      <p>DuOSU Activated!</p>
+      <p>Next time you login through Duo, click <b>Other Options</b>, then <b>Send to Android</b></p>
       <div class="oneSlide">
         <img src="/images/tutorial.png">
         <p>Then tap this extension to approve the login.</p>
@@ -413,11 +435,11 @@
     <!-- User fails to login multiple times -->
     <div class="screen" id="failedAttempts">
       <div class="oneSlide">
-        <p>You need to send a push request to DuOSU. Click "Other options" and select "Send to Android".</p>
+        <p>Send a push request to DuOSU. Click "Other options" and select "Send to Android".</p>
         <img src="/images/tutorial.png">
         <p>Then click on the extension to approve the login.</p>
       </div>
-      <p>If you're still having trouble, check out the <a href="https://github.com/FreshSupaSulley/DuOSU" target="_blank">website</a>.</p>
+      <p>Click <a href="https://github.com/FreshSupaSulley/DuOSU/blob/main/README.md#its-not-working" target="_blank">here</a> for troubleshooting.</p>
       <button type="submit" id="failureButton">Got it</button>
     </div>
 
@@ -435,7 +457,7 @@
 
     <!-- Failure -->
     <div class="screen" id="failure">
-      <p>Failed</p>
+      <p>An error occured</p>
       <p id="failedReason"></p>
       <p>If the error persists, reset DuOSU in settings.</p>
       <button type="submit" class="toMainScreen">Try Again</button>
