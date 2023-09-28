@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A108FE4A2AC604FD0035E833 /* welcome.js in Resources */ = {isa = PBXBuildFile; fileRef = A1B1710F2AC5FC0A009D1917 /* welcome.js */; };
 		A1B1710E2AC5FB61009D1917 /* worker.js in Resources */ = {isa = PBXBuildFile; fileRef = A1B1710D2AC5FB61009D1917 /* worker.js */; };
 		A1B171122AC5FC0A009D1917 /* welcome.html in Resources */ = {isa = PBXBuildFile; fileRef = A1B171102AC5FC0A009D1917 /* welcome.html */; };
-		A1B171132AC5FE49009D1917 /* welcome.js in Resources */ = {isa = PBXBuildFile; fileRef = A1B1710F2AC5FC0A009D1917 /* welcome.js */; };
 		A1F66F852AC5B1DC002BA367 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F66F842AC5B1DC002BA367 /* AppDelegate.swift */; };
 		A1F66F892AC5B1DC002BA367 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = A1F66F872AC5B1DC002BA367 /* Main.html */; };
 		A1F66F8B2AC5B1DC002BA367 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A1F66F8A2AC5B1DC002BA367 /* Icon.png */; };
@@ -176,7 +176,6 @@
 				A1F66F8A2AC5B1DC002BA367 /* Icon.png */,
 				A1F66F8C2AC5B1DC002BA367 /* Style.css */,
 				A1F66F8E2AC5B1DC002BA367 /* Script.js */,
-				A1B1710F2AC5FC0A009D1917 /* welcome.js */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -219,6 +218,7 @@
 				A1F66FC72AC5B1DE002BA367 /* popup.css */,
 				A1F66FC92AC5B1DE002BA367 /* popup.js */,
 				A1B171102AC5FC0A009D1917 /* welcome.html */,
+				A1B1710F2AC5FC0A009D1917 /* welcome.js */,
 				A1B1710D2AC5FB61009D1917 /* worker.js */,
 			);
 			path = Resources;
@@ -353,7 +353,6 @@
 			files = (
 				A1F66F8B2AC5B1DC002BA367 /* Icon.png in Resources */,
 				A1F66F942AC5B1DC002BA367 /* Main.storyboard in Resources */,
-				A1B171132AC5FE49009D1917 /* welcome.js in Resources */,
 				A1F66F8F2AC5B1DC002BA367 /* Script.js in Resources */,
 				A1F66F892AC5B1DC002BA367 /* Main.html in Resources */,
 				A1F66F962AC5B1DD002BA367 /* Assets.xcassets in Resources */,
@@ -386,6 +385,7 @@
 				A1F66FC02AC5B1DE002BA367 /* manifest.json in Resources */,
 				A1B171122AC5FC0A009D1917 /* welcome.html in Resources */,
 				A1F66FBC2AC5B1DD002BA367 /* _locales in Resources */,
+				A108FE4A2AC604FD0035E833 /* welcome.js in Resources */,
 				A1F66FCA2AC5B1DE002BA367 /* popup.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
