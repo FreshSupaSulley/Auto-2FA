@@ -13,7 +13,7 @@
       "size" : "16x16"
     },
     {
-      "filename" : "duo32-1.png",
+      "filename" : "32-1.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "32x32"
@@ -25,13 +25,13 @@
       "size" : "32x32"
     },
     {
-      "filename" : "duo128.png",
+      "filename" : "128-1.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "128x128"
     },
     {
-      "filename" : "256.png",
+      "filename" : "256-2.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "128x128"
@@ -43,7 +43,7 @@
       "size" : "256x256"
     },
     {
-      "filename" : "512.png",
+      "filename" : "512-2.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "256x256"

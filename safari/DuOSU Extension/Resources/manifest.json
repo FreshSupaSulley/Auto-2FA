@@ -19,16 +19,18 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "/images/duo16.png",
-      "32": "/images/duo32.png",
-      "48": "/images/duo48.png",
-      "128": "/images/duo128.png"
+      "16": "/images/toolbar/16.png",
+      "19": "/images/toolbar/19.png",
+      "32": "/images/toolbar/32.png",
+      "38": "/images/toolbar/38.png",
     }
   },
   "icons": {
-    "16": "/images/duo16.png",
-    "32": "/images/duo32.png",
-    "48": "/images/duo48.png",
-    "128": "/images/duo128.png"
+    "48": "/images/app/48.png",
+    "64": "/images/app/64.png",
+    "96": "/images/app/96.png",
+    "128": "/images/app/128.png",
+    "256": "/images/app/256.png",
+    "512": "/images/app/512.png",
   }
 }
