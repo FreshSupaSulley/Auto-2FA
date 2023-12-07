@@ -37,10 +37,9 @@
       }
       h1 {
         margin-top: 0;
-        margin-bottom: 10px;
         text-align: left;
-        font-weight: lighter;
-        font-size: 22px;
+        font-weight: normal;
+        font-size: 24px;
       }
       h4 {
         text-align: center;
@@ -109,15 +108,6 @@
       }
       .oneSlide {
         display: block;
-      }
-      .expand {
-        transition: all .2s ease-in-out;
-        width: 30px;
-        border: none;
-      }
-      .expand:hover {
-        transform: scale(1.1);
-        margin-right: 2px;
       }
       /* SVG checkmark */
       .checkmark {
@@ -216,10 +206,10 @@
         top: 9px;
         width: 24px;
         right: 40px;
-        transition: transform .2s ease-out;
+        transition: transform .25s ease-out;
       }
       #daynight:hover {
-        transform: rotate(180deg);
+        transform: rotate(180deg) scale(1.15);
       }
       #daynight:active {
         transform: rotate(200deg);
@@ -283,7 +273,13 @@
         padding: 10px;
       }
       #failedReason {
-        text-decoration: underline;
+        font-style: italic;
+        overflow-wrap: break-word;
+      }
+      .failedReasonBackground {
+        background-color: #ddd;
+        border: 1px dashed;
+        border-radius: 10px;
       }
       #clickLogin {
         background-color:red;
@@ -323,13 +319,17 @@
         color: white;
         background-color: #333;
       }
+      html[dark-theme=true] .failedReasonBackground {
+        background-color: #333;
+        border: 1px dashed;
+        border-radius: 10px;
+      }
     </style>
   </head>
   <body>
     <div style="display: inline-flex">
-      <!-- DuOSU logo -->
-      <a href="https://chrome.google.com/webstore/detail/duosu/bnfooenhhgcnhdkdjelgmmkpaemlnoek" target="_blank" class="expand"><img style="margin: 0; border: none;" src="images/DuOSU.svg"></a>
-      <h1 style="margin: 0; margin-left: 5px">DuOSU</h1>
+      <img style="margin: 0; margin-right: 7px; border: none; width: 30px;" src="images/Duochrome.svg">
+      <h1 style="padding-top: 1px; margin: 0; font-weight: lighter;"><span style="font-weight: bolder;">Duo</span>chrome</h1>
       <!-- Day night -->
       <img id="daynight" src="images/daynight.svg">
       <!-- Gear SVG -->
@@ -338,12 +338,12 @@
         <path id="gearChange" d="M19.5,12c0-0.23-0.01-0.45-0.03-0.68l1.86-1.41c0.4-0.3,0.51-0.86,0.26-1.3l-1.87-3.23c-0.25-0.44-0.79-0.62-1.25-0.42 l-2.15,0.91c-0.37-0.26-0.76-0.49-1.17-0.68l-0.29-2.31C14.8,2.38,14.37,2,13.87,2h-3.73C9.63,2,9.2,2.38,9.14,2.88L8.85,5.19 c-0.41,0.19-0.8,0.42-1.17,0.68L5.53,4.96c-0.46-0.2-1-0.02-1.25,0.42L2.41,8.62c-0.25,0.44-0.14,0.99,0.26,1.3l1.86,1.41 C4.51,11.55,4.5,11.77,4.5,12s0.01,0.45,0.03,0.68l-1.86,1.41c-0.4,0.3-0.51,0.86-0.26,1.3l1.87,3.23c0.25,0.44,0.79,0.62,1.25,0.42 l2.15-0.91c0.37,0.26,0.76,0.49,1.17,0.68l0.29,2.31C9.2,21.62,9.63,22,10.13,22h3.73c0.5,0,0.93-0.38,0.99-0.88l0.29-2.31 c0.41-0.19,0.8-0.42,1.17-0.68l2.15,0.91c0.46,0.2,1,0.02,1.25-0.42l1.87-3.23c0.25-0.44,0.14-0.99-0.26-1.3l-1.86-1.41 C19.49,12.45,19.5,12.23,19.5,12z M12.04,15.5c-1.93,0-3.5-1.57-3.5-3.5s1.57-3.5,3.5-3.5s3.5,1.57,3.5,3.5S13.97,15.5,12.04,15.5z"></path>
       </svg>
     </div>
-    <hr style="margin-top: 7px">
+    <hr style="margin-top: 5px">
 
     <!-- Welcome screen -->
     <div class="screen" id="intro">
-      <h2>Connect DuOSU to Duo</h2>
-      <h4>Let's to get a code to register DuOSU to your Duo account.</h4>
+      <h2>Connect to Duo</h2>
+      <h4>Let's activate Duochrome as your new Duo device.</h4>
       <button type="submit" id="introButton">Ok</button>
     </div>
 
@@ -362,33 +362,35 @@
 
       <div class="steps">
         <div class="slide">
-          <p style="margin-bottom: 10px">Start by finding your Duo website. Then add a new device.</p>
+          <p style="margin-bottom: 10px">Find your organization's Duo Mobile website.</p>
           <h5 style="margin-top: 0px; font-weight: normal">(<a href="https://osu.login.duosecurity.com/devices?link_clicked=true/" target="_blank">link for OSU students</a>)</h5>
           <img src="/images/image0.png">
+          <p>Click <b>Add a new device</b>.</p>
         </div>
         <div class="slide">
-          <p>Click "Duo Mobile".</p>
+          <p>Click <b>Duo Mobile</b>.</p>
           <img src="/images/image1.png">
         </div>
         <div class="slide">
-          <p>Click "I have a tablet".</p>
+          <p>Click <b>I have a tablet</b>.</p>
           <img src="/images/image2.png">
         </div>
         <div class="slide">
-          <p>Click "Next". You don't need to download the app.</p>
+          <p>Click <b>Next</b>.</p>
           <img src="/images/image3.png">
         </div>
         <div class="slide">
           <p id="qrSearchText">Searching for a QR code...</p>
+          <p id="qrErrorText"></p>
+          <h5 style="font-weight: normal">Duochrome will find the QR code on the current tab.</h5>
           <img src="/images/image4.png">
-          <h5 style="font-weight: normal">DuOSU will scan the QR code for you.<br><br>If you don't see a QR code, you can send yourself the code on Step 6.</h5>
         </div>
         <div class="slide">
           <p>If you can't find the QR code, send the code to your email.</p>
           <img src="/images/image5.png">
         </div>
         <div class="slide">
-          <p>Find the email and paste the code in the box. Click activate.</p>
+          <p>Open the link in the email, and copy the code into the box below. Click activate.</p>
           <img src="/images/image6.png">
           <table>
             <tr>
@@ -402,12 +404,12 @@
           </table>
         </div>
       </div>
-      <h4 style="margin: 0; padding: 0; font-size: 10px;">Confused? <a href="https://github.com/FreshSupaSulley/DuOSU/blob/main/TUTORIAL.md" target="_blank">Click for more detailed instructions</a>.</h4>
+      <h4 style="margin: 0; padding: 0; font-size: 10px;">Confused? Checkout the <a href="https://github.com/FreshSupaSulley/Duochrome/blob/main/TUTORIAL.md" target="_blank">walkthrough</a>.</h4>
     </div>
 
     <!-- Activation success page -->
     <div class="screen" id="activationSuccess">
-      <p>DuOSU Activated!</p>
+      <p>Duochrome Activated!</p>
       <p>Next time you login through Duo, click <b>Other Options</b>, then <b>Send to Android</b></p>
       <div class="oneSlide">
         <img src="/images/tutorial.png">
@@ -435,11 +437,11 @@
     <!-- User fails to login multiple times -->
     <div class="screen" id="failedAttempts">
       <div class="oneSlide">
-        <p>Send a push request to DuOSU. Click "Other options" and select "Send to Android".</p>
+        <p>Send a push to Duochrome by clicking <b>Other options</b>.</p>
         <img src="/images/tutorial.png">
-        <p>Then click on the extension to approve the login.</p>
+        <p>Then click the extension to approve the login.</p>
       </div>
-      <p>Click <a href="https://github.com/FreshSupaSulley/DuOSU/blob/main/README.md#its-not-working" target="_blank">here</a> for troubleshooting.</p>
+      <p>Click <a href="https://github.com/FreshSupaSulley/Duochrome/blob/main/README.md#no-logins-found" target="_blank">here</a> for troubleshooting.</p>
       <button type="submit" id="failureButton">Got it</button>
     </div>
 
@@ -457,10 +459,12 @@
 
     <!-- Failure -->
     <div class="screen" id="failure">
-      <p>An error occured</p>
-      <p id="failedReason"></p>
-      <p>If the error persists, reset DuOSU in settings.</p>
-      <button type="submit" class="toMainScreen">Try Again</button>
+      <h3 style="text-decoration: underline;">An error occured:</h3>
+      <div class="failedReasonBackground">
+        <p id="failedReason"></p>
+      </div>
+      <p>If this error persists, reset Duochrome in settings, or open an issue on the <a href="https://github.com/FreshSupaSulley/Duochrome" target="_blank">website</a>.</p>
+      <button type="submit" class="toMainScreen">Ok</button>
     </div>
 
     <div class="screen" id="settings">
@@ -470,7 +474,7 @@
             <input type="checkbox" id="clickLogin" name="One-Click Login">
           </td>
           <td>
-            <h4>One-click login (<a target="_blank" href="https://github.com/FreshSupaSulley/DuOSU/blob/main/README.md#one-click-login">what's this?</a>)</h4>
+            <h4><a target="_blank" href="https://github.com/FreshSupaSulley/Duochrome/blob/main/README.md#one-click-login">One-click login</a></h4>
           </td>
         </tr>
         <tr>
@@ -479,7 +483,7 @@
             <button type="submit" id="importButton">Import</button>
           </td>
           <td>
-            <h4 id="importSplash" style="margin-top: 25px; margin-bottom: 25px">Import login data from another DuOSU.</h4>
+            <h4 id="importSplash" style="margin-top: 25px; margin-bottom: 25px">Import login data from another Duochrome.</h4>
           </td>
         </tr>
         <tr>

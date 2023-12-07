@@ -77,6 +77,7 @@ document.getElementById("helpButton").addEventListener("click", function() {
 // Submit activation
 let errorSplash = document.getElementById("errorSplash");
 let activateButton = document.getElementById("activateButton");
+let activateCode = document.getElementById("code");
 
 activateButton.addEventListener("click", async function() {
   // Disable button so user can't spam it
@@ -86,7 +87,7 @@ activateButton.addEventListener("click", async function() {
 
   try {
     // Make request. Throws an error if an error occurs
-    await activateDevice(code);
+    await activateDevice(activateCode.value);
     // Hide setup page and show success page
     changeScreen("activationSuccess");
   } catch(error) {
@@ -95,7 +96,7 @@ activateButton.addEventListener("click", async function() {
     }
     else {
       // Timeouts will be caught here
-      console.error(JSON.stringify(error));
+      console.error(error);
       errorSplash.innerText = "Invalid code. Open the link sent to your email, it contains the code inside the box.";
     }
   }
@@ -312,7 +313,7 @@ pushButton.addEventListener("click", async function() {
       }
     }
   } catch(error) {
-    failedReason.innerText = `"${error}"`;
+    failedReason.innerText = `"${error}"\n\n${error.stack}`;
     failedAttempts = 0;
     console.error(error);
     changeScreen("failure");
@@ -325,7 +326,7 @@ pushButton.addEventListener("click", async function() {
     // If we couldn't login after many attemps
     if(failedAttempts >= 4) {
       failedAttempts = 0;
-      // Remind the user how DuOSU works
+      // Remind the user how Duochrome works
       changeScreen("failedAttempts");
     }
   }
@@ -512,10 +513,12 @@ function Timer(fn, timeout, onStop = () => {}) {
 }
 
 let qrSearchText = document.getElementById("qrSearchText");
+let qrErrorText = document.getElementById("qrErrorText");
 
 // QR searcher
 let root = "Searching for a QR code";
 let qrDots = 0;
+let qrAttempts = 0;
 
 let checkQR = new Timer(async () => {
   splash.innerHTML = `${root}...`;
@@ -536,12 +539,18 @@ let checkQR = new Timer(async () => {
         console.error(e);
       }
     } catch(e) {
+      if(qrAttempts != 10) {
+        qrAttempts++;
+      } else {
+        // Display error
+        qrErrorText.innerText = "You can also email yourself the code on Step 6.";
+      }
       switch(e) {
         case "Error: Could not establish connection. Receiving end does not exist.": {
-          root = "UHH";
+          root = "Can't establish a connection";
           break;
         } case "Tab not found": {
-          root = "Navigate to the Duo tab";
+          root = "Generate a QR code";
           break;
         } case "QR not found": {
           root = "Flip through previous steps to generate QR";
@@ -675,7 +684,7 @@ document.getElementById("importButton").addEventListener("click", async function
     let transactions = (await buildRequest(json, "GET", "/push/v2/device/transactions")).response.transactions;
     // If an error wasn't thrown, set new data in chrome sync
     chrome.storage.sync.set({"deviceInfo": json});
-    importSplash.innerText = "Data imported! DuOSU will now login with this data.";
+    importSplash.innerText = "Data imported! Duochrome will now login with this data.";
     clickLogin.disabled = false;
     // If click logins are enabled
     if(!json.reviewPush) {
@@ -750,7 +759,10 @@ async function initialize() {
     await chrome.storage.sync.get('deviceInfo', async (info) => {
       // If no data is found
       if(info.deviceInfo == null) {
-        tutorialFlash.start();
+        // Don't flash if we're on the "last" screen
+        if(slideIndex != 4 && slideIndex != 6) {
+          tutorialFlash.start();
+        }
         document.getElementById("errorSplash").innerHTML = "";
         // Set HTML screen to activate
         changeScreen("activation");

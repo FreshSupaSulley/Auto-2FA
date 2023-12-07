@@ -25,6 +25,7 @@
         margin: 10px;
         border-radius: 15px;
         border: 2px solid black;
+        padding: 0;
       }
       #logo {
         padding-top: 50px;
@@ -65,17 +66,20 @@
   </head>
   <body>
     <!-- DuOSU logo -->
-    <img id="logo" src="images/DuOSU.svg" class="expand" width="200">
-    <h1 id="splash">Welcome to DuOSU</h1>
+    <img id="logo" src="images/Duochrome.svg" class="expand" width="200">
+    <h1 id="splash">Welcome to <b>Duochrome</b>.</h1>
 
     <div id="tutorialDiv">
-      <h3>You're about to add DuOSU as your new Duo device.<br></h3>
-      <img id="tutorial" src="images/tutorial.gif" width="300px">
-      <h3>This is done with an <b>activation code</b>.<br>Flip through the instructions with the arrow keys to send yourself one (~3 mins).</h3>
+      <source src="images/tutorial.mov" type="video/mp4" />
+      <video id="tutorial" autoplay loop muted width="300">
+        <source src="images/tutorial.mov" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <h3>Instructions have <a href="https://tech.rochester.edu/news-item/a-new-look-for-duo-coming-soon/#what-is-changing">Universal Prompt</a> screenshots, but shares the same setup with the Traditional prompt as well. Your organization likely uses one of these.</h3>
     </div>
     <div id="postTutorial">
-      <h3><br>Can't find your organization's Duo devices website?<br>Try googling your organization's name followed by "duo devices".</h3>
-      <h4><i>ex. "ohio state duo devices"</i></h4>
+      <h3>Can't find your Duo Mobile website? Try googling your organization's name with "duo mobile".</h3>
+      <p>(ex. "ohio state buckeyes duo mobile")</p>
     </div>
   </body>
   <script src="welcome.js"></script>
