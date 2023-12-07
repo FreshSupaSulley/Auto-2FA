@@ -1,5 +1,10 @@
 // Determines which slide should be visible on startup page
 let slideIndex = 0;
+browser.storage.local.get('activeSlide').then(object => {
+  if(object.activeSlide != null) {
+    slideIndex = object.activeSlide;
+  }
+});
 
 // Dark / Light theme
 document.getElementById("daynight").addEventListener("click", async function() {
@@ -13,23 +18,54 @@ document.getElementById("daynight").addEventListener("click", async function() {
     let theme = !data.theme;
     // Set it to the opposite of what we have
     await browser.storage.local.set({"theme": theme});
-    document.documentElement.setAttribute("dark-theme", theme);
+    document.documentElement.setAttribute("dark-theme", theme); // This changes the dark-theme CSS property, not chrome storage
   } else {
     // First time pressing the button, meaning we go to dark theme
     await browser.storage.local.set({"theme": false});
   }
 });
 
+// Activate theme
+let data = await new Promise(function(resolve) {
+  browser.storage.local.get('theme', function(value) {
+    resolve(value);
+  });
+});
+// If button has been pressed before
+if(data != null) {
+  let theme = data.theme;
+  // Set it to the opposite of what we have
+  document.documentElement.setAttribute("dark-theme", theme);
+}
+
+// Next slide
+let nextButton = document.getElementById("next");
+let flashes = 0;
+let defaultColor = nextButton.style.color;
+let defaultBGColor = nextButton.style.backgroundColor;
+let defaultBorder = nextButton.style.borderColor;
+let tutorialFlash = new Timer(async () => {
+  let flash = ++flashes % 2 == 0;
+  nextButton.style.color = flash ? defaultColor : "white";
+  nextButton.style.backgroundColor = flash ? defaultBGColor : "red";
+  nextButton.style.borderColor = flash ? defaultBorder : "red";
+  if(flashes > 5) tutorialFlash.stop();
+}, 1000, () => {
+  nextButton.style.color = defaultColor;
+  nextButton.style.backgroundColor = defaultBGColor;
+  nextButton.style.borderColor = defaultBorder;
+});
+nextButton.addEventListener("click", function() {
+  slideIndex += 1;
+  updateSlide(slideIndex);
+  tutorialFlash.stop();
+});
+
 // Previous slide
 document.getElementById("prev").addEventListener("click", function() {
   slideIndex -= 1;
   updateSlide(slideIndex);
-});
-
-// Next slide
-document.getElementById("next").addEventListener("click", function() {
-  slideIndex += 1;
-  updateSlide(slideIndex);
+  tutorialFlash.stop();
 });
 
 // Help button
@@ -41,6 +77,7 @@ document.getElementById("helpButton").addEventListener("click", function() {
 // Submit activation
 let errorSplash = document.getElementById("errorSplash");
 let activateButton = document.getElementById("activateButton");
+let activateCode = document.getElementById("code");
 
 activateButton.addEventListener("click", async function() {
   // Disable button so user can't spam it
@@ -49,17 +86,8 @@ activateButton.addEventListener("click", async function() {
   activateButton.innerText = "Working...";
 
   try {
-    // Split activation code into its two components: identifier and host.
-    let code = document.getElementById('code').value.split('-');
-    // Decode Base64 to get host
-    let host = atob(code[1]);
-    let identifier = code[0];
-    // Ensure this code is correct by counting the characters
-    if(code[0].length != 20 || code[1].length != 38) {
-      throw "Illegal number of characters in activation code";
-    }
     // Make request. Throws an error if an error occurs
-    await activateDevice(host, identifier);
+    await activateDevice(activateCode.value);
     // Hide setup page and show success page
     changeScreen("activationSuccess");
   } catch(error) {
@@ -68,8 +96,8 @@ activateButton.addEventListener("click", async function() {
     }
     else {
       // Timeouts will be caught here
-      console.error(JSON.stringify(error));
-      errorSplash.innerText = "Invalid code. Look at the picture! Open the link sent to your email and copy the code from the box.";
+      console.error(error);
+      errorSplash.innerText = "Invalid code. Open the link sent to your email, it contains the code inside the box.";
     }
   }
 
@@ -86,9 +114,18 @@ for(let i = 0; i < mainButtons.length; i++) {
   });
 }
 
-async function activateDevice(host, identifier) {
-  let url = 'https://' + host + '/push/v2/activation/' + identifier;
+async function activateDevice(rawCode) {
+  // Split activation code into its two components: identifier and host.
+  let code = rawCode.split('-');
+  // Decode Base64 to get host
+  let host = atob(code[1]);
+  let identifier = code[0];
+  // Ensure this code is correct by counting the characters
+  if(code[0].length != 20 || code[1].length != 38) {
+    throw "Illegal number of characters in activation code";
+  }
 
+  let url = 'https://' + host + '/push/v2/activation/' + identifier;
   // Create new pair of RSA keys
   let keyPair = await window.crypto.subtle.generateKey({
     name: "RSASSA-PKCS1-v1_5",
@@ -126,7 +163,7 @@ async function activateDevice(host, identifier) {
           "publicRaw": publicRaw,
           "privateRaw": privateRaw
         };
-        // Store device info in browser sync
+        // Store device info in chrome sync
         await browser.storage.sync.set({"deviceInfo": deviceInfo});
         resolve("Success");
       }
@@ -137,8 +174,9 @@ async function activateDevice(host, identifier) {
       }
     };
   });
+  // await new Promise(resolve => setTimeout(resolve, 2000));
   // Append URL parameters and begin request
-  request.send("?customer_protocol=1&pubkey=" + encodeURIComponent(pemFormat) + "&pkpush=rsa-sha512&jailbroken=false&architecture=arm64&region=US&app_id=com.duosecurity.duomobile&full_disk_encryption=true&passcode_status=true&platform=Android&app_version=3.49.0&app_build_number=323001&version=11&manufacturer=unknown&language=en&model=Firefox%20Add-on&security_patch_level=2021-02-01");
+  request.send("?customer_protocol=1&pubkey=" + encodeURIComponent(pemFormat) + "&pkpush=rsa-sha512&jailbroken=false&architecture=arm64&region=US&app_id=com.duosecurity.duomobile&full_disk_encryption=true&passcode_status=true&platform=Android&app_version=3.49.0&app_build_number=323001&version=11&manufacturer=unknown&language=en&model=Browser%20Extension&security_patch_level=2021-02-01");
   // Create timeout promise
   let timeout = new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -179,13 +217,22 @@ let pushButton = document.getElementById("pushButton");
 let approveTable = document.getElementById("approveTable");
 let failedReason = document.getElementById("failedReason");
 let failedAttempts = 0;
+let loading = false;
 
 // When the push button is pressed on the main screen (or on open)
 pushButton.addEventListener("click", async function() {
+  loading = true;
   // Disable button while making Duo request
   pushButton.disabled = true;
   pushButton.innerText = "Working...";
-  splash.innerHTML = "Checking for Duo logins...";
+  let root = "Checking for Duo logins";
+  let dots = 0;
+  splash.innerHTML = `${root}...`;
+  // Show loading ...
+  let loadingInterval = setInterval(() => {
+    splash.innerText = `${root}${'.'.repeat(dots + 1)}`;
+    dots = (dots + 1) % 3;
+  }, 300);
   try {
     // Get device info from storage
     let info = await getDeviceInfo();
@@ -266,20 +313,22 @@ pushButton.addEventListener("click", async function() {
       }
     }
   } catch(error) {
-    failedReason.innerText = `"${error}"`;
+    failedReason.innerText = `"${error}"\n\nStack: ${error.stack}`;
     failedAttempts = 0;
     console.error(error);
     changeScreen("failure");
-  }
-
-  // Re-enable button
-  pushButton.disabled = false;
-  pushButton.innerHTML = "Try Again";
-  // If we couldn't login after many attemps
-  if(failedAttempts >= 4) {
-    failedAttempts = 0;
-    // Remind the user how DuOSU works
-    changeScreen("failedAttempts");
+  } finally {
+    clearInterval(loadingInterval);
+    loading = false;
+    // Re-enable button
+    pushButton.disabled = false;
+    pushButton.innerHTML = "Try Again";
+    // If we couldn't login after many attemps
+    if(failedAttempts >= 4) {
+      failedAttempts = 0;
+      // Remind the user how Duochrome works
+      changeScreen("failedAttempts");
+    }
   }
 });
 
@@ -430,7 +479,7 @@ async function buildRequest(info, method, path, extraParam = {}, extraHeader = {
   }).then(response => {
     if(!response.ok) {
       console.error(response);
-      throw "Duo denied handling request at " + path + " (was the device deleted?)";
+      throw new Error("Duo denied handling request at " + path + " (was the device deleted?)");
     } else {
       return response.json();
     }
@@ -444,34 +493,108 @@ function twoDigits(input) {
   return input.toString().padStart(2, '0');
 }
 
+// Change the current slide on activation screen
+function Timer(fn, timeout, onStop = () => {}) {
+  let runner = null;
+  this.start = () => {
+    if(!runner) {
+      runner = setInterval(fn, timeout);
+    }
+    return this;
+  }
+  this.stop = () => {
+    if(runner) {
+      clearInterval(runner);
+      onStop();
+      runner = null;
+    }
+    return this;
+  }
+}
+
+let qrSearchText = document.getElementById("qrSearchText");
+let qrErrorText = document.getElementById("qrErrorText");
+
+// QR searcher
+let root = "Searching for a QR code";
+let qrDots = 0;
+let qrAttempts = 0;
+
+let checkQR = new Timer(async () => {
+  splash.innerHTML = `${root}...`;
+  qrSearchText.innerText = `${root}${'.'.repeat(qrDots + 1)}`;
+  qrDots = (qrDots + 1) % 3;
+
+  if(qrDots == 0) {
+    try {
+      let code = await getQRLinkFromPage().catch(e => { throw "Tab not found" });
+      // If successful, stop the timer
+      checkQR.stop();
+      qrSearchText.innerText = "Activating...";
+      try {
+        await activateDevice(code);
+        changeScreen("activationSuccess");
+      } catch(e) {
+        qrSearchText.innerText = "Hmm... something went wrong. Go to Step 6 instead.";
+        console.error(e);
+      }
+    } catch(e) {
+      if(qrAttempts != 10) {
+        qrAttempts++;
+      } else {
+        // Display error
+        qrErrorText.innerText = "You can also email yourself the code on Step 6.";
+      }
+      switch(e) {
+        case "Error: Could not establish connection. Receiving end does not exist.": {
+          root = "Can't establish a connection";
+          break;
+        } case "Tab not found": {
+          root = "Generate a QR code";
+          break;
+        } case "QR not found": {
+          root = "Flip through previous steps to generate QR";
+          break;
+        } default: {
+          console.error(`An unexpected error occured finding QR code\n${e}`);
+          console.log(e);
+          break;
+        }
+      }
+    }
+  }
+}, 300);
+
 // Changes the active screen of the page (activation or main)
 async function changeScreen(id) {
   if(id == "activation") {
     // Initialize the active slide (this is necessary on startup)
     updateSlide(slideIndex);
-  }
-  // Settings
-  else if(id == "settings") {
-    // Set the one-click login box if enabled or not
-    let info = await getDeviceInfo();
-    if(info == null) {
-      clickLogin.disabled = true;
-    } else {
-      clickLogin.disabled = false;
-      // If one-click logins are enabled
-      if(!info.reviewPush) {
-        clickLogin.checked = true;
+  } else {
+    checkQR.stop();
+    // Settings
+    if(id == "settings") {
+      // Set the one-click login box if enabled or not
+      let info = await getDeviceInfo();
+      if(info == null) {
+        clickLogin.disabled = true;
       } else {
-        clickLogin.checked = false;
+        clickLogin.disabled = false;
+        // If one-click logins are enabled
+        if(!info.reviewPush) {
+          clickLogin.checked = true;
+        } else {
+          clickLogin.checked = false;
+        }
       }
+      // Make sure when we go to settings, we reset the main page
+      splash.innerHTML = "Click to approve Duo Mobile logins.";
+      pushButton.innerText = "Login";
     }
-    // Make sure when we go to settings, we reset the main page
-    splash.innerHTML = "Click to approve Duo Mobile logins.";
-    pushButton.innerText = "Login";
-  }
-  // Auto press the button on open
-  else if(id == "main") {
-    pushButton.click();
+    // Auto press the button on open
+    else if(id == "main") {
+      pushButton.click();
+    }
   }
 
   let screens = document.getElementsByClassName("screen");
@@ -490,8 +613,12 @@ async function changeScreen(id) {
   }
 }
 
-// Change the current slide on activation screen
 function updateSlide(newIndex) {
+  if(newIndex == 4) {
+    checkQR.start();
+  } else {
+    checkQR.stop();
+  }
   let slides = document.getElementsByClassName("slide");
 
   for(let i = 0; i < slides.length; i++) {
@@ -555,9 +682,9 @@ document.getElementById("importButton").addEventListener("click", async function
     importSplash.innerText = "Verifying..."
     // We do this by running it through a transactions call
     let transactions = (await buildRequest(json, "GET", "/push/v2/device/transactions")).response.transactions;
-    // If an error wasn't thrown, set new data in browser sync
+    // If an error wasn't thrown, set new data in chrome sync
     browser.storage.sync.set({"deviceInfo": json});
-    importSplash.innerText = "Data imported! DuOSU will now login with this data.";
+    importSplash.innerText = "Data imported! Duochrome will now login with this data.";
     clickLogin.disabled = false;
     // If click logins are enabled
     if(!json.reviewPush) {
@@ -596,7 +723,7 @@ document.getElementById("exportButton").addEventListener("click", async function
 // Reset button
 let resetSplash = document.getElementById("resetSplash");
 document.getElementById("resetButton").addEventListener("click", function() {
-  // Delete browser local / sync data
+  // Delete chrome local / sync data
   browser.storage.sync.clear(function() {
     browser.storage.local.clear(function() {
       document.documentElement.setAttribute("dark-theme", false);
@@ -615,40 +742,27 @@ document.getElementById("resetButton").addEventListener("click", function() {
 async function getDeviceInfo() {
   return await new Promise(function(resolve) {
     browser.storage.sync.get('deviceInfo', function(json) {
-      resolve(json == null ? null : json.deviceInfo);
+      resolve(json.deviceInfo);
     });
   });
 }
 
 // On startup
-initialize();
+await initialize();
 // Changes the current screen to what it should be depending on if deviceInfo is present
 async function initialize() {
-  // Load active slide
-  let object = await browser.storage.local.get('activeSlide');
-  if(object.activeSlide != null) {
-    slideIndex = object.activeSlide;
-  }
-  // Load theme
-  let data = await new Promise(function(resolve) {
-    browser.storage.local.get('theme', function(value) {
-      resolve(value);
-    });
-  });
-
-  // If button has been pressed before
-  if(data != null) {
-    let theme = data.theme;
-    // Set it to the opposite of what we have
-    document.documentElement.setAttribute("dark-theme", theme);
-  }
   // If this is the first time opened
   if((await browser.storage.local.get('activeSlide')).activeSlide == null) {
     changeScreen("intro");
   } else {
     // On open, or when settings are changed, return the screen we should go to
     // If no data is found
-    if(await getDeviceInfo() == null) {
+    if(!(await getDeviceInfo())) {
+      // Don't flash if we're on the "last" screen
+      if(slideIndex != 4 && slideIndex != 6) {
+        tutorialFlash.start();
+      }
+      document.getElementById("errorSplash").innerHTML = "";
       // Set HTML screen to activate
       changeScreen("activation");
     }
@@ -657,4 +771,16 @@ async function initialize() {
       changeScreen("main");
     }
   }
+}
+
+// Glory to Easy Duo Authentication <3
+async function getQRLinkFromPage() {
+  // Send a request to the content script
+  let [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
+  if(!tab) throw "Tab not found";
+  return await browser.tabs.sendMessage(tab.id, { task: 'getQRCode' }).then((response) => {
+    // Response is the QR code parsed and ready to be activated
+    if(!response) throw "QR not found";
+    return response;
+  });
 }

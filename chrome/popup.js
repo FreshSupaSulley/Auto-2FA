@@ -313,7 +313,7 @@ pushButton.addEventListener("click", async function() {
       }
     }
   } catch(error) {
-    failedReason.innerText = `"${error}"\n\n${error.stack}`;
+    failedReason.innerText = `"${error}"\n\nStack: ${error.stack}`;
     failedAttempts = 0;
     console.error(error);
     changeScreen("failure");
