@@ -3,7 +3,7 @@ Login through Duo Mobile in your browser.
 
 Using the Duo Mobile app can be frustrating; you might've lost your phone, get distracted by social media, or it could be charging. Duo doesn't officially support the ability to approve push requests on your computer and forces usage of their app, but this extension gives you that choice.
 
-Duochrome is currently on [Chrome, Edge](https://chrome.google.com/webstore/detail/duosu/bnfooenhhgcnhdkdjelgmmkpaemlnoek), and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/duochrome/). Safari was considered, but Apple requires $100/year, even for a free extension (yet another reason to hate Apple). The source is available on this page if you would like to build it yourself, but it won't be on the App Store unless someone with a developer membership wants to publish it. If you'd like to see Duochrome added to another browser, open an issue.
+Duochrome is currently on [Chrome, Edge](https://chrome.google.com/webstore/detail/duochrome/bnfooenhhgcnhdkdjelgmmkpaemlnoek), and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/duochrome/). Safari was considered, but Apple requires $100/year, even for a free extension (yet another reason to hate Apple). The source is available on this page if you would like to build it yourself, but it won't be on the App Store unless someone with a developer membership wants to publish it. If you'd like to see Duochrome added to another browser, open an issue.
 
 How it Works
 ------------
