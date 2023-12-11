@@ -19,12 +19,12 @@
         user-select: none;
         width: 40%;
         transition: 0.15s ease-in-out;
-      }
-      button:hover {
-        cursor: pointer;
-        background-color: rgba(30,215,30,0.5);
-        border-color: rgb(30,215,30);
-        color: white;
+        &:hover {
+          cursor: pointer;
+          background-color: rgba(30,215,30,0.5);
+          border-color: rgb(30,215,30);
+          color: white;
+        }
       }
       button:active {
         background-color: rgba(173,219,173,0.5);
@@ -57,8 +57,7 @@
         width: 90%;
         margin-left: auto;
         margin-right: auto;
-        border: 3px solid rgb(240,240,240);
-        border-radius: 5px;
+        border-radius: 3px;
         margin-bottom: 10px;
         user-select: none;
       }
@@ -82,9 +81,9 @@
       }
       a {
         color: inherit;
-      }
-      a:hover {
-        color: gray;
+        &:hover {
+          color: gray;
+        }
       }
 
       /* Classes */
@@ -101,7 +100,7 @@
         display: none;
         padding: 5px;
         border-radius: 5px;
-        background-color: rgb(250,250,250);
+        background-color: #fafafa;
         margin: 10px;
         padding-left: 20px;
         padding-right: 20px;
@@ -124,7 +123,7 @@
         scale 1s ease-in-out 0.1s both;
         position: absolute;
         top: 6px;
-        left: 66%;
+        right: 3.3em;
       }
       /* Circle outline */
       .checkmarkCircle {
@@ -160,6 +159,7 @@
         text-align: center;
         width: 100%;
         font-size: 18px;
+        border-radius: 10px;
       }
       #counter {
         padding: 0;
@@ -181,38 +181,23 @@
         transition: transform .25s ease-out;
         border: none;
         color: inherit;
-      }
-      #helpButton:hover {
-        cursor: pointer;
-        transform: scale(1.15);
-        transition: transform .25s ease-out;
+        &:hover {
+          cursor: pointer;
+          transform: scale(1.15);
+          transition: transform .25s ease-out;
+        }
       }
       #gear {
         pointer-events: bounding-box;
+        &:hover {
+          cursor: pointer;
+        }
       }
       #gear, #gearChange {
         position: absolute;
         right: 7px;
         transform-origin: center;
         transition: transform .25s ease-out;
-      }
-      #gear:hover #daynight:hover {
-        cursor: pointer;
-      }
-      #daynight {
-        position: absolute;
-        margin: 0;
-        border: none;
-        top: 9px;
-        width: 24px;
-        right: 40px;
-        transition: transform .25s ease-out;
-      }
-      #daynight:hover {
-        transform: rotate(180deg) scale(1.15);
-      }
-      #daynight:active {
-        transform: rotate(200deg);
       }
       /* Only the inner gear should change size */
       #gear:hover #gearChange {
@@ -230,6 +215,14 @@
         margin: 12px 0;
       }
       /* Settings */
+      #settings {
+        margin-top: 5px;
+        border-radius: 12px;
+        overflow: hidden;
+        & td {
+          background-color: #f3f3f3;
+        }
+      }
       #importButton, #exportButton {
         padding: 6px 12px;
         width: 84%;
@@ -239,10 +232,10 @@
         padding: 6px 12px;
         width: auto;
         border-radius: 5px;
-      }
-      #resetButton:hover {
-        background-color: red;
-        border-color: rgb(255,100,100);
+        &:hover {
+          background-color: red;
+          border-color: rgb(255,100,100);
+        }
       }
       #resetButton:active {
         background-color: rgb(255,100,100);
@@ -282,7 +275,7 @@
         border-radius: 10px;
       }
       #clickLogin {
-        background-color:red;
+        background-color: red;
       }
       @keyframes scale {
         0%, 100% {transform: none} 50% {transform: scale3d(1.1, 1.1, 1)};
@@ -293,36 +286,100 @@
       @keyframes stroke {
         100% {stroke-dashoffset: 0}
       }
-      html[dark-theme=true] {
-        color: rgb(230,230,230);
-        background-color: rgb(40,40,40);
-      }
-      html[dark-theme=true] button {
-        color: white;
-        background-color: #555;
-        border-color: #a6a6a6;
-      }
-      html[dark-theme=true] button:hover {
-        background-color: #8a8a8a;
-        border-color: #ff6161;
-      }
-      html[dark-theme=true] button:disabled {
-        color: #AAA;
-        background-color: #505050;
-        border-color: #a6a6a6;
-      }
-      html[dark-theme=true] .slide {
-        color: white;
-        background-color: #333;
-      }
-      html[dark-theme=true] .oneSlide {
-        color: white;
-        background-color: #333;
-      }
-      html[dark-theme=true] .failedReasonBackground {
-        background-color: #333;
-        border: 1px dashed;
+      /* Universal / Traditional toggle */
+      .instructions {
+        display: flex;
+        overflow: hidden;
+        width: 100%;
+        margin-bottom: 14px;
+        font-size: 13px;
         border-radius: 10px;
+        /* For each child */
+        > * {
+          width: 100%;
+        }
+      }
+      .instructions-class {
+        display: none;
+        &:checked + .instructions-label {
+          font-weight: bolder;
+          background-color: #555;
+          color: white;
+        }
+      }
+      .instructions-label {
+        padding: 10px;
+        background-color: #f5f5f5;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        &:hover {
+          color: gray;
+        }
+      }
+      .hidden-panel {
+        display: none;
+      }
+      .instructions:has(#universal-button:checked) ~ .slide .traditional-panel,
+      .instructions:has(#traditional-button:checked) ~ .slide .universal-panel {
+        display: block;
+        opacity: 1;
+      }
+      /* Dark theme */
+      @media (prefers-color-scheme: light) {
+        html {
+          color: rgb(230,230,230);
+          background-color: rgb(40,40,40);
+        }
+        button {
+          color: white;
+          background-color: #555;
+          border-color: #a6a6a6;
+          &:hover {
+            background-color: #8a8a8a;
+            border-color: #ff6161;
+          }
+        }
+        button:disabled {
+          color: #AAA;
+          background-color: #505050;
+          border-color: #a6a6a6;
+        }
+        a:hover {
+          color: #bbb;
+        }
+        .slide {
+          color: white;
+          background-color: #333;
+        }
+        .oneSlide {
+          color: white;
+          background-color: #333;
+        }
+        .failedReasonBackground {
+          background-color: #333;
+          border: 1px dashed;
+          border-radius: 10px;
+        }
+        #settings {
+          margin-top: 5px;
+          border-radius: 12px;
+          overflow: hidden;
+          & td {
+            background-color: #333;
+          }
+        }
+        .instructions-label {
+          background-color: #333;
+          &:hover {
+            color: gray;
+          }
+        }
+        .instructions-class {
+          &:checked + .instructions-label {
+            background-color: #eee;
+            color: black;
+          }
+        }
       }
     </style>
   </head>
@@ -330,8 +387,6 @@
     <div style="display: inline-flex">
       <img style="margin: 0; margin-right: 7px; border: none; width: 30px;" src="images/Duochrome.svg">
       <h1 style="padding-top: 1px; margin: 0; font-weight: lighter;"><span style="font-weight: bolder;">Duo</span>chrome</h1>
-      <!-- Day night -->
-      <img id="daynight" src="images/daynight.svg">
       <!-- Gear SVG -->
       <svg id="gear" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" width="26px" height="26px" viewBox="0 0 24 24" fill="gray">
         <rect fill="none" height="26" width="26"></rect>
@@ -343,55 +398,85 @@
     <!-- Welcome screen -->
     <div class="screen" id="intro">
       <h2>Connect to Duo</h2>
-      <h4>Let's activate Duochrome as your new Duo device.</h4>
+      <h4>Login to your Duo Mobile devices website, then click <b>Ok</b>.</h4>
       <button type="submit" id="introButton">Ok</button>
     </div>
 
     <!-- Activation screen -->
     <div class="screen" id="activation">
-      <h4 id="errorSplash">Use arrows to flip through instructions:</h4>
-
-      <!-- Table to distribute buttons evenly -->
-      <table>
-        <tr>
-          <td><button id="prev">&#10094;</button></td>
-          <td style="width: 50%"><p id="counter"></p></td>
-          <td><button id="next">&#10095;</button></td>
-        </tr>
-      </table>
+      <h4 id="errorSplash">Switch between Universal or Traditional prompt instructions, depending on your website.</h4>
 
       <div class="steps">
+        <!-- Universal / Traditional buttons -->
+        <form class="instructions">
+          <input type="radio" name="traditional-input" id="universal-button" class="instructions-class" value="universal" checked>
+          <label for="universal-button" class="instructions-label">Universal</label>
+          <input type="radio" name="traditional-input" id="traditional-button" class="instructions-class" value="traditional">
+          <label for="traditional-button" class="instructions-label">Traditional</label>
+        </form>
+        <!-- Table to distribute buttons evenly -->
+        <table style="border-spacing: 0">
+          <tr>
+            <td><button id="prev">&#10094;</button></td>
+            <td style="width: 50%"><p id="counter"></p></td>
+            <td><button id="next">&#10095;</button></td>
+          </tr>
+        </table>
+        <!-- Slide 1 -->
         <div class="slide">
-          <p style="margin-bottom: 10px">Find your organization's Duo Mobile website.</p>
-          <h5 style="margin-top: 0px; font-weight: normal">(<a href="https://osu.login.duosecurity.com/devices?link_clicked=true/" target="_blank">link for OSU students</a>)</h5>
-          <img src="/images/image0.png">
-          <p>Click <b>Add a new device</b>.</p>
+          <p style="margin-bottom: 10px">Click <b>Add a new device</b>.</p>
+          <!-- Universal -->
+          <div class="hidden-panel traditional-panel">
+            <img src="/images/universal/0.png">
+          </div>
+          <!-- Traditional -->
+          <div class="hidden-panel universal-panel">
+            <img src="/images/traditional/0.png">
+          </div>
         </div>
+        <!-- Slide 2 -->
         <div class="slide">
-          <p>Click <b>Duo Mobile</b>.</p>
-          <img src="/images/image1.png">
+          <div class="hidden-panel traditional-panel">
+            <p>Click <b>Duo Mobile</b>.</p>
+            <img src="/images/universal/1.png">
+          </div>
+          <div class="hidden-panel universal-panel">
+            <p>Click <b>Tablet</b>, then <b>iOS</b>.</p>
+            <img src="/images/traditional/1.png">
+          </div>
         </div>
+        <!-- Slide 3 -->
         <div class="slide">
-          <p>Click <b>I have a tablet</b>.</p>
-          <img src="/images/image2.png">
+          <div class="hidden-panel traditional-panel">
+            <p>Click <b>I have a tablet</b>, then <b>Next</b>.</p>
+            <img src="/images/universal/2.png">
+          </div>
+          <div class="hidden-panel universal-panel">
+            <p>Click <b>I have Duo Mobile installed</b>.</p>
+            <img src="/images/traditional/2.png">
+          </div>
         </div>
-        <div class="slide">
-          <p>Click <b>Next</b>.</p>
-          <img src="/images/image3.png">
-        </div>
+        <!-- Slide 4 -->
         <div class="slide">
           <p id="qrSearchText">Searching for a QR code...</p>
           <p id="qrErrorText"></p>
           <h5 style="font-weight: normal">Duochrome will find the QR code on the current tab.</h5>
-          <img src="/images/image4.png">
+          <h5 style="">Not working? Go to Step 6.</h5>
         </div>
+        <!-- Slide 5 -->
         <div class="slide">
-          <p>If you can't find the QR code, send the code to your email.</p>
-          <img src="/images/image5.png">
+          <p>Alternatively, you can send the code to your email.</p>
+          <div class="hidden-panel traditional-panel">
+            <img src="/images/universal/4.png">
+          </div>
+          <div class="hidden-panel universal-panel">
+            <img src="/images/traditional/4.png">
+          </div>
         </div>
+        <!-- Slide 6 -->
         <div class="slide">
           <p>Open the link in the email, and copy the code into the box below. Click activate.</p>
-          <img src="/images/image6.png">
+          <img src="/images/6.png">
           <table>
             <tr>
               <td>
@@ -483,13 +568,13 @@
             <button type="submit" id="importButton">Import</button>
           </td>
           <td>
-            <h4 id="importSplash" style="margin-top: 25px; margin-bottom: 25px">Import login data from another Duochrome.</h4>
+            <h4 id="importSplash" style="margin-top: 25px; margin-bottom: 25px">Import login data.</h4>
           </td>
         </tr>
         <tr>
           <td>
             <button type="submit" id="exportButton">Export</button>
-            <input style="cursor: not-allowed; width: 80%; margin-top: 4px;" placeholder="Click export" id="exportText" readonly>
+            <input style="width: 80%; margin-top: 4px;" placeholder="Click export" id="exportText" readonly>
           </td>
           <td>
             <h4 style="margin-top: 35px; margin-bottom: 35px">Export login data.</h4>

@@ -198,23 +198,8 @@
         transform-origin: center;
         transition: transform .25s ease-out;
       }
-      #gear:hover #daynight:hover {
+      #gear:hover {
         cursor: pointer;
-      }
-      #daynight {
-        position: absolute;
-        margin: 0;
-        border: none;
-        top: 9px;
-        width: 24px;
-        right: 40px;
-        transition: transform .25s ease-out;
-      }
-      #daynight:hover {
-        transform: rotate(180deg) scale(1.15);
-      }
-      #daynight:active {
-        transform: rotate(200deg);
       }
       /* Only the inner gear should change size */
       #gear:hover #gearChange {
@@ -295,45 +280,44 @@
       @keyframes stroke {
         100% {stroke-dashoffset: 0}
       }
-      html[dark-theme=true] {
-        color: rgb(230,230,230);
-        background-color: rgb(40,40,40);
-      }
-      html[dark-theme=true] button {
-        color: white;
-        background-color: #555;
-        border-color: #a6a6a6;
-      }
-      html[dark-theme=true] button:hover {
-        background-color: #8a8a8a;
-        border-color: #ff6161;
-      }
-      html[dark-theme=true] button:disabled {
-        color: #AAA;
-        background-color: #505050;
-        border-color: #a6a6a6;
-      }
-      html[dark-theme=true] .slide {
-        color: white;
-        background-color: #333;
-      }
-      html[dark-theme=true] .oneSlide {
-        color: white;
-        background-color: #333;
-      }
-      html[dark-theme=true] .failedReasonBackground {
-        background-color: #333;
-        border: 1px dashed;
-        border-radius: 10px;
-      }
+      @media (prefers-color-scheme: dark) {
+        html {
+          color: rgb(230,230,230);
+          background-color: rgb(40,40,40);
+        }
+        button {
+          color: white;
+          background-color: #555;
+          border-color: #a6a6a6;
+        }
+        button:hover {
+          background-color: #8a8a8a;
+          border-color: #ff6161;
+        }
+        button:disabled {
+          color: #AAA;
+          background-color: #505050;
+          border-color: #a6a6a6;
+        }
+        .slide {
+          color: white;
+          background-color: #333;
+        }
+        .oneSlide {
+          color: white;
+          background-color: #333;
+        }
+        .failedReasonBackground {
+          background-color: #333;
+          border: 1px dashed;
+          border-radius: 10px;
+        }
     </style>
   </head>
   <body>
     <div style="display: inline-flex">
       <img style="margin: 0; margin-right: 7px; border: none; width: 30px;" src="images/Duochrome.svg">
       <h1 style="padding-top: 1px; margin: 0; font-weight: lighter;"><span style="font-weight: bolder;">Duo</span>chrome</h1>
-      <!-- Day night -->
-      <img id="daynight" src="images/daynight.svg">
       <!-- Gear SVG -->
       <svg id="gear" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" width="26px" height="26px" viewBox="0 0 24 24" fill="gray">
         <rect fill="none" height="26" width="26"></rect>
@@ -485,7 +469,7 @@
             <button type="submit" id="importButton">Import</button>
           </td>
           <td>
-            <h4 id="importSplash" style="margin-top: 25px; margin-bottom: 25px">Import login data from another Duochrome.</h4>
+            <h4 id="importSplash" style="margin-top: 25px; margin-bottom: 25px">Import login data.</h4>
           </td>
         </tr>
         <tr>

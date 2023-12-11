@@ -6,38 +6,6 @@ browser.storage.local.get('activeSlide').then(object => {
   }
 });
 
-// Dark / Light theme
-document.getElementById("daynight").addEventListener("click", async function() {
-  let data = await new Promise(function(resolve) {
-    browser.storage.local.get('theme', function(value) {
-      resolve(value);
-    });
-  });
-  // If button has been pressed before
-  if(data != null) {
-    let theme = !data.theme;
-    // Set it to the opposite of what we have
-    await browser.storage.local.set({"theme": theme});
-    document.documentElement.setAttribute("dark-theme", theme); // This changes the dark-theme CSS property, not chrome storage
-  } else {
-    // First time pressing the button, meaning we go to dark theme
-    await browser.storage.local.set({"theme": false});
-  }
-});
-
-// Activate theme
-let data = await new Promise(function(resolve) {
-  browser.storage.local.get('theme', function(value) {
-    resolve(value);
-  });
-});
-// If button has been pressed before
-if(data != null) {
-  let theme = data.theme;
-  // Set it to the opposite of what we have
-  document.documentElement.setAttribute("dark-theme", theme);
-}
-
 // Next slide
 let nextButton = document.getElementById("next");
 let flashes = 0;
@@ -726,7 +694,6 @@ document.getElementById("resetButton").addEventListener("click", function() {
   // Delete chrome local / sync data
   browser.storage.sync.clear(function() {
     browser.storage.local.clear(function() {
-      document.documentElement.setAttribute("dark-theme", false);
       // Disable check box
       clickLogin.disabled = true;
       // Reset main page
