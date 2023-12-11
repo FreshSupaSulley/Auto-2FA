@@ -1,10 +1,5 @@
 // Determines which slide should be visible on startup page
 let slideIndex = 0;
-browser.storage.local.get('activeSlide').then(object => {
-  if(object.activeSlide != null) {
-    slideIndex = object.activeSlide;
-  }
-});
 
 // Next slide
 let nextButton = document.getElementById("next");
@@ -18,7 +13,7 @@ let tutorialFlash = new Timer(async () => {
   nextButton.style.backgroundColor = flash ? defaultBGColor : "red";
   nextButton.style.borderColor = flash ? defaultBorder : "red";
   if(flashes > 5) tutorialFlash.stop();
-}, 1000, () => {
+}, 300, () => {
   nextButton.style.color = defaultColor;
   nextButton.style.backgroundColor = defaultBGColor;
   nextButton.style.borderColor = defaultBorder;
@@ -28,12 +23,34 @@ nextButton.addEventListener("click", function() {
   updateSlide(slideIndex);
   tutorialFlash.stop();
 });
+nextButton.addEventListener("mouseover", function() {
+  tutorialFlash.stop();
+});
 
 // Previous slide
 document.getElementById("prev").addEventListener("click", function() {
   slideIndex -= 1;
   updateSlide(slideIndex);
   tutorialFlash.stop();
+});
+
+// Universal / Traditional buttons
+let universalButton = document.getElementById("universal-button");
+universalButton.addEventListener("change", e => {
+  browser.storage.session.set({"promptType": "universal"});
+});
+// Traditional button (no need for universal support, that's the default)
+let traditionalButton = document.getElementById("traditional-button");
+traditionalButton.addEventListener("change", e => {
+  // Store in case user clicks off to browse to Duo tab so they don't have to flip back
+  browser.storage.session.set({"promptType": "traditional"});
+});
+// Get prompt
+await browser.storage.session.get('promptType', (e) => {
+  if(e.promptType == "traditional") {
+    traditionalButton.checked = true;
+  }
+  // No need to set universal to be checked, it's on by default
 });
 
 // Help button
@@ -65,7 +82,7 @@ activateButton.addEventListener("click", async function() {
     else {
       // Timeouts will be caught here
       console.error(error);
-      errorSplash.innerText = "Invalid code. Open the link sent to your email, it contains the code inside the box.";
+      errorSplash.innerText = "Invalid code. Open the link inside the email, and copy the code inside the box.";
     }
   }
 
@@ -377,6 +394,7 @@ document.getElementById("failureButton").addEventListener("click", function() {
 
 // When the user presses the button on the intro screen, switch to activation
 document.getElementById("introButton").addEventListener("click", function() {
+  tutorialFlash.start();
   changeScreen("activation");
 });
 
@@ -447,7 +465,7 @@ async function buildRequest(info, method, path, extraParam = {}, extraHeader = {
   }).then(response => {
     if(!response.ok) {
       console.error(response);
-      throw new Error("Duo denied handling request at " + path + " (was the device deleted?)");
+      throw "Duo denied handling request at " + path + " (was the device deleted?)";
     } else {
       return response.json();
     }
@@ -486,7 +504,6 @@ let qrErrorText = document.getElementById("qrErrorText");
 // QR searcher
 let root = "Searching for a QR code";
 let qrDots = 0;
-let qrAttempts = 0;
 
 let checkQR = new Timer(async () => {
   splash.innerHTML = `${root}...`;
@@ -507,12 +524,6 @@ let checkQR = new Timer(async () => {
         console.error(e);
       }
     } catch(e) {
-      if(qrAttempts != 10) {
-        qrAttempts++;
-      } else {
-        // Display error
-        qrErrorText.innerText = "You can also email yourself the code on Step 6.";
-      }
       switch(e) {
         case "Error: Could not establish connection. Receiving end does not exist.": {
           root = "Can't establish a connection";
@@ -582,7 +593,7 @@ async function changeScreen(id) {
 }
 
 function updateSlide(newIndex) {
-  if(newIndex == 4) {
+  if(newIndex == 3) {
     checkQR.start();
   } else {
     checkQR.stop();
@@ -598,7 +609,7 @@ function updateSlide(newIndex) {
   else if(newIndex < 0) slideIndex = slides.length - 1;
 
   // Store in case user clicks off to browse to Duo tab so they don't have to flip back
-  browser.storage.local.set({"activeSlide": slideIndex});
+  browser.storage.session.set({"activeSlide": slideIndex});
   slides[slideIndex].style.display = "block";
 
   // Update slide count
@@ -660,9 +671,6 @@ document.getElementById("importButton").addEventListener("click", async function
     } else {
       clickLogin.checked = false;
     }
-    // Slide index needs to be assigned
-    // Otherwise it assumes the program is first started
-    updateSlide(0);
   } catch(e) {
     console.error(e);
     // Tell the user this is an invalid code
@@ -673,8 +681,8 @@ document.getElementById("importButton").addEventListener("click", async function
 // Export button
 let exportText = document.getElementById("exportText");
 document.getElementById("exportButton").addEventListener("click", async function() {
-  let info = await new Promise(function(resolve) {
-    browser.storage.sync.get('deviceInfo', function(json) {
+  let info = await new Promise((resolve) => {
+    browser.storage.sync.get('deviceInfo', (json) => {
       resolve(json.deviceInfo);
     });
   });
@@ -692,15 +700,19 @@ document.getElementById("exportButton").addEventListener("click", async function
 let resetSplash = document.getElementById("resetSplash");
 document.getElementById("resetButton").addEventListener("click", function() {
   // Delete chrome local / sync data
-  browser.storage.sync.clear(function() {
-    browser.storage.local.clear(function() {
-      // Disable check box
-      clickLogin.disabled = true;
-      // Reset main page
-      slideIndex = 0;
-      errorSplash.innerText = "Use arrows to flip through instructions:";
-      activateButton.innerText = "Activate";
-      resetSplash.innerText = "Data cleared. Import data or reactivate."
+  // We are not using local storage anymore, but it WAS being used because I didn't know about it 0_0
+  // I also don't know what happens if the user doesn't have syncing enabled
+  browser.storage.session.clear(function() {
+    browser.storage.sync.clear(function() {
+      browser.storage.local.clear(function() {
+        // Disable check box
+        clickLogin.disabled = true;
+        // Reset main page
+        slideIndex = 0;
+        errorSplash.innerText = "Use arrows to flip through instructions:";
+        activateButton.innerText = "Activate";
+        resetSplash.innerText = "Data cleared. Import data or reactivate."
+      });
     });
   });
 });
@@ -718,24 +730,25 @@ async function getDeviceInfo() {
 await initialize();
 // Changes the current screen to what it should be depending on if deviceInfo is present
 async function initialize() {
-  // If this is the first time opened
-  if((await browser.storage.local.get('activeSlide')).activeSlide == null) {
-    changeScreen("intro");
+  let data = await getDeviceInfo();
+  // If we have device data
+  if(data) {
+    // Set to main screen
+    changeScreen("main");
   } else {
-    // On open, or when settings are changed, return the screen we should go to
-    // If no data is found
-    if(!(await getDeviceInfo())) {
-      // Don't flash if we're on the "last" screen
-      if(slideIndex != 4 && slideIndex != 6) {
+    let activeSlide = (await browser.storage.session.get('activeSlide')).activeSlide;
+    // If first time opened
+    if(!activeSlide && activeSlide !== 0) {
+      changeScreen("intro");
+    } else {
+      slideIndex = activeSlide;
+      // Only flash if we're not on the last screen (or searching for QR)
+      if(slideIndex != 3 && slideIndex != 5) {
         tutorialFlash.start();
       }
       document.getElementById("errorSplash").innerHTML = "";
       // Set HTML screen to activate
       changeScreen("activation");
-    }
-    else {
-      // Set to main screen
-      changeScreen("main");
     }
   }
 }
