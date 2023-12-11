@@ -1,51 +1,56 @@
-# Duochrome Setup Tutorial
-Before you can start using Duochrome to login with Duo Mobile, you need to make it one of your devices. Just like how your phone approves or denies login attempts, Duochrome will do the same. This requires an activation code.
+# Setup Tutorial
+Let's make Duochrome one of your Duo Mobile devices. Duochrome will be able to approve push requests just like the phone app.
 
-Here's how to generate an activation code:
+Your Duo Mobile devices page either uses the new Universal Prompt, or the dated Traditional Prompt. Their instructions only slightly differ, but you can toggle between them with the buttons on the top of the page:
 
-#### Step 1 - Add a new device
+![Select Universal or Traditional Instructions](https://github.com/FreshSupaSulley/Duochrome/assets/45902499/db1f2293-0ea2-4a10-8e3f-a6ffdf2c97b1)
 
-To add Duochrome as a new device, you need to find your organization's Duo Mobile devices website.
-Usually you can find this website by googling it (ex. "duo mobile buckeyes"). Here's the [link](https://osu.login.duosecurity.com/devices?link_clicked=true/) for OSU students.
-Once you find the website, click the "Add a new Device" button.
+Before you start, navigate to your organization's Duo Mobile devices page and make note of the prompt type. If you're having trouble finding your organization's Duo website, usually you can google the name of your organization followed by "duo mobile".
 
-<img width="296" alt="image0" src="https://user-images.githubusercontent.com/45902499/234158270-328b5722-8dc2-4822-87a0-8c7d24545c7f.PNG">
+# Universal
+#### 1. Add a new device
+<img width="296" alt="Add a new device" src="chrome/images/universal/0.png">
+Once you navigate to your organization's Duo Mobile device manager website, click the **Add a new Device** button.
 
-#### Step 2 - Select Duo Mobile
-
+#### 2. Click Duo Mobile
+<img width="296" alt="Click Duo Mobile" src="chrome/images/universal/1.png">
 Duochrome is treated like the app, so click the Duo Mobile app option. You don't need to download it.
 
-<img width="296" alt="image1" src="https://user-images.githubusercontent.com/45902499/234158296-7334a1cc-258c-4a83-9c84-9caf4d2be4be.png">
+#### 3. Click I have a tablet, then Next
+<img width="296" alt="Click tablet" src="chrome/images/universal/2.png">
+You don't need to enter your phone number, it doesn't affect the setup. Click the **I have a tablet** button instead. If you include your phone number, it'll simply associate the number with the device and have no impact on functionality.
 
-#### Step 3 - Click "I have a tablet"
+#### 4. Scan the QR Code
+A QR code will be generated. Open Duochrome on the same page as the QR code and it should handle the rest. If you don't see a QR code, or it's failing to scan it, go to Step 6.
 
-There's no need to enter your phone number, it has no effect on the setup. Click the "I have a tablet" button instead.
-If you put in your phone number, it'll simply associate the number with the device.
+#### 5. Email code to yourself
+<img width="296" alt="Get an activation link" src="chrome/images/universal/4.png">
+If the QR code didn't work, click **Get an activation link instead** and get your inbox ready to receive the code. Duo will email you the activation code. Once you receive it, click the link included in the email. Make sure you open this link on your computer and not your phone to prevent the Duo Mobile app from auto-opening it.
 
-<img width="296" alt="image1" src="https://user-images.githubusercontent.com/45902499/234158309-faebbc54-9cde-453d-8814-9115d722b2af.png">
+#### 6. Activate
+<img width="296" alt="Copy the code in the box" src="chrome/images/6.png">
+After opening the link, you'll see a box in the center of the page containing the text-based version of the activation code. Copy and paste the activation code into the box in Duochrome on Step 6, then click activate.
 
-#### Step 4 - Click "Next"
+# Traditional
+#### 1. Add a new device
+<img width="296" alt="Add a new device" src="chrome/images/traditional/0.png">
+Once you navigate to your organization's Duo Mobile device manager website, click the **Add a new Device** button.
 
-Duo will prompt you download the app for your tablet. You can ignore this.
+#### 2. Click Tablet, then iOS
+<img width="296" alt="Click tablet, then iOS" src="chrome/images/traditional/1.png">
+Duochrome works like the phone app (without the phone), so click the tablet option, then iOS.
 
-<img width="296" alt="image1" src="https://user-images.githubusercontent.com/45902499/234158331-9d881bb0-b3f1-453c-a1ef-137edbdd0851.png">
+#### 3. Click I have Duo Mobile installed.
+<img width="296" alt="Click I have Duo Mobile installed" src="chrome/images/traditional/2.png">
+Lie lol.
 
-#### Step 5 - Detect the QR Code
+#### 4. Scan the QR Code
+A QR code will be generated. Open Duochrome on the same page as the QR code and it should handle the rest. If you don't see a QR code, or it's failing to scan it, go to Step 6.
 
-A QR code will pop up. Open Duochrome **while you're on the page with the QR code**. If you're on Step 5, it should auto-detect the QR code and handle the rest for you. If for some reason you don't see a QR code (or it's failing to scan it), go to Step 6.
+#### 5. Email code to yourself
+<img width="296" alt="Get an activation link" src="chrome/images/traditional/4.png">
+If the QR code didn't work, click **Email me an activation link instead** and get your inbox ready to receive the code. Duo will email you the activation code. Once you receive it, click the link included in the email. Make sure you open this link on your computer and not your phone to prevent the Duo Mobile app from auto-opening it.
 
-<img width="296" alt="image1" src="https://user-images.githubusercontent.com/45902499/234158349-4ac7cbcd-5a27-4442-9243-88ce8a56c774.png">
-
-#### Step 6 - Email alternative
-
-Click "Get an activation link instead", and get your email ready to receive the code.
-Duo will send you the activation code in a text-based form. Once you click send, navigate to your email and find the message.
-
-<img width="296" alt="image1" src="https://user-images.githubusercontent.com/45902499/234158382-0df5ba67-5409-43c4-a306-05a0694972b1.png">
-
-#### Step 7 - Activate
-
-Click on the link in the message. You'll see a box in the center of the page containing the activation code!
-Copy and paste the text in the box into the box in Duochrome and click activate. Duochrome will be activated!
-
-<img width="296" alt="image6" src="https://user-images.githubusercontent.com/45902499/234158524-2d7e5a45-d795-49df-bfb5-79959ed5dacf.PNG">
+#### 6. Activate
+<img width="296" alt="Copy the code in the box" src="chrome/images/6.png">
+After opening the link, you'll see a box in the center of the page containing the text-based version of the activation code. Copy and paste the activation code into the box in Duochrome on Step 6, then click activate. Then you can click the continue button back on the website.
