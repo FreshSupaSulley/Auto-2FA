@@ -2,7 +2,6 @@ let logo = document.getElementById("logo");
 let splash = document.getElementById("splash");
 let tutorial = document.getElementById("tutorial");
 let tutorialDiv = document.getElementById("tutorialDiv");
-let postDiv = document.getElementById("postTutorial");
 
 // Fade in
 window.onload = async function() {
@@ -15,9 +14,8 @@ window.onload = async function() {
   // Show splash text
   splash.style.opacity = "1";
   // splash.style.fontSize = "17px";
-  splash.innerText = "Get an activation code."
+  splash.innerText = "Open for instructions:"
   // Show GIF tutorial
-  tutorial.style.width = "500px";
+  tutorial.style.width = "100%";
   tutorialDiv.style.opacity = "1";
-  postDiv.style.opacity = "1";
 };

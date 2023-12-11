@@ -35,32 +35,27 @@
       }
       #tutorialDiv, #postTutorial {
         transition: 1s ease-in-out;
-        background-color: whitesmoke;
-        margin-left: 20%;
-        margin-right: 20%;
-        padding: 20px;
+        margin-left: 30%;
+        margin-right: 30%;
         border-radius: 20px;
         opacity: 0;
       }
-      #postTutorial {
-        background-color: white;
-      }
-      table {
-        table-layout: fixed;
-        width: 100%;
-      }
-      th {
-        text-decoration: underline;
-      }
       a {
         color: inherit;
-      }
-      a:hover {
-        color: gray;
+        &:hover {
+          color: gray;
+        }
       }
       h4 {
         font-weight: normal;
         font-size: 13px;
+      }
+      /* Dark theme */
+      @media (prefers-color-scheme: dark) {
+        html, body {
+          color: white;
+          background-color: #333;
+        }
       }
     </style>
   </head>
@@ -71,15 +66,12 @@
 
     <div id="tutorialDiv">
       <source src="images/tutorial.mov" type="video/mp4" />
-      <video id="tutorial" autoplay loop muted width="300">
+      <video id="tutorial" autoplay loop muted width="100">
         <source src="images/tutorial.mov" type="video/mp4">
         Your browser does not support the video tag.
       </video>
-      <h3>Instructions have <a href="https://tech.rochester.edu/news-item/a-new-look-for-duo-coming-soon/#what-is-changing">Universal Prompt</a> screenshots, but shares the same setup with the Traditional prompt as well. Your organization likely uses one of these.</h3>
-    </div>
-    <div id="postTutorial">
-      <h3>Can't find your Duo Mobile website? Try googling your organization's name with "duo mobile".</h3>
-      <p>(ex. "ohio state buckeyes duo mobile")</p>
+      <h3>Navigate to your organization's Duo Mobile device manager page, then open Duochrome for activation instructions.</h3>
+      <p style="margin-bottom: 50px">Visit the <a href="https://github.com/FreshSupaSulley/Duochrome/blob/main/TUTORIAL.md">website</a> for more detailed steps.</p>
     </div>
   </body>
   <script src="welcome.js"></script>
