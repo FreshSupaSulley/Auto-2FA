@@ -5,10 +5,11 @@ Your Duo Mobile devices page either uses the new Universal Prompt, or the dated 
 
 Before you start, navigate to your organization's Duo Mobile devices page and make note of the prompt type. If you're having trouble finding your organization's Duo website, usually you can google the name of your organization followed by "duo mobile".
 
-1. [Universal Instructions](#universal-prompt)
-2. [Traditional Instructions](#traditional-prompt)
+Jump to your instructions:
+1. [Universal Instructions](#universal-instructions)
+2. [Traditional Instructions](#traditional-instructions)
 
-# Universal Prompt
+# Universal Instructions
 #### 1. Add a new device
 <img width="296" alt="Add a new device" src="chrome/images/universal/0.png">
 Once you navigate to your organization's Duo Mobile device manager website, click the **Add a new Device** button.
