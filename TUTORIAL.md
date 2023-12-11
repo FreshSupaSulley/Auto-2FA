@@ -1,13 +1,14 @@
 # Setup Tutorial
-Let's make Duochrome one of your Duo Mobile devices. Duochrome will be able to approve push requests just like the phone app.
-
-Your Duo Mobile devices page either uses the new Universal Prompt, or the dated Traditional Prompt. Their instructions only slightly differ, but you can toggle between them with the buttons on the top of the page:
+Your Duo Mobile devices page either uses the new Universal Prompt, or the dated Traditional Prompt. Their instructions only slightly differ, but you can toggle between them with the buttons on top of the extension's setup page:
 
 ![Select Universal or Traditional Instructions](https://github.com/FreshSupaSulley/Duochrome/assets/45902499/db1f2293-0ea2-4a10-8e3f-a6ffdf2c97b1)
 
 Before you start, navigate to your organization's Duo Mobile devices page and make note of the prompt type. If you're having trouble finding your organization's Duo website, usually you can google the name of your organization followed by "duo mobile".
 
-# Universal
+1. [Universal Instructions](#universal-prompt)
+2. [Traditional Instructions](#traditional-prompt)
+
+# Universal Prompt
 #### 1. Add a new device
 <img width="296" alt="Add a new device" src="chrome/images/universal/0.png">
 Once you navigate to your organization's Duo Mobile device manager website, click the **Add a new Device** button.
@@ -31,7 +32,7 @@ If the QR code didn't work, click **Get an activation link instead** and get you
 <img width="296" alt="Copy the code in the box" src="chrome/images/6.png">
 After opening the link, you'll see a box in the center of the page containing the text-based version of the activation code. Copy and paste the activation code into the box in Duochrome on Step 6, then click activate.
 
-# Traditional
+# Traditional Instructions
 #### 1. Add a new device
 <img width="296" alt="Add a new device" src="chrome/images/traditional/0.png">
 Once you navigate to your organization's Duo Mobile device manager website, click the **Add a new Device** button.
