@@ -1,13 +1,16 @@
 # Setup Tutorial
-Your Duo Mobile devices page either uses the new Universal Prompt, or the dated Traditional Prompt. Their instructions only slightly differ, but you can toggle between them with the buttons on top of the extension's setup page:
+Welcome to Duochrome! Let's make it one of your Duo devices.
 
-![Select Universal or Traditional Instructions](https://github.com/FreshSupaSulley/Duochrome/assets/45902499/db1f2293-0ea2-4a10-8e3f-a6ffdf2c97b1)
+Before you begin, navigate to your organization's Duo Mobile devices page. You can usually google the name of your organization followed by "duo mobile" to find the link.
 
-Before you start, navigate to your organization's Duo Mobile devices page and make note of the prompt type. If you're having trouble finding your organization's Duo website, usually you can google the name of your organization followed by "duo mobile".
+> **Note:** Your organization's Duo Mobile devices page either uses the new Universal Prompt, or the dated Traditional Prompt. You can toggle between them with these buttons:
+> 
+> ![Select Universal or Traditional Instructions](https://github.com/FreshSupaSulley/Duochrome/assets/45902499/db1f2293-0ea2-4a10-8e3f-a6ffdf2c97b1)
 
-Jump to your instructions:
-1. [Universal Instructions](#universal-instructions)
-2. [Traditional Instructions](#traditional-instructions)
+
+Quick links:
+* [Universal Instructions](#universal-instructions)
+* [Traditional Instructions](#traditional-instructions)
 
 # Universal Instructions
 #### 1. Add a new device
