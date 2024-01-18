@@ -1,7 +1,7 @@
 # Duochrome
 Login through Duo Mobile in your browser.
 
-Using the Duo Mobile app can be frustrating; you might've lost your phone, get distracted by social media, or it could be charging. Duo doesn't officially support the ability to approve push requests on your computer and forces usage of their app, but this extension gives you that choice.
+Using the Duo Mobile app can be frustrating; you might've lost your phone or get distracted by social media. Duo doesn't officially support approving push requests on your computer, but this extension gives you that option.
 
 Duochrome is currently on [Chrome, Edge](https://chrome.google.com/webstore/detail/duochrome/bnfooenhhgcnhdkdjelgmmkpaemlnoek), and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/duochrome/). Safari was considered, but Apple requires $100/year, even for a free extension (yet another reason to hate Apple). The source is available on this page if you would like to build it yourself, but it won't be on the App Store unless someone with a developer membership wants to publish it. If you'd like to see Duochrome added to another browser, open an issue.
 
@@ -10,7 +10,7 @@ How it Works
 1. Activate Duochrome as a new Duo Mobile device. Duochrome will communicate with Duo's API activation endpoint and register itself as your new Android device (it's called Android due to the way the API works). Device information is created during this, and it's synced to your browser account (see [Privacy](#privacy)).
 2. Click Duochrome to log in. When clicked, Duochrome approves a single push request (login attempt) without asking you for approval for a seamless login (this behavior can be changed. See [One-Click Login](#one-click-login)). If there are multiple push requests, you'll compare their details to weed out old/malicious push requests.
 
-Duochrome can only approve push requests sent to the device it created during activation, meaning it can't approve a push request sent to the user's phone. This is not my decision, this is Duo's security.
+Duochrome can only approve push requests sent to the device it created during activation, meaning it can't approve a push request sent to the user's phone. This is not my decision, this is Duo's security. With this in mind, please don't make Duochrome your only device. It should be used as another option, not as the only option.
 
 Security
 --------
@@ -21,16 +21,16 @@ To preface, I am not a cyber security expert. I have a basic understanding of 2F
 
 Duochrome is a *practical* secure alternative to the Duo Mobile app. For typical Duo Mobile users, this extension strikes a great balance between security and convenience. The primary example is students who constantly need to access their university's sites. The perfect counterexample is business accounts that hold access to important records.<br>
 
-2-step verification is something you know, and something you have. The premise of this extension is that you *know* your password, and you *have* Duochrome as proof it's you. But by using Duochrome, you're introducing a new risk of being compromised. Here are some examples of how Duochrome introduces new risks:
+2-step verification is something you know, and something you have. The premise of this extension is that you *know* your password, and you *have* Duochrome. But by using Duochrome, you're introducing a new risk of being compromised. Here are some examples of how Duochrome introduces new risks:
 1. Your browser account (such as your Google profile if you're on Chrome) is remotely hacked because you have a poor password, no 2FA, and syncing is enabled.
 2. You signed into a public machine, synced all your data to it, and walked away.
-3. Someone, who already knows your Duo Mobile account password, and who also knows you use Duochrome, decides to steal your exported login data off your computer when you're away from the machine.
+3. Someone, who already has your Duo Mobile account password, and who also knows you use Duochrome, decides to steal your exported login data off your computer when you're away from the machine.
 4. You are socially engineered to click Duochrome to log someone in, or you export your own Duo Mobile device information to an unauthorized party.
 
-What should be clear here is that these kinds of attacks are pretty unlikely to happen, especially to someone who has a basic sense of security. As a result of this reasoning, and in my humble (and biased) opinion, the average student will not be the target of any related cyber-attacks and can safely use this extension.
+What should be clear is that these kinds of attacks are pretty unlikely to happen to someone who has a basic sense of security. As a result of this reasoning, and in my humble (and biased) opinion, the average student will not be the target of any related cyber-attacks due to basic security measures and can safely use this extension.
 
 #### Does this extension hack my Duo account to work?
-No. Duochrome establishes itself as a new device using the same process as your phone.
+No. Duochrome establishes itself as a new device using Duo's API.
 
 #### Are browser extensions safe to be used as 2-factor authenticators?
 Only for practical, low-risk purposes. As mentioned before, extensions rely on the security of the browser they reside in. If the browser account is secure, then you shouldn't have anything to worry about. Modern browsers also protect extensions by using a system of [Isolated Worlds](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world) to separate them from each other and malicious web page JavaScript. In other words, it's ensured by the browser that extensions cannot be accessed by malicious code.
@@ -61,9 +61,9 @@ No information created by this extension is sent anywhere but to Duo Mobile, and
 
 Development
 -----------
-This is built in raw HTML / JavaScript, with no frameworks or external libraries. Its original purpose was to help Ohio State students (like me) log in, but was designed to work for all Duo Mobile organizations. This project is kept open-sourced mainly to allow for feedback on its security.
+This is built in raw HTML / JavaScript, with no frameworks or external libraries. Its original purpose was to help Ohio State students log in, but was designed to work for all Duo Mobile organizations. This project is kept open-sourced mainly to allow for feedback on its security.
 
-This extension was originally named DuOSU until v1.3.8, where the name was changed to avoid a cease-and-desist from the university (they are very infamously uptight about their branding). Duochrome has only been tested with a few organizations, but I'm pretty confident it should work for everyone. Open an issue if it doesn't seem to work with yours.
+This extension was originally named DuOSU until v1.3.8, where the name was changed because OSU is infamously uptight about their branding. Duochrome has only been tested with a few organizations, but I'm fairly confident it should work for everyone. Open an issue if it doesn't seem to work with yours.
 
 #### Java Programmers
 The authentication flow was first built in Java / Maven for testing before transferring it to JS. The source is included in this repository as a guide on how to incorporate this in a full-scale, more robust application. I used the following Maven repositories for making HTTP requests and parsing the JSON from the Duo API:
