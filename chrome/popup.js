@@ -161,7 +161,7 @@ async function activateDevice(rawCode) {
   });
   // await new Promise(resolve => setTimeout(resolve, 2000));
   // Append URL parameters and begin request
-  request.send("?customer_protocol=1&pubkey=" + encodeURIComponent(pemFormat) + "&pkpush=rsa-sha512&jailbroken=false&architecture=arm64&region=US&app_id=com.duosecurity.duomobile&full_disk_encryption=true&passcode_status=true&platform=Android&app_version=3.49.0&app_build_number=323001&version=11&manufacturer=unknown&language=en&model=Browser%20Extension&security_patch_level=2021-02-01");
+  request.send("?customer_protocol=1&pubkey=" + encodeURIComponent(pemFormat) + "&pkpush=rsa-sha512&jailbroken=false&architecture=arm64&region=US&app_id=com.duosecurity.duomobile&full_disk_encryption=true&passcode_status=true&platform=Android&app_version=4.62.0&app_build_number=323001&version=11&manufacturer=unknown&language=en&model=Browser%20Extension&security_patch_level=2021-02-01");
   // Create timeout promise
   let timeout = new Promise((resolve, reject) => {
     setTimeout(() => {
