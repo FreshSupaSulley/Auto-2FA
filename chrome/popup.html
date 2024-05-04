@@ -5,6 +5,7 @@
     <style>
       /* Elements */
       html {
+        background-color: #f4f4f4;
         min-height: 30px; /*Hack to make the the logo evenly spaced while storage is being loaded*/
         width: 300px;
         font-family: sans-serif;
@@ -21,13 +22,11 @@
         transition: 0.15s ease-in-out;
         &:hover {
           cursor: pointer;
-          background-color: rgba(30,215,30,0.5);
-          border-color: rgb(30,215,30);
-          color: white;
+          opacity: 0.7;
+          &:active {
+            opacity: 0.5;
+          }
         }
-      }
-      button:active {
-        background-color: rgba(173,219,173,0.5);
       }
       hr {
         margin: 0;
@@ -88,8 +87,15 @@
 
       /* Classes */
       .screen {
+        background-color: white;
         display: none;
         text-align: center;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        padding: 5px 0px;
+      }
+      #activation {
+        background-color: inherit;
       }
       .steps {
         position: relative;
@@ -144,9 +150,17 @@
         /* Total time, start time */
         animation: stroke 0.3s linear 0.7s forwards;
       }
-      .approve {
+      .approve, .deny {
+        &.approve {
+          background-color: #3eb53e;
+        }
+        &.deny {
+          background-color: #eb4034;
+        }
+        color: white;
         width: 66%;
-        color: green;
+        border: none;
+        border-radius: 5px;
         font-family: inherit;
         font-size: 30px;
         font-weight: bold;
@@ -175,7 +189,7 @@
       #helpButton {
         width: 26px;
         position: absolute;
-        right: 4px;
+        right: 10px;
         bottom: 0px;
         transform-origin: center;
         transition: transform .25s ease-out;
@@ -201,14 +215,10 @@
       }
       /* Only the inner gear should change size */
       #gear:hover #gearChange {
-        transform: scale(1.15) rotate(180deg);
+        transform: scale(1.15) rotate(90deg);
       }
       #gear:active #gearChange {
-        transform: scale(0.9);
-        transform: rotate(180deg);
-      }
-      #splash {
-        margin-bottom: 15px;
+        transform: scale(1) rotate(90deg);
       }
       #errorSplash {
         padding: 0;
@@ -219,8 +229,10 @@
         margin-top: 5px;
         border-radius: 12px;
         overflow: hidden;
+        /* Sometimes error messages cause the text to be long */
+        word-wrap: break-word;
         & td {
-          background-color: #f3f3f3;
+          background-color: white;
         }
       }
       #importButton, #exportButton {
@@ -233,12 +245,14 @@
         width: auto;
         border-radius: 5px;
         &:hover {
+          color: white;
+          opacity: 1;
           background-color: red;
-          border-color: rgb(255,100,100);
+          &:active {
+            opacity: 1;
+            background-color: rgb(255,100,100);
+          }
         }
-      }
-      #resetButton:active {
-        background-color: rgb(255,100,100);
       }
       #approveTable {
         border: 1px solid gray;
@@ -249,12 +263,12 @@
       }
       #pushButton {
         margin-bottom: 2px;
-      }
-      #pushButton:disabled {
-        background-color: #ddd;
-        border-color: #aaa;
-        color: #888;
-        cursor: wait;
+        &:disabled {
+          background-color: #ddd;
+          border-color: #aaa;
+          color: #888;
+          cursor: wait;
+        }
       }
       #successDetails {
         font-size: 12px;
@@ -266,12 +280,12 @@
         padding: 10px;
       }
       #failedReason {
-        font-style: italic;
         overflow-wrap: break-word;
       }
       .failedReasonBackground {
+        border: 1px solid;
+        padding: 0px 10px;
         background-color: #ddd;
-        border: 1px dashed;
         border-radius: 10px;
       }
       #clickLogin {
@@ -309,7 +323,7 @@
       }
       .instructions-label {
         padding: 10px;
-        background-color: #f5f5f5;
+        background-color: white;
         cursor: pointer;
         transition: all 0.2s ease;
         &:hover {
@@ -328,37 +342,31 @@
       @media (prefers-color-scheme: dark) {
         html {
           color: rgb(230,230,230);
-          background-color: rgb(40,40,40);
+          background-color: #282828;
         }
         button {
           color: white;
           background-color: #555;
           border-color: #a6a6a6;
-          &:hover {
-            background-color: #8a8a8a;
-            border-color: #ff6161;
+          &:disabled {
+            color: #AAA;
+            background-color: #505050;
+            border-color: #a6a6a6;
           }
-        }
-        button:disabled {
-          color: #AAA;
-          background-color: #505050;
-          border-color: #a6a6a6;
         }
         a:hover {
           color: #bbb;
         }
-        .slide {
-          color: white;
-          background-color: #333;
-        }
-        .oneSlide {
-          color: white;
-          background-color: #333;
-        }
         .failedReasonBackground {
           background-color: #333;
-          border: 1px dashed;
           border-radius: 10px;
+        }
+        .screen {
+          background-color: #333;
+        }
+        .slide, .oneSlide {
+          color: white;
+          background-color: #282828;
         }
         #settings {
           margin-top: 5px;
@@ -386,7 +394,7 @@
   <body>
     <div style="display: inline-flex">
       <img style="margin: 0; margin-right: 7px; border: none; width: 30px;" src="images/Duochrome.svg">
-      <h1 style="padding-top: 1px; margin: 0; font-weight: lighter;"><span style="font-weight: bolder;">Duo</span>chrome</h1>
+      <h1 style="padding-top: 1px; margin: 0; font-weight: lighter;">Duochrome</h1>
       <!-- Gear SVG -->
       <svg id="gear" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" width="26px" height="26px" viewBox="0 0 24 24" fill="gray">
         <rect fill="none" height="26" width="26"></rect>
@@ -397,7 +405,9 @@
 
     <!-- Welcome screen -->
     <div class="screen" id="intro">
-      <h2>Connect to Duo</h2>
+      <h2>Disclaimer:</h2>
+      <h4>This extension is experimental. Functionality could break at any time, so keep additional devices on your account.</h4>
+      <hr>
       <h4>Login to your Duo Mobile devices website, then click <b>Ok</b>.</h4>
       <button type="submit" id="introButton">Ok</button>
     </div>
@@ -461,7 +471,7 @@
           <p id="qrSearchText">Searching for a QR code...</p>
           <p id="qrErrorText"></p>
           <h5 style="font-weight: normal">Duochrome will find the QR code on the current tab.</h5>
-          <h5 style="">Not working? Go to Step 6.</h5>
+          <h5 style="">Not working? Go to Step 5.</h5>
         </div>
         <!-- Slide 5 -->
         <div class="slide">
@@ -494,7 +504,7 @@
 
     <!-- Activation success page -->
     <div class="screen" id="activationSuccess">
-      <p>Duochrome Activated!</p>
+      <p><b>Duochrome Activated!</b></p>
       <p>Next time you login through Duo, click <b>Other Options</b>, then <b>Send to Android</b></p>
       <div class="oneSlide">
         <img src="/images/tutorial.png">
@@ -506,7 +516,7 @@
     <!-- Home screen -->
     <div class="screen" id="main">
       <!-- Elements dynamically altered in JS -->
-      <p id="splash"></p>
+      <p id="splash" style="margin-top: 10px; margin-bottom: 15px;"></p>
       <button type="submit" id="pushButton">Login</button>
       <!-- Help button -->
       <img id="helpButton" src="images/help.svg">
@@ -542,13 +552,21 @@
       </svg>
     </div>
 
+    <!-- Denied -->
+    <div class="screen" id="denied">
+      <!-- Elements dynamically altered in JS -->
+      <p style="margin-bottom: 15px">Login denied.</p>
+      <p>You denied a login attempt. If that wasn't you, please reset your password.</p>
+      <button type="submit" class="toMainScreen">Try Again</button>
+    </div>
+
     <!-- Failure -->
     <div class="screen" id="failure">
       <h3 style="text-decoration: underline;">An error occured:</h3>
       <div class="failedReasonBackground">
         <p id="failedReason"></p>
       </div>
-      <p>If this error persists, reset Duochrome in settings, or open an issue on the <a href="https://github.com/FreshSupaSulley/Duochrome" target="_blank">website</a>.</p>
+      <p>Try resetting Duochrome in settings. If this persists, <a href="https://github.com/FreshSupaSulley/Duochrome" target="_blank">open an issue</a>.</p>
       <button type="submit" class="toMainScreen">Ok</button>
     </div>
 
@@ -556,10 +574,10 @@
       <table>
         <tr>
           <td>
-            <input type="checkbox" id="clickLogin" name="One-Click Login">
+            <input type="range" min="1" max="3" value="2" class="slider" id="clickLogins">
           </td>
           <td>
-            <h4><a target="_blank" href="https://github.com/FreshSupaSulley/Duochrome/blob/main/README.md#one-click-login">One-click login</a></h4>
+            <h4><a id="clickLoginState" target="_blank" href="https://github.com/FreshSupaSulley/Duochrome/blob/main/README.md#login-clicks">No data</a></h4>
           </td>
         </tr>
         <tr>

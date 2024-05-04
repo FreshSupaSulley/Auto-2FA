@@ -112,7 +112,7 @@ async function activateDevice(rawCode) {
 
   let url = 'https://' + host + '/push/v2/activation/' + identifier;
   // Create new pair of RSA keys
-  let keyPair = await window.crypto.subtle.generateKey({
+  let keyPair = await crypto.subtle.generateKey({
     name: "RSASSA-PKCS1-v1_5",
     modulusLength: 2048,
     publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
@@ -120,13 +120,13 @@ async function activateDevice(rawCode) {
   }, true, ["sign", "verify"]);
 
   // Convert public key to PEM format to send to Duo
-  let pemFormat = await window.crypto.subtle.exportKey("spki", keyPair.publicKey);
-  pemFormat = window.btoa(String.fromCharCode(...new Uint8Array(pemFormat))).match(/.{1,64}/g).join('\n');
+  let pemFormat = await crypto.subtle.exportKey("spki", keyPair.publicKey);
+  pemFormat = btoa(String.fromCharCode(...new Uint8Array(pemFormat))).match(/.{1,64}/g).join('\n');
   pemFormat = `-----BEGIN PUBLIC KEY-----\n${pemFormat}\n-----END PUBLIC KEY-----`;
 
   // Exporting keys returns an array buffer. Convert it to Base64 string for storing
-  let publicRaw = arrayBufferToBase64(await window.crypto.subtle.exportKey("spki", keyPair.publicKey));
-  let privateRaw = arrayBufferToBase64(await window.crypto.subtle.exportKey("pkcs8", keyPair.privateKey));
+  let publicRaw = arrayBufferToBase64(await crypto.subtle.exportKey("spki", keyPair.publicKey));
+  let privateRaw = arrayBufferToBase64(await crypto.subtle.exportKey("pkcs8", keyPair.privateKey));
 
   // Initialize new HTTP request
   let request = new XMLHttpRequest();
@@ -141,15 +141,17 @@ async function activateDevice(rawCode) {
       if (result.stat == "OK") {
         // Get device info as JSON
         let deviceInfo = {
+          // akey not used but why not
           "akey": result.response.akey,
           "pkey": result.response.pkey,
           "host": host,
+          "clickLevel": "2",
           // Encode keys to Base64 for JSON serializing
           "publicRaw": publicRaw,
           "privateRaw": privateRaw
         };
         // Store device info in chrome sync
-        await browser.storage.sync.set({"deviceInfo": deviceInfo});
+        await setDeviceInfo(deviceInfo);
         resolve("Success");
       }
       else {
@@ -160,8 +162,8 @@ async function activateDevice(rawCode) {
     };
   });
   // await new Promise(resolve => setTimeout(resolve, 2000));
-  // Append URL parameters and begin request
-  request.send("?customer_protocol=1&pubkey=" + encodeURIComponent(pemFormat) + "&pkpush=rsa-sha512&jailbroken=false&architecture=arm64&region=US&app_id=com.duosecurity.duomobile&full_disk_encryption=true&passcode_status=true&platform=Android&app_version=3.49.0&app_build_number=323001&version=11&manufacturer=unknown&language=en&model=Browser%20Extension&security_patch_level=2021-02-01");
+  // Append URL parameters and begin request. Stick our branding on it too why not
+  request.send("?customer_protocol=1&pubkey=" + encodeURIComponent(pemFormat) + "&pkpush=rsa-sha512&jailbroken=false&architecture=arm64&region=US&app_id=com.duosecurity.duomobile&full_disk_encryption=true&passcode_status=true&platform=Android&app_version=4.59.0&app_build_number=459010&version=13&manufacturer=Duochrome&language=en&model=Extension&security_patch_level=2022-11-05");
   // Create timeout promise
   let timeout = new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -177,8 +179,9 @@ async function activateDevice(rawCode) {
 let inSettings = false;
 let gear = document.getElementById("gear");
 gear.addEventListener("click", async function() {
-  // If this is the first time we're clicking the gear
-  if(!inSettings) {
+  inSettings = !inSettings;
+  // If we are now in settings
+  if(inSettings) {
     // Set gear color to red
     gear.style.fill = "red";
     changeScreen("settings");
@@ -192,7 +195,6 @@ gear.addEventListener("click", async function() {
     // Don't count flipping back to main page as an attempt
     failedAttempts = 0;
   }
-  inSettings = !inSettings;
 });
 
 let splash = document.getElementById("splash");
@@ -228,11 +230,11 @@ pushButton.addEventListener("click", async function() {
       splash.innerHTML = "No logins found!";
     }
     // Expected response: Only 1 transaction should exist
-    // Only auto-approve this transaction if one-click logins are enabled
-    else if(transactions.length == 1 && !info.reviewPush) {
+    // Only auto-approve this transaction if one-click logins aren't 3 (indicates two click login)
+    else if(transactions.length == 1 && info.clickLevel != "3") {
       // Push the single transaction
       // Throws an error if something goes wrong
-      await approveTransaction(info, transactions[0].urgid);
+      await approveTransaction(info, transactions, transactions[0].urgid);
       // Switch to success screen
       successDetails.innerHTML = traverse(transactions[0].attributes);
       failedAttempts = 0;
@@ -243,10 +245,10 @@ pushButton.addEventListener("click", async function() {
     else {
       // If one-click logins are disabled
       if(transactions.length == 1) {
-        transactionsSplash.innerHTML = "Is this your login?";
+        transactionsSplash.innerHTML = "Is this you?";
       } else {
         // If multiple login attempts exist
-        transactionsSplash.innerHTML = "There's " + transactions.length + " login attempts.<br>Which one are you?";
+        transactionsSplash.innerHTML = "There's " + transactions.length + " login attempts.<br>Picking one will deny all others.";
       }
       // Switch to transactions screen
       changeScreen("transactions");
@@ -258,8 +260,8 @@ pushButton.addEventListener("click", async function() {
       for(let i = 0; i < transactions.length; i++) {
         let row = document.createElement("tr");
         // First column
-        let c1 = document.createElement("td");
         let approve = document.createElement("button");
+        // Checkmark
         approve.innerHTML = "&#x2713;";
         approve.className = "approve";
         approve.onclick = async () => {
@@ -269,38 +271,75 @@ pushButton.addEventListener("click", async function() {
             approveTable.style.display = "none";
             transactionsSplash.innerText = "Working...";
             // Approve the transaction
-            await approveTransaction(info, transactions[i].urgid);
+            await approveTransaction(info, transactions, transactions[i].urgid);
             successDetails.innerHTML = traverse(transactions[i].attributes);
             changeScreen("success");
-          } catch(e) {
-            console.error(e);
-            failedReason.innerText = `"${e}"`;
+          } catch(error) {
+            // Catching the error a bit earlier than the one below but probably redundant
+            failedReason.innerText = error;
             changeScreen("failure");
           } finally {
             // Reset elements
             approveTable.style.display = "block";
           }
         }
+        let c1 = document.createElement("td");
         c1.appendChild(approve);
 
         // 2nd column
-        let c2 = document.createElement("td");
         let p = document.createElement("p");
         // I have no way of knowing if array sizes vary per organization, so pick and choose isn't an option
         // The solution is to traverse through the JSON and find all key/value pairs
         p.innerHTML = traverse(transactions[i].attributes);
         p.style = "text-align: left; font-size: 12px; margin: 10px 0px";
+        let c2 = document.createElement("td");
         c2.appendChild(p);
 
+        // Add first 2 columns to page, 3rd is only necessary if there's only one transaction
         row.appendChild(c1);
         row.appendChild(c2);
+
+        // 3rd column (deny button)
+        if(transactions.length == 1) {
+          // First column
+          let deny = document.createElement("button");
+          // Checkmark
+          deny.innerHTML = "&#x2717;";
+          deny.className = "deny";
+          deny.onclick = async () => {
+            // Catch any possible errors
+            try {
+              // Display loading
+              approveTable.style.display = "none";
+              transactionsSplash.innerText = "Working...";
+              // Approve an invalid transaction, which denies all transactions
+              await approveTransaction(info, transactions, -1);
+              changeScreen("denied");
+            } catch(error) {
+              // Catching the error a bit earlier than the one below but probably redundant
+              console.error(error);
+              failedReason.innerText = error;
+              changeScreen("failure");
+            } finally {
+              // Reset elements
+              approveTable.style.display = "block";
+            }
+          }
+          let c3 = document.createElement("td");
+          c3.appendChild(deny);
+          // Add to row
+          row.appendChild(c3);
+        }
+
+        // Add all to page
         approveTable.appendChild(row);
       }
     }
   } catch(error) {
-    failedReason.innerText = `"${error}"\n\nStack: ${error.stack}`;
+    // buildRequest throws the failed promise
+    failedReason.innerHTML = error;
     failedAttempts = 0;
-    console.error(error);
+    console.error(JSON.stringify(error));
     changeScreen("failure");
   } finally {
     clearInterval(loadingInterval);
@@ -363,28 +402,9 @@ function traverse(json) {
   }
 }
 
-// Approves the transaction ID provided, denies all others
-// Throws an exception if no transactions are active
-async function approveTransaction(info, txID) {
-  let transactions = (await buildRequest(info, "GET", "/push/v2/device/transactions")).response.transactions;
-  if(transactions.length == 0) {
-    throw "No transactions found (request expired)";
-  }
-  for(let i = 0; i < transactions.length; i++) {
-    let urgID = transactions[i].urgid;
-    if(txID == urgID) {
-      // Only approve this one
-      let response = await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, {"answer": "approve"}, {"txId": urgID});
-      if(response.stat != "OK") {
-        console.error(response);
-        throw "Duo returned error status " + response.stat + " while approving login";
-      }
-    } else {
-      // Deny all others
-      // Don't bother handling the response
-      buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, {"answer": "deny"}, {"txId": urgID});
-    }
-  }
+// For formatting date header
+function twoDigits(input) {
+  return input.toString().padStart(2, '0');
 }
 
 // When the user presses the 'Got it' button on the failure screen
@@ -398,86 +418,6 @@ document.getElementById("introButton").addEventListener("click", function() {
   changeScreen("activation");
 });
 
-// Makes a request to the Duo API
-async function buildRequest(info, method, path, extraParam = {}, extraHeader = {}) {
-  // Manually convert date to UTC
-  let now = new Date();
-  var utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
-
-  // Manually format time because JS doesn't provide regex functions for this
-  let date = utc.toLocaleString('en-us', {weekday: 'long'}).substring(0, 3) + ", ";
-  date += utc.getDate() + " ";
-  date += utc.toLocaleString('en-us', {month: 'long'}).substring(0, 3) + " ";
-  date += 1900 + utc.getYear() + " ";
-  date += twoDigits(utc.getHours()) + ":";
-  date += twoDigits(utc.getMinutes()) + ":";
-  date += twoDigits(utc.getSeconds()) + " -0000";
-
-  // Create canolicalized request (signature of auth header)
-  // Technically, these parameters should be sorted alphabetically
-  // But for our purposes we don't need to for our only extra parameter (answer=approve)
-  let canonRequest = date + "\n" + method + "\n" + info.host + "\n" + path + "\n";
-  let params = "";
-
-  // We only use 1 extra parameter, but this shouldn't break for extra
-  for (const [key, value] of Object.entries(extraParam)) {
-    params += "&" + key + "=" + value;
-  }
-
-  // Add extra params to canonical request for auth
-  if(params.length != 0) {
-    // Cutoff first '&'
-    params = params.substring(1);
-    canonRequest += params;
-    // Add '?' for URL when we make fetch request
-    params = "?" + params
-  }
-
-  // Import keys (convert form Base64 back into ArrayBuffer)
-  let publicKey = await window.crypto.subtle.importKey("spki", base64ToArrayBuffer(info.publicRaw), {name: "RSASSA-PKCS1-v1_5", hash: {name: 'SHA-512'},}, true, ["verify"]);
-  let privateKey = await window.crypto.subtle.importKey("pkcs8", base64ToArrayBuffer(info.privateRaw), {name: "RSASSA-PKCS1-v1_5", hash: {name: "SHA-512"},}, true, ["sign"]);
-
-  // Sign canonicalized request using RSA private key
-  let toEncrypt = new TextEncoder().encode(canonRequest);
-  let signed = await window.crypto.subtle.sign({name: "RSASSA-PKCS1-v1_5"}, privateKey, toEncrypt);
-  let verified = await window.crypto.subtle.verify({name: "RSASSA-PKCS1-v1_5"}, publicKey, signed, toEncrypt);
-
-  // Ensure keys match
-  if(!verified) {
-    throw("Failed to verify signature with RSA keys");
-  }
-
-  // Required headers for all requests
-  let headers = {
-    "Authorization": "Basic " + window.btoa(info.pkey + ":" + arrayBufferToBase64(signed)),
-    "x-duo-date": date
-  }
-
-  // Append additional headers (we only use txId during transaction reply)
-  // Unlike extraParams, this won't break if more are supplied (which we don't need)
-  for (const [key, value] of Object.entries(extraHeader)) {
-    headers[key] = value;
-  }
-
-  let result = await fetch("https://" + info.host + path + params, {
-    method: method,
-    headers: headers
-  }).then(response => {
-    if(!response.ok) {
-      console.error(response);
-      throw "Duo denied handling request at " + path + " (was the device deleted?)";
-    } else {
-      return response.json();
-    }
-  });
-
-  return result;
-}
-
-// For formatting date header
-function twoDigits(input) {
-  return input.toString().padStart(2, '0');
-}
 
 // Change the current slide on activation screen
 function Timer(fn, timeout, onStop = () => {}) {
@@ -555,24 +495,26 @@ async function changeScreen(id) {
     if(id == "settings") {
       // Set the one-click login box if enabled or not
       let info = await getDeviceInfo();
-      if(info == null) {
-        clickLogin.disabled = true;
+      if(!info) {
+        clickSlider.disabled = true;
       } else {
-        clickLogin.disabled = false;
-        // If one-click logins are enabled
-        if(!info.reviewPush) {
-          clickLogin.checked = true;
-        } else {
-          clickLogin.checked = false;
-        }
+        clickSlider.disabled = false;
+        // 1-3 slider states. 1 == zero click, 2 == one click, 3 == two click
+        // Default is one-click login
+        updateSlider(info.clickLevel !== undefined ? info.clickLevel : "2");
       }
       // Make sure when we go to settings, we reset the main page
       splash.innerHTML = "Click to approve Duo Mobile logins.";
       pushButton.innerText = "Login";
     }
-    // Auto press the button on open
-    else if(id == "main") {
-      pushButton.click();
+    else {
+      // Auto press the button on open
+      if(id == "main") {
+        pushButton.click();
+      }
+      // Sometimes you can get booted out of the settings screen without clicking the button, so you need to programmically set the settings button back to normal
+      inSettings = false;
+      gear.style.fill = "gray";
     }
   }
 
@@ -619,7 +561,7 @@ function updateSlide(newIndex) {
 
 // Convert Base64 string to an ArrayBuffer
 function base64ToArrayBuffer(base64) {
-  var binary_string = window.atob(base64);
+  var binary_string = atob(base64);
   var len = binary_string.length;
   var bytes = new Uint8Array(len);
   for (var i = 0; i < len; i++) {
@@ -636,63 +578,75 @@ function arrayBufferToBase64(buffer) {
   for (let i = 0; i < len; i++) {
     binary += String.fromCharCode(bytes[i]);
   }
-  return window.btoa(binary);
+  return btoa(binary);
 }
 
-// One-click login
-let clickLogin = document.getElementById("clickLogin")
-clickLogin.addEventListener('change', async (event) => {
-  let data = await getDeviceInfo();
-  if(data != null) {
-    // Set new data
-    data.reviewPush = !clickLogin.checked;
-    await browser.storage.sync.set({"deviceInfo": data});
+// Click login slider
+var clickSlider = document.getElementById("clickLogins");
+var clickSliderState = document.getElementById("clickLoginState");
+
+// Update the current slider value (each time you drag the slider handle)
+clickSlider.oninput = function() {
+  updateSlider(this.value);
+}
+
+async function updateSlider(value) {
+  clickSlider.disabled = false;
+  clickSlider.value = value;
+  switch(value) {
+    case "1":
+      clickSliderState.innerText = "Zero-click login";
+      break;
+    case "2":
+      clickSliderState.innerText = "One-click login";
+      break;
+    case "3":
+      clickSliderState.innerText = "Two-click login";
+      break;
   }
-});
+  // Update data if it changed
+  let data = await getDeviceInfo();
+  if(data.clickLevel != value) {
+    data.clickLevel = value;
+    await setDeviceInfo(data).catch(e => {
+      // In case the user is literally MASHING the slider just tell them if it refuses to save their data
+      clickSliderState.innerText = e;
+    });
+  }
+}
 
 // Import button
 let importText = document.getElementById("importText");
 let importSplash = document.getElementById("importSplash");
 document.getElementById("importButton").addEventListener("click", async function() {
   try {
-    let decoded = window.atob(importText.value);
+    let decoded = atob(importText.value);
     let json = JSON.parse(decoded);
     // Tell user we are verifying the integrity of the data
-    importSplash.innerText = "Verifying..."
+    importSplash.innerHTML = "Verifying..."
     // We do this by running it through a transactions call
     let transactions = (await buildRequest(json, "GET", "/push/v2/device/transactions")).response.transactions;
     // If an error wasn't thrown, set new data in chrome sync
-    browser.storage.sync.set({"deviceInfo": json});
-    importSplash.innerText = "Data imported! Duochrome will now login with this data.";
-    clickLogin.disabled = false;
-    // If click logins are enabled
-    if(!json.reviewPush) {
-      clickLogin.checked = true;
-    } else {
-      clickLogin.checked = false;
-    }
+    await setDeviceInfo(json);
+    importSplash.innerHTML = "Data imported! Duochrome will now login with this data.";
   } catch(e) {
     console.error(e);
     // Tell the user this is an invalid code
-    importSplash.innerText = "Invalid data. Copy directly from export."
+    importSplash.innerHTML = `<b>Invalid data</b>:<br>${e}`;
   }
 });
 
 // Export button
 let exportText = document.getElementById("exportText");
 document.getElementById("exportButton").addEventListener("click", async function() {
-  let info = await new Promise((resolve) => {
-    browser.storage.sync.get('deviceInfo', (json) => {
-      resolve(json.deviceInfo);
-    });
-  });
+  let info = await getDeviceInfo();
   // If the user tried to export when we have no data
   if(info == null) {
     exportText.value = "No data!";
   }
   else {
     // Set text to be data. Scramble with Base64 so the user doesn't try to tamper any of this
-    exportText.value = window.btoa(JSON.stringify(info));
+    exportText.value = btoa(JSON.stringify(info));
   }
 });
 
@@ -706,7 +660,9 @@ document.getElementById("resetButton").addEventListener("click", function() {
     browser.storage.sync.clear(function() {
       browser.storage.local.clear(function() {
         // Disable check box
-        clickLogin.disabled = true;
+        clickSlider.disabled = true;
+        clickSlider.value = 2;
+        clickSliderState.innerText = "No data";
         // Reset main page
         slideIndex = 0;
         errorSplash.innerText = "Use arrows to flip through instructions:";
@@ -719,11 +675,43 @@ document.getElementById("resetButton").addEventListener("click", function() {
 
 // Returns a promise of the device info
 async function getDeviceInfo() {
-  return await new Promise(function(resolve) {
-    browser.storage.sync.get('deviceInfo', function(json) {
+  return await new Promise((resolve) => {
+    browser.storage.sync.get('deviceInfo', (json) => {
       resolve(json.deviceInfo);
     });
   });
+}
+
+// Returns a promise of setting the device info (for consistency)
+async function setDeviceInfo(json) {
+  // Only allow certain device info to be accepted so you can't just store an endless amount of information
+  let trueJson = {
+    "akey": json.akey,
+    "pkey": json.pkey,
+    "host": json.host,
+    // Click level is optional as it wasn't included in older versions. Missing clickLevel is handled below
+    // "clickLevel": json.clickLevel,
+    "publicRaw": json.publicRaw,
+    "privateRaw": json.privateRaw
+  }
+  // Check if any are null
+  for(let item in trueJson) {
+    if(trueJson[item] === undefined) {
+      throw `Missing "${item}"`;
+    }
+  }
+  // Set click level if it doesn't exist to one-click login
+  if(json.clickLevel !== undefined) {
+    // Ensure the slider level is [1-3]
+    let parsed = parseInt(json.clickLevel);
+    if(parsed < 1 || parsed > 3) throw `Expected clickLevel to be [1-3], got ${parsed}`;
+    trueJson.clickLevel = `${parsed}`;
+    clickSlider.value = trueJson.clickLevel;
+  } else {
+    trueJson.clickLevel = clickSlider.value;
+  }
+  await browser.storage.sync.set({"deviceInfo": trueJson});
+  updateSlider(trueJson.clickLevel);
 }
 
 // On startup
@@ -763,4 +751,30 @@ async function getQRLinkFromPage() {
     if(!response) throw "QR not found";
     return response;
   });
+}
+
+// Makes a request to the Duo API
+async function buildRequest(info, method, path) {
+  return sendToWorker({intent: "buildRequest", params: {
+    info, method, path
+  }});
+}
+
+// Approves the transaction ID provided, denies all others
+// Throws an exception if no transactions are active
+async function approveTransaction(info, transactions, txID) {
+  return sendToWorker({intent: "approveTransaction", params: {
+    info, transactions, txID
+  }});
+}
+
+// Handles errors with service worker which stores all the important functions
+async function sendToWorker(intent, params = {}) {
+  let response = await browser.runtime.sendMessage(intent, params);
+  console.log(response);
+  if(response && response.error) {
+    // Sometimes it comes back as a JSON object for some reason like {stack: ""}
+    throw JSON.stringify(response.reason);
+  }
+  return response;
 }

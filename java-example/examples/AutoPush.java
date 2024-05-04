@@ -3,21 +3,21 @@ package examples;
 import java.io.File;
 import java.io.IOException;
 
-import duo.DuOSU;
+import duo.Duochrome;
 
 public class AutoPush {
 	
 	public static void main(String[] args)
 	{
-		DuOSU osu = null;
+		Duochrome osu = null;
 		File file = new File("src/keys/tokens.json");
 		
 		try {
 			// Load device info from file
-			osu = new DuOSU(file);
+			osu = new Duochrome(file);
 			
 			// Activate client device using Duo activation code. Saves device info to file
-//			osu = new DuOSU("ENTER ACTIVATION CODE HERE", file);
+//			osu = new Duochrome("ENTER ACTIVATION CODE HERE", file);
 		} catch(Throwable e) {
 			e.printStackTrace();
 		}

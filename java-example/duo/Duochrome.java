@@ -33,7 +33,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class DuOSU {
+public class Duochrome {
 	
 	static
 	{
@@ -65,7 +65,7 @@ public class DuOSU {
 	 * @throws InvalidKeySpecException if public / private key data is malformed for RSA
 	 * @throws NoSuchAlgorithmException if the RSA key factory could not be found
 	 */
-	public DuOSU(File deviceFile) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException
+	public Duochrome(File deviceFile) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException
 	{
 		// Values are from a JSON file, or fetch new ones with an activation code created when activating a new Duo Mobile device
 		Map<String, Object> map = WebUtils.getJSONArray(Files.readString(deviceFile.toPath()));
@@ -84,7 +84,7 @@ public class DuOSU {
 	 * @throws IOException if an exception occurs, either from writing file or unexpected server response
 	 * @throws NoSuchAlgorithmException if an RSA key provider could not be found
 	 */
-	public DuOSU(String activationCode, File deviceInfo) throws IOException, NoSuchAlgorithmException
+	public Duochrome(String activationCode, File deviceInfo) throws IOException, NoSuchAlgorithmException
 	{
 		// Generate a new RSA key pair necessary for the authentication header in transaction requests
 		KeyPairGenerator instance = KeyPairGenerator.getInstance("RSA");
