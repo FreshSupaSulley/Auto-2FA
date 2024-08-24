@@ -1,6 +1,6 @@
 let logo = document.getElementById("logo");
 let splash = document.getElementById("splash");
-let tutorial = document.getElementById("tutorial");
+// let tutorial = document.getElementById("tutorial");
 let tutorialDiv = document.getElementById("tutorialDiv");
 
 // Fade in
@@ -14,8 +14,8 @@ window.onload = async function() {
   // Show splash text
   splash.style.opacity = "1";
   // splash.style.fontSize = "17px";
-  splash.innerText = "Open for instructions:"
+  splash.innerText = "Open extension for instructions."
   // Show GIF tutorial
-  tutorial.style.width = "100%";
+  // tutorial.style.width = "100%";
   tutorialDiv.style.opacity = "1";
 };

@@ -49,7 +49,7 @@ async function zeroClickLogin(id) {
     lastZeroClick = time;
     let info = await getDeviceInfo();
     // 1 indicates zero-click login (1-3 range)
-    if(info.clickLevel == "1") {
+    if(info && info.clickLevel == "1") {
         console.log("Attempting to zero-click login");
         let attempts = 0;
         let loadingInterval = setInterval(async () => {
@@ -89,8 +89,9 @@ async function stopClickLogin(loadingInterval, success, id) {
         chrome.action.setBadgeBackgroundColor({ color: "#67B14A", tabId: id }).catch(e => {});
         chrome.action.setBadgeText({ text: `Done`, tabId: id }).catch(e => {});
     } else {
-        chrome.action.setBadgeBackgroundColor({ color: "#FC0D1B", tabId: id }).catch(e => {});
-        chrome.action.setBadgeText({ text: `Fail`, tabId: id }).catch(e => {});
+        // chrome.action.setBadgeBackgroundColor({ color: "#FC0D1B", tabId: id }).catch(e => {});
+        // Clear badge
+        chrome.action.setBadgeText({ text: ``, tabId: id }).catch(e => {});
     }
 }
 

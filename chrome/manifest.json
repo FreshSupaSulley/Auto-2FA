@@ -1,7 +1,7 @@
 {
-  "name": "Duochrome",
+  "name": "Auto 2FA",
   "description": "Login through Duo Mobile in your browser.",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "manifest_version": 3,
   "permissions": [
     "storage"
