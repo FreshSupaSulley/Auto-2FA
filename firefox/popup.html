@@ -398,8 +398,8 @@
   </head>
   <body>
     <div style="display: inline-flex">
-      <img style="margin: 0; margin-right: 7px; border: none; width: 30px;" src="images/Duochrome.svg">
-      <h1 style="padding-top: 1px; margin: 0; font-weight: lighter;">Duochrome</h1>
+      <img style="margin: 0; margin-right: 7px; border: none; width: 30px;" src="images/Auto 2FA.svg">
+      <h1 style="padding-top: 1px; margin: 0; font-weight: lighter;">Auto 2FA</h1>
       <!-- Gear SVG -->
       <svg id="gear" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" width="26px" height="26px" viewBox="0 0 24 24" fill="gray">
         <rect fill="none" height="26" width="26"></rect>
@@ -411,7 +411,7 @@
     <!-- Welcome screen -->
     <div class="screen" id="intro">
       <h2>Disclaimer:</h2>
-      <h4>This extension is experimental. Functionality could break at any time, so keep additional devices on your account.</h4>
+      <h4>This extension is experimental. Functionality could break at any time, so keep additional devices on your account. Auto 2FA an independent project and is not recognized, endorsed, or affiliated with Duo Mobile or Cisco Technology. All product names, logos, and brands are property of their respective owners.</h4>
       <hr>
       <h4>Login to your Duo Mobile devices website, then click <b>Ok</b>.</h4>
       <button type="submit" id="introButton">Ok</button>
@@ -477,7 +477,7 @@
         <div class="slide">
           <p id="qrSearchText">Searching for a QR code...</p>
           <p id="qrErrorText"></p>
-          <h5 style="font-weight: normal">Duochrome will find the QR code on the current tab.</h5>
+          <h5 style="font-weight: normal">Auto 2FA will find the QR code on the current tab.</h5>
           <h5 style="">Not working? Go to Step 5.</h5>
         </div>
         <!-- Slide 5 -->
@@ -506,12 +506,12 @@
           </table>
         </div>
       </div>
-      <h4 style="margin: 0; padding: 0; font-size: 10px;">Confused? Checkout the <a href="https://github.com/FreshSupaSulley/Duochrome/blob/main/TUTORIAL.md" target="_blank">walkthrough</a>.</h4>
+      <h4 style="margin: 0; padding: 0; font-size: 10px;">Confused? Checkout the <a href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/TUTORIAL.md" target="_blank">walkthrough</a>.</h4>
     </div>
 
     <!-- Activation success page -->
     <div class="screen" id="activationSuccess">
-      <p><b>Duochrome Activated!</b></p>
+      <p><b>Auto 2FA Activated!</b></p>
       <p>Next time you login through Duo, click <b>Other Options</b>, then <b>Send to Android</b></p>
       <div class="oneSlide">
         <img src="/images/tutorial.png">
@@ -539,11 +539,11 @@
     <!-- User fails to login multiple times -->
     <div class="screen" id="failedAttempts">
       <div class="oneSlide">
-        <p>Send a push to Duochrome by clicking <b>Other options</b>.</p>
+        <p>Send a push to Auto 2FA by clicking <b>Other options</b>.</p>
         <img src="/images/tutorial.png">
         <p>Then click the extension to approve the login.</p>
       </div>
-      <p>Learn more <a href="https://github.com/FreshSupaSulley/Duochrome/blob/main/README.md#no-logins-found" target="_blank">here</a>.</p>
+      <p>Learn more <a href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/README.md#no-logins-found" target="_blank">here</a>.</p>
       <button type="submit" id="failureButton">Got it</button>
     </div>
 
@@ -573,7 +573,7 @@
       <div class="failedReasonBackground">
         <p id="failedReason"></p>
       </div>
-      <p>Try resetting Duochrome in settings. If this persists, <a href="https://github.com/FreshSupaSulley/Duochrome" target="_blank">open an issue</a>.</p>
+      <p>Try resetting Auto 2FA in settings. If this persists, <a href="https://github.com/FreshSupaSulley/Auto-2FA" target="_blank">open an issue</a>.</p>
       <button type="submit" class="toMainScreen">Ok</button>
     </div>
 
@@ -584,7 +584,7 @@
             <input type="range" min="1" max="3" value="2" class="slider" id="clickLogins">
           </td>
           <td>
-            <h4><a id="clickLoginState" target="_blank" href="https://github.com/FreshSupaSulley/Duochrome/blob/main/README.md#login-clicks">No data</a></h4>
+            <h4><a id="clickLoginState" target="_blank" href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/README.md#login-clicks">No data</a></h4>
           </td>
         </tr>
         <tr>

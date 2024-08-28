@@ -163,7 +163,7 @@ async function activateDevice(rawCode) {
   });
   // await new Promise(resolve => setTimeout(resolve, 2000));
   // Append URL parameters and begin request. Stick our branding on it too why not
-  request.send("?customer_protocol=1&pubkey=" + encodeURIComponent(pemFormat) + "&pkpush=rsa-sha512&jailbroken=false&architecture=arm64&region=US&app_id=com.duosecurity.duomobile&full_disk_encryption=true&passcode_status=true&platform=Android&app_version=4.59.0&app_build_number=459010&version=13&manufacturer=Duochrome&language=en&model=Extension&security_patch_level=2022-11-05");
+  request.send("?customer_protocol=1&pubkey=" + encodeURIComponent(pemFormat) + "&pkpush=rsa-sha512&jailbroken=false&architecture=arm64&region=US&app_id=com.duosecurity.duomobile&full_disk_encryption=true&passcode_status=true&platform=Android&app_version=4.59.0&app_build_number=459010&version=13&manufacturer=Auto%202FA&language=en&model=Extension&security_patch_level=2022-11-05");
   // Create timeout promise
   let timeout = new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -350,7 +350,7 @@ pushButton.addEventListener("click", async function() {
     // If we couldn't login after many attemps
     if(failedAttempts >= 4) {
       failedAttempts = 0;
-      // Remind the user how Duochrome works
+      // Remind the user how this extension works
       changeScreen("failedAttempts");
     }
   }
@@ -628,7 +628,7 @@ document.getElementById("importButton").addEventListener("click", async function
     let transactions = (await buildRequest(json, "GET", "/push/v2/device/transactions")).response.transactions;
     // If an error wasn't thrown, set new data in chrome sync
     await setDeviceInfo(json);
-    importSplash.innerHTML = "Data imported! Duochrome will now login with this data.";
+    importSplash.innerHTML = "Data imported! You will now login with this data.";
   } catch(e) {
     console.error(e);
     // Tell the user this is an invalid code
