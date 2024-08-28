@@ -3,7 +3,7 @@ Login through Duo Mobile in your browser.
 
 The Duo Mobile app can be a nuisance; you might've lost your phone or maybe you're prone to getting distracted by Instagram. Now you can login with just a click.
 
-Auto 2FA is currently on [Chrome, Edge](https://chrome.google.com/webstore/detail/duochrome/bnfooenhhgcnhdkdjelgmmkpaemlnoek), and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/duochrome/). Safari was considered, but there's no way I'm paying $100/yr to be an Apple Developer. Outdated Safari source is available on this page if you would like to build it yourself, but it won't be on the App Store unless someone with a developer membership wants to publish it. If you'd like to see Auto 2FA added to another browser, open an issue.
+Auto 2FA is currently on [Chrome, Edge](https://chromewebstore.google.com/detail/auto-2fa/bnfooenhhgcnhdkdjelgmmkpaemlnoek), and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/auto-2fa/). Safari was considered, but there's no way I'm paying $100/yr to be an Apple Developer. Outdated Safari source is available on this page if you would like to build it yourself, but it won't be on the App Store unless someone with a developer membership wants to publish it. If you'd like to see Auto 2FA added to another browser, open an issue.
 
 Disclaimer
 ----------
