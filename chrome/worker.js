@@ -129,13 +129,14 @@ async function buildRequest(info, method, path, extraParam = {}) {
     var utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
 
     // Manually format time because JS doesn't provide regex functions for this
-    let date = utc.toLocaleString('en-us', {weekday: 'long'}).substring(0, 3) + ", ";
-    date += utc.getDate() + " ";
-    date += utc.toLocaleString('en-us', {month: 'long'}).substring(0, 3) + " ";
-    date += 1900 + utc.getYear() + " ";
-    date += twoDigits(utc.getHours()) + ":";
-    date += twoDigits(utc.getMinutes()) + ":";
-    date += twoDigits(utc.getSeconds()) + " -0000";
+    // let date = utc.toLocaleString('en-us', {weekday: 'long'}).substring(0, 3) + ", ";
+    // date += utc.getDate() + " ";
+    // date += utc.toLocaleString('en-us', {month: 'long'}).substring(0, 3) + " ";
+    // date += 1900 + utc.getYear() + " ";
+    // date += twoDigits(utc.getHours()) + ":";
+    // date += twoDigits(utc.getMinutes()) + ":";
+    // date += twoDigits(utc.getSeconds()) + " -0000";
+    let date = utc.toUTCString();
 
     // Create canolicalized request (signature of auth header)
     // Technically, these parameters should be sorted alphabetically
