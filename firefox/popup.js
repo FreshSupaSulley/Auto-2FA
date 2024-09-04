@@ -771,10 +771,8 @@ async function approveTransaction(info, transactions, txID) {
 // Handles errors with service worker which stores all the important functions
 async function sendToWorker(intent, params = {}) {
   let response = await browser.runtime.sendMessage(intent, params);
-  console.log(response);
   if(response && response.error) {
-    // Sometimes it comes back as a JSON object for some reason like {stack: ""}
-    throw JSON.stringify(response.reason);
+    throw response.reason;
   }
   return response;
 }

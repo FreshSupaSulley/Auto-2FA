@@ -37,11 +37,15 @@ function onError(reason, sendResponse) {
     sendResponse({error: true, reason: `${reason}`});
 }
 
-// Does nothing to stop multiple redirect spams to the same page
-const maxAttempts = 7;
+const maxAttempts = 10;
 const zeroClickCooldown = 1000;
 var lastZeroClick = 0;
 async function zeroClickLogin(id) {
+    // let clientIP = await fetch('https://api.ipify.org?format=json').then(response => response.json()).then(data => {
+    //     return data.ip;
+    // }).catch(error => {
+    //     console.log("Failed to get IP", error);
+    // });
     // If there was another request to start a zero-click login while this one is going, OR it hasn't been long enough since the last zero-click login, ignore it
     // I am arbitrarily setting the zero-click login cooldown to be twice as long as it takes
     let time = Date.now();
@@ -53,6 +57,10 @@ async function zeroClickLogin(id) {
         console.log("Attempting to zero-click login");
         let attempts = 0;
         let loadingInterval = setInterval(async () => {
+            // Only continue the load if on the same tab, because the prompt screen is one thing, and Duo picking the device is another
+            let [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+            if(!tab || tab.id != id) return;
+            // Update attempts
             let result = await chrome.action.setBadgeText({ text: `${++attempts} / ${maxAttempts}`, tabId: id }).catch((e) => {
                 // The tab was closed
                 console.log("Tab was closed");
@@ -62,37 +70,57 @@ async function zeroClickLogin(id) {
             if(result === false) return;
             // Stop trying if getting transactions failed
             let transactions = (await buildRequest(info, "GET", "/push/v2/device/transactions").catch((error) => {
-                stopClickLogin(loadingInterval, false, id);
+                stopClickLogin(loadingInterval, "#FC0D1B", "Fail", id);
             })).response.transactions;
             // If there's just 1 login attempt
             if(transactions.length == 1) {
-                // Approve it
+                // Ensure the IPs match
+                // let duoIP = extractIP(transactions[0]);
+                // Approve it ONLY IF IPs match
+                // if(clientIP == duoIP) {
+                //     await approveTransaction(info, transactions, transactions[0].urgid);
+                //     stopClickLogin(loadingInterval, "#67B14A", "Done", id);
+                // } else {
+                //     // nah
+                //     stopClickLogin(loadingInterval, "FC0D1B", "IP");
+                // }
                 await approveTransaction(info, transactions, transactions[0].urgid);
-                stopClickLogin(loadingInterval, true, id);
+                // White text looks better
+                chrome.action.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch(e => {});
+                stopClickLogin(loadingInterval, "#67B14A", "Done", id);
             } else if(transactions.length > 1) {
                 // Multiple push requests are happening, stop immediately
-                stopClickLogin(loadingInterval, false, id);
+                stopClickLogin(loadingInterval, "#FF9333", "Open", id);
             } else {
                 // Increase the counter
                 if(attempts == maxAttempts) {
-                    stopClickLogin(loadingInterval, false, id);
+                    stopClickLogin(loadingInterval, "#FC0D1B", `None`, id);
                 }
             }
         }, zeroClickCooldown);
     }
 }
 
-async function stopClickLogin(loadingInterval, success, id) {
+// function extractIP(attributes) {
+//     for (let group of attributes) {
+//         for (let attribute of group) {
+//             if (attribute[0] === "IP Address") {
+//                 return attribute[1];
+//             }
+//         }
+//     }
+//     return null;
+// }
+async function stopClickLogin(loadingInterval, badgeColor, badgeText, id) {
     clearInterval(loadingInterval);
-    // We don't care about the errors that the tab might not exist
-    if(success) {
-        chrome.action.setBadgeBackgroundColor({ color: "#67B14A", tabId: id }).catch(e => {});
-        chrome.action.setBadgeText({ text: `Done`, tabId: id }).catch(e => {});
-    } else {
-        // chrome.action.setBadgeBackgroundColor({ color: "#FC0D1B", tabId: id }).catch(e => {});
-        // Clear badge
+    // Tab is supposed to exist
+    chrome.action.setBadgeBackgroundColor({ color: badgeColor, tabId: id }).catch(e => {});
+    chrome.action.setBadgeText({ text: badgeText, tabId: id }).catch(e => {});
+    // Clear
+    setTimeout(() => {
         chrome.action.setBadgeText({ text: ``, tabId: id }).catch(e => {});
-    }
+        chrome.action.setBadgeTextColor({ color: `#000`, tabId: id }).catch(e => {});
+    }, 5000);
 }
 
 // Gets the device info
@@ -126,7 +154,7 @@ async function approveTransaction(info, transactions, txID) {
 async function buildRequest(info, method, path, extraParam = {}) {
     // Manually convert date to UTC
     let now = new Date();
-    var utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+    // var utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
 
     // Manually format time because JS doesn't provide regex functions for this
     // let date = utc.toLocaleString('en-us', {weekday: 'long'}).substring(0, 3) + ", ";
@@ -136,7 +164,8 @@ async function buildRequest(info, method, path, extraParam = {}) {
     // date += twoDigits(utc.getHours()) + ":";
     // date += twoDigits(utc.getMinutes()) + ":";
     // date += twoDigits(utc.getSeconds()) + " -0000";
-    let date = utc.toUTCString();
+    // let date = utc.toUTCString();
+    let date = now.toUTCString();
 
     // Create canolicalized request (signature of auth header)
     // Technically, these parameters should be sorted alphabetically
@@ -186,13 +215,13 @@ async function buildRequest(info, method, path, extraParam = {}) {
         if(!response.ok) {
           // Banking on it actually returning JSON, which it should
           let apiData = await response.json();
-          throw `<b>${response.status}</b> - ${response.statusText}<br>${JSON.stringify(apiData)}`;
+          throw `<pre>${response.statusText} (${response.status}):<br>${JSON.stringify(apiData, null, 1)}</pre>`;
         } else {
           return response.json();
         }
     }).catch(e => {
         console.error(e);
-        throw `Failed to fetch @${finalPath}:<br><br>${e}`;
+        throw `Failed to fetch ${finalPath}:<br><br>${e}`;
     });
 
     return result;
@@ -221,6 +250,6 @@ function base64ToArrayBuffer(base64) {
 }
 
 // For formatting date header
-function twoDigits(input) {
-    return input.toString().padStart(2, '0');
-}
+// function twoDigits(input) {
+//     return input.toString().padStart(2, '0');
+// }

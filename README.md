@@ -8,7 +8,6 @@ Auto 2FA is currently on [Chrome, Edge](https://chromewebstore.google.com/detail
 Disclaimer
 ----------
 This is an independent project and is not recognized, endorsed, or affiliated with Duo Mobile or Cisco Technology. All product names, logos, and brands are property of their respective owners.
-
 This project was named from DuOSU to Duochrome, and now to Auto 2FA in an effort to combat trademark violations.
 
 How it Works

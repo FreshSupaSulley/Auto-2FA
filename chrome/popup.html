@@ -282,10 +282,19 @@
       #failedReason {
         overflow-wrap: break-word;
       }
-      .failedReasonBackground {
+      #failedReason pre {
+        text-wrap: wrap;
+        font-size: 10px;
+        text-align: left;
         border: 1px solid;
-        padding: 0px 10px;
-        background-color: #ddd;
+        border-radius: 10px;
+        padding: 8px;
+        margin: 0px 4px;
+      }
+      .failedReasonBackground {
+        margin: 10px;
+        padding: 2px 10px;
+        background-color: #eee;
         border-radius: 10px;
       }
       #clickLogin {
@@ -358,7 +367,7 @@
           color: #bbb;
         }
         .failedReasonBackground {
-          background-color: #333;
+          background-color: #282828;
           border-radius: 10px;
         }
         .screen {
@@ -406,7 +415,7 @@
     <!-- Welcome screen -->
     <div class="screen" id="intro">
       <h2>Disclaimer:</h2>
-      <h4>This extension is experimental. Functionality could break at any time, so keep additional devices on your account. This Chrome extension is an independent project and is not recognized, endorsed, or affiliated with Duo Mobile or Cisco Technology. All product names, logos, and brands are property of their respective owners.</h4>
+      <h4>This extension is experimental. Functionality could break at any time, so keep additional devices on your account. This extension is an independent project and is not recognized, endorsed, or affiliated with Duo Mobile or Cisco Technology. All product names, logos, and brands are property of their respective owners.</h4>
       <hr>
       <h4>Login to your Duo Mobile devices website, then click <b>Ok</b>.</h4>
       <button type="submit" id="introButton">Ok</button>
@@ -562,11 +571,11 @@
 
     <!-- Failure -->
     <div class="screen" id="failure">
-      <h3 style="text-decoration: underline;">An error occured:</h3>
+      <h3>An error occured:</h3>
       <div class="failedReasonBackground">
         <p id="failedReason"></p>
       </div>
-      <p>Try resetting Auto 2FA in settings. If this persists, <a href="https://github.com/FreshSupaSulley/Auto-2FA" target="_blank">open an issue</a>.</p>
+      <p>Try resetting Auto 2FA in settings.<br>If this issue persists, <a href="https://github.com/FreshSupaSulley/Auto-2FA" target="_blank">open an issue</a>.</p>
       <button type="submit" class="toMainScreen">Ok</button>
     </div>
 

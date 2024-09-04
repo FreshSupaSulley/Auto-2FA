@@ -1,5 +1,5 @@
 // Wait for popup.js to ask for QR
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     /**
      * Credit to Easy Duo Authentication for this traditional and universal prompt detection
      * repo got deleted tho idk why ):
@@ -11,6 +11,3 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // Snip URL
     sendResponse((code) ? code.src.substring(code.src.indexOf('value=') + 6) : null);
 });
-
-// Notify the service worker we are on a login page
-chrome.runtime.sendMessage({intent: "onLoginPage"});

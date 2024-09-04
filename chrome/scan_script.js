@@ -11,6 +11,3 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // Snip URL
     sendResponse((code) ? code.src.substring(code.src.indexOf('value=') + 6) : null);
 });
-
-// Notify the service worker we are on a login page
-chrome.runtime.sendMessage({intent: "onLoginPage"});

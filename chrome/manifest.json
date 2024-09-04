@@ -13,7 +13,11 @@
   "content_scripts": [
     {
       "matches": ["https://*.duosecurity.com/*"],
-      "js": ["content.js"]
+      "js": ["scan_script.js"]
+    },
+    {
+      "matches": ["https://*.duosecurity.com/frame/*/auth/prompt*"],
+      "js": ["login_script.js"]
     }
   ],
   "action": {
