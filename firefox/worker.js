@@ -165,7 +165,7 @@ async function buildRequest(info, method, path, extraParam = {}) {
     // date += twoDigits(utc.getMinutes()) + ":";
     // date += twoDigits(utc.getSeconds()) + " -0000";
     // let date = utc.toUTCString();
-    let date = "now.toUTCString()";
+    let date = now.toUTCString();
 
     // Create canolicalized request (signature of auth header)
     // Technically, these parameters should be sorted alphabetically
