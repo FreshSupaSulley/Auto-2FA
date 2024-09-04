@@ -5,7 +5,7 @@ Before you begin, navigate to your organization's Duo Mobile devices page. You c
 
 > **Note:** Your organization's Duo Mobile devices page either uses the new Universal Prompt, or the dated Traditional Prompt. You can toggle between them with these buttons:
 > 
-> ![Select Universal or Traditional Instructions](https://github.com/FreshSupaSulley/Auto-2FA/assets/45902499/db1f2293-0ea2-4a10-8e3f-a6ffdf2c97b1)
+> ![Select Universal or Traditional Instructions](https://github.com/user-attachments/assets/8d62b5ed-a71c-4eea-87d1-7bbff29efd5e)
 
 
 Quick links:
