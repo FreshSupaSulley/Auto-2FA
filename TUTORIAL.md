@@ -1,7 +1,7 @@
 # Setup Tutorial
 Welcome to Auto 2FA! Let's make it one of your Duo devices.
 
-Before you begin, navigate to your organization's Duo Mobile devices page. You can usually google the name of your organization followed by "duo mobile" to find the link.
+Before you begin, navigate to your organization's Duo Mobile devices page. If you don't know where the link is, you can usually google the name of your organization followed by "duo mobile".
 
 > **Note:** Your organization's Duo Mobile devices page either uses the new Universal Prompt, or the dated Traditional Prompt. You can toggle between them with these buttons:
 > 
@@ -47,7 +47,6 @@ Auto 2FA works like the phone app (without the phone), so click the tablet optio
 
 #### 3. Click I have Duo Mobile installed.
 <img width="296" alt="Click I have Duo Mobile installed" src="chrome/images/traditional/2.png">
-Lie lol
 
 #### 4. Scan the QR Code
 A QR code will be generated. Open Auto 2FA on the same page as the QR code and it should handle the rest. If you don't see a QR code, or it's failing to scan it, go to Step 6.

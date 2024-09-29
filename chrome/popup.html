@@ -415,15 +415,15 @@
     <!-- Welcome screen -->
     <div class="screen" id="intro">
       <h2>Disclaimer:</h2>
-      <h4>This extension is experimental. Functionality could break at any time, so keep additional devices on your account. This extension is an independent project and is not recognized, endorsed, or affiliated with Duo Mobile or Cisco Technology. All product names, logos, and brands are property of their respective owners.</h4>
+      <h4>This extension is experimental. Functionality could break at any time, so keep backup devices on your account. This extension is an independent project and is not recognized, endorsed, or affiliated with Duo Mobile or Cisco Technology.</h4>
       <hr>
-      <h4>Login to your Duo Mobile devices website, then click <b>Ok</b>.</h4>
+      <h4>Login to your Duo device manager website.</h4>
       <button type="submit" id="introButton">Ok</button>
     </div>
 
     <!-- Activation screen -->
     <div class="screen" id="activation">
-      <h4 id="errorSplash">Switch between Universal or Traditional prompt instructions, depending on your website.</h4>
+      <h4 id="errorSplash">Switch between Universal or Traditional instructions.</h4>
 
       <div class="steps">
         <!-- Universal / Traditional buttons -->
@@ -480,7 +480,7 @@
           <p id="qrSearchText">Searching for a QR code...</p>
           <p id="qrErrorText"></p>
           <h5 style="font-weight: normal">Auto 2FA will find the QR code on the current tab.</h5>
-          <h5 style="">Not working? Go to Step 5.</h5>
+          <h5>Not working? Go to Step 5.</h5>
         </div>
         <!-- Slide 5 -->
         <div class="slide">
@@ -513,8 +513,9 @@
 
     <!-- Activation success page -->
     <div class="screen" id="activationSuccess">
-      <p><b>Auto 2FA Activated!</b></p>
-      <p>Next time you login through Duo, click <b>Other Options</b>, then <b>Send to Android</b>.</p>
+      <p><b>Activated!</b> Device name:</p>
+      <p id="newDeviceDisplay"></p>
+      <p>Next time you login, click <b>Other Options</b>, then send it to this new device.</p>
       <div class="oneSlide">
         <img src="/images/tutorial.png">
         <p>Then tap this extension to approve the login.</p>

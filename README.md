@@ -14,7 +14,7 @@ How it Works
 ------------
 Auto 2FA utilizes the knowledge gained from reverse engineering the official phone app (checkout [this repo](https://github.com/revalo/duo-bypass)). Turns out it's a simple process:
 
-1. Activate Auto 2FA as a new Duo Mobile device. Auto 2FA will communicate with Duo's API activation endpoint and register itself as your new Android device. "Device information" is created during this, and it's synced to your browser account if your settings allow it (see [Privacy](#privacy)).
+1. Activate Auto 2FA as a new Duo Mobile device. Auto 2FA will communicate with Duo's API activation endpoint and register itself as your new iOS / Android tablet. "Device information" is created during this, and it's synced to your browser account if your settings allow it (see [Privacy](#privacy)).
 2. Approve transactions. A transaction, or a push request, represents a login attempt. When clicked, Auto 2FA approves a single transaction without asking you for approval for a seamless login (see [Login Clicks](#login-clicks)). If there are multiple push requests, you'll compare their details to weed out old or malicious ones.
 
 Auto 2FA can only approve push requests sent to the device it created during activation, meaning it can't approve a push request sent to the user's phone. This is not my decision, this is Duo's security. With this in mind, don't make Auto 2FA your only device capable of logging you in. It should be used as another option, not as the only option.
@@ -55,7 +55,7 @@ No Logins Found
 ----------------
 If you keep seeing **No logins found!**, it means no push requests were sent to Auto 2FA. You probably sent the push request to another device (like your phone).
 
-Auto 2FA can't approve a request sent to your phone. You need to select **Other options** on the Duo login page, and choose **Android** (default name created at activation) to send the push request to Auto 2FA. It's only then that you can click Auto 2FA and log in.
+Auto 2FA can't approve a request sent to your phone. You need to select **Other options** on the Duo login page, and choose the device created by Auto 2FA. It's only then that you can click Auto 2FA and log in.
 
 Login Clicks
 ------------
@@ -64,7 +64,7 @@ If there are multiple active login attempts, Auto 2FA will always require you to
 
 ### Zero-clicks
 Least safe, most convenient. When you browse to a Duo login page, Auto 2FA will start trying to approve a single login the moment it finds one. No click required.
-This is unsafe as it always approves a single login attempt, and it doesn't have to be yours. It will start checking for login attempts before yours fully loads. I'm considering requiring at least the IP addresses of the client and the transaction to match in order to approve this type of login.
+This is unsafe as it will start checking for login attempts before yours fully loads. I'm considering requiring at least the IP addresses of the client and the transaction to match in order to approve this type of login.
 
 ### One-click
 The default behavior. Clicking on the extension will approve a single login.

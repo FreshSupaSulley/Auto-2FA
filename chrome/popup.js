@@ -128,6 +128,37 @@ async function activateDevice(rawCode) {
   let publicRaw = arrayBufferToBase64(await crypto.subtle.exportKey("spki", keyPair.publicKey));
   let privateRaw = arrayBufferToBase64(await crypto.subtle.exportKey("pkcs8", keyPair.privateKey));
 
+  // Pick a randomized model and tablet
+  const appleDevices = ["iPad", "iPad Air", "iPad Pro", "iPad mini"];
+  const androidDevices = ["Galaxy Tab A8", "Galaxy Tab A7 Lite", "Galaxy Tab S10 Ultra", "Lenovo Tab P11"];
+  const activationInfo = {
+    customer_protocol: "1",
+    pubkey: pemFormat,
+    pkpush: "rsa-sha512",
+    jailbroken: "false",
+    architecture: "arm64",
+    region: "US",
+    app_id: "com.duosecurity.duomobile",
+    full_disk_encryption: true,
+    passcode_status: true,
+    app_version: "4.59.0",
+    app_build_number: "459010",
+    version: "13",
+    manufacturer: "unknown",
+    language: "en",
+    security_patch_level: "2022-11-05"
+  }
+  // New discovery: Platform = iOS is case-sensitive, Android is not
+  if(Math.random() < 0.5) {
+    // Apple
+    activationInfo.platform = "iOS";
+    activationInfo.model = appleDevices[Math.floor(Math.random() * appleDevices.length)];
+  } else {
+    // Android
+    activationInfo.platform = "Android";
+    activationInfo.model = androidDevices[Math.floor(Math.random() * androidDevices.length)];
+  }
+
   // Initialize new HTTP request
   let request = new XMLHttpRequest();
   let error = false;
@@ -150,6 +181,7 @@ async function activateDevice(rawCode) {
           "publicRaw": publicRaw,
           "privateRaw": privateRaw
         };
+        document.getElementById("newDeviceDisplay").innerHTML = `<b>${activationInfo.model}</b> (${activationInfo.platform})`;
         // Store device info in chrome sync
         await setDeviceInfo(deviceInfo);
         resolve("Success");
@@ -162,8 +194,8 @@ async function activateDevice(rawCode) {
     };
   });
   // await new Promise(resolve => setTimeout(resolve, 2000));
-  // Append URL parameters and begin request. Stick our branding on it too why not
-  request.send("?customer_protocol=1&pubkey=" + encodeURIComponent(pemFormat) + "&pkpush=rsa-sha512&jailbroken=false&architecture=arm64&region=US&app_id=com.duosecurity.duomobile&full_disk_encryption=true&passcode_status=true&platform=Android&app_version=4.59.0&app_build_number=459010&version=13&manufacturer=Auto%202FA&language=en&model=Extension&security_patch_level=2022-11-05");
+  // Append URL parameters and begin request
+  request.send(new URLSearchParams(activationInfo));
   // Create timeout promise
   let timeout = new Promise((resolve, reject) => {
     setTimeout(() => {
