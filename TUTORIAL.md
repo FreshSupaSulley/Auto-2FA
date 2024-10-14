@@ -39,7 +39,7 @@ After opening the link, you'll see a box in the center of the page containing th
 # Traditional Instructions
 #### 1. Add a new device
 <img width="296" alt="Add a new device" src="chrome/images/traditional/0.png">
-Once you navigate to your organization's Duo Mobile device manager website, click the Add a new Device** button.
+Once you navigate to your organization's Duo Mobile device manager website, click the **Add a new Device** button.
 
 #### 2. Click Tablet, then iOS
 <img width="296" alt="Click tablet, then iOS" src="chrome/images/traditional/1.png">

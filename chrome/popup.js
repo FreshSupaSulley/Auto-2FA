@@ -1,3 +1,10 @@
+// Fetches device info, useful for a deviceInfo rework
+// async function fetchDeviceInfo() {
+//   let info = await getDeviceInfo();
+//   let sussy = (await buildRequest(info, "GET", "/push/v2/device/info")).response;
+//   console.log(sussy);
+// }
+// fetchDeviceInfo();
 // Determines which slide should be visible on startup page
 let slideIndex = 0;
 
