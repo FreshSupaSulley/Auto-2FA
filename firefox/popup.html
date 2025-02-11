@@ -6,53 +6,64 @@
       /* Elements */
       html {
         background-color: #f4f4f4;
-        min-height: 30px; /*Hack to make the the logo evenly spaced while storage is being loaded*/
-        width: 300px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        min-height: 30px;
+        /*Hack to make the the logo evenly spaced while storage is being loaded*/
+        font-family: sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
       }
+
       body {
+        width: 300px;
         padding: 0;
-        width: inherit;
       }
+
       button {
         padding: 8px 2px;
-        border: 1px solid black;
+        border-color: grey;
+        border-style: solid;
         border-radius: 20px;
         user-select: none;
         width: 40%;
         transition: 0.15s ease-in-out;
+
         &:hover {
           cursor: pointer;
           opacity: 0.7;
+
           &:active {
             opacity: 0.5;
           }
         }
       }
+
       hr {
         margin: 0;
         padding: 0;
         border: 1px solid gray;
         border-top: none;
       }
+
       h1 {
         margin-top: 0;
         text-align: left;
         font-weight: normal;
         font-size: 24px;
       }
+
       h4 {
         font-size: 14px;
         text-align: center;
         font-weight: normal;
         padding: 2px 20px;
       }
+
       p {
         font-size: 15px;
         margin-bottom: 20px;
         text-align: center;
         font-size: 14px;
       }
+
       img {
         display: block;
         width: 90%;
@@ -62,26 +73,37 @@
         margin-bottom: 10px;
         user-select: none;
       }
+
       table {
         padding-bottom: 5px;
       }
-      tr, th, td, table {
+
+      caption {
+        text-align: left;
+        font-weight: bold;
+        padding-left: 8px;
+      }
+
+      tr,
+      th,
+      td,
+      table {
         text-align: center;
         width: 100%;
         margin: 0;
         padding: 0;
         table-layout: fixed;
       }
+
       input {
         text-align: center;
-        border: 1px solid gray;
-        border-radius: 2px;
         min-height: 25px;
         font-size: 12px;
-        width: 90%;
       }
+
       a {
         color: inherit;
+
         &:hover {
           color: gray;
         }
@@ -90,22 +112,24 @@
       /* Classes */
       .screen {
         background-color: white;
-        display: none;
         text-align: center;
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
         padding: 5px 0px;
       }
+
       #activation {
         background-color: inherit;
       }
+
       .steps {
         position: relative;
         margin: auto;
       }
-      .slide, .oneSlide {
+
+      .slide,
+      .oneSlide {
         color: black;
-        display: none;
         padding: 5px;
         border-radius: 5px;
         background-color: #fafafa;
@@ -113,26 +137,24 @@
         padding-left: 20px;
         padding-right: 20px;
       }
+
       .oneSlide {
         display: block;
       }
+
       /* SVG checkmark */
       .checkmark {
-        width: 30px;
-        height: 30px;
+        width: 24px;
+        height: 24px;
         border-radius: 50%;
-        display: inherit;
         stroke-width: 3;
         stroke: #fff;
         stroke-miterlimit: 10;
         box-shadow: inset 0px 0px 0px #7ac142;
         /* Total time, start time */
-        animation: fill 0.3s ease-in-out 0.2s forwards,
-        scale 1s ease-in-out 0.1s both;
-        position: absolute;
-        top: 6px;
-        right: 3.3em;
+        animation: fill 0.3s ease-in-out 0.2s forwards, scale 1s ease-in-out 0.1s both;
       }
+
       /* Circle outline */
       .checkmarkCircle {
         stroke-dasharray: 166;
@@ -142,8 +164,9 @@
         stroke: #7ac142;
         fill: none;
         /* Total time, start time */
-        animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1), forwards
+        animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1), forwards;
       }
+
       /* Inner white checkmark  */
       .checkmarkCheck {
         transform-origin: 50% 50%;
@@ -152,13 +175,17 @@
         /* Total time, start time */
         animation: stroke 0.3s linear 0.7s forwards;
       }
-      .approve, .deny {
+
+      .approve,
+      .deny {
         &.approve {
           background-color: #3eb53e;
         }
+
         &.deny {
           background-color: #eb4034;
         }
+
         color: white;
         width: 66%;
         border: none;
@@ -168,15 +195,17 @@
         font-weight: bold;
         transition: 0.15s ease-in-out;
       }
-      
+
       /* IDs */
-      #prev, #next {
+      #prev,
+      #next {
         padding: 3px 0px;
         text-align: center;
         width: 100%;
         font-size: 18px;
         border-radius: 10px;
       }
+
       #counter {
         padding: 0;
         margin: 0;
@@ -188,83 +217,135 @@
         font-weight: bold;
         border-radius: 3px;
       }
+
       #helpButton {
         width: 26px;
         position: absolute;
         right: 10px;
         bottom: 0px;
         transform-origin: center;
-        transition: transform .25s ease-out;
+        transition: transform 0.25s ease-out;
         border: none;
         color: inherit;
+
         &:hover {
           cursor: pointer;
           transform: scale(1.15);
-          transition: transform .25s ease-out;
+          transition: transform 0.25s ease-out;
         }
       }
+
       #gear {
         pointer-events: bounding-box;
+
         &:hover {
           cursor: pointer;
         }
       }
-      #gear, #gearChange {
-        position: absolute;
-        right: 7px;
+
+      #gear,
+      #gearChange {
         transform-origin: center;
-        transition: transform .25s ease-out;
+        transition: transform 0.25s ease-out;
       }
+
       /* Only the inner gear should change size */
       #gear:hover #gearChange {
         transform: scale(1.15) rotate(90deg);
       }
+
       #gear:active #gearChange {
         transform: scale(1) rotate(90deg);
       }
+
       #errorSplash {
         padding: 0;
         margin: 12px 0;
       }
+
       /* Settings */
       #settings {
-        margin-top: 5px;
+        padding: 0;
         border-radius: 12px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
         overflow: hidden;
         /* Sometimes error messages cause the text to be long */
         word-wrap: break-word;
+
+        & table {
+          margin-top: 8px;
+        }
+
+        & th {
+          text-align: left;
+          padding-left: 10px;
+          font-weight: normal;
+          font-size: 14px;
+        }
+
         & td {
-          background-color: white;
+          padding: 6px 0;
+        }
+
+        /* Need to compress settings where possible */
+        & h4 {
+          padding: 0;
+          margin: 0;
         }
       }
-      #importButton, #exportButton {
-        padding: 6px 12px;
-        width: 84%;
-        border-radius: 2px;
+
+      #deviceSettingsDiv {
+        border-bottom: 1px solid grey;
       }
-      #resetButton {
+
+      .inputButtonCouple {
+        padding: 0 !important;
+        overflow: hidden;
+        border-radius: 4px;
+        border: 1px solid grey;
+        > * {
+          width: 100%;
+          margin: 0;
+          padding: 0;
+          border: none;
+        }
+      }
+
+      #resetButton,
+      #deleteButton,
+      #importButton,
+      #exportButton {
         padding: 6px 12px;
-        width: auto;
+        width: 100%;
+        border-radius: 0;
+      }
+
+      #deleteButton,
+      #resetButton {
         border-radius: 5px;
+        /* padding: 6px 12px; */
+
         &:hover {
           color: white;
           opacity: 1;
+          border-color: red;
           background-color: red;
-          &:active {
-            opacity: 1;
-            background-color: rgb(255,100,100);
-          }
         }
       }
+
       #approveTable {
         border: 1px solid gray;
         border-radius: 5px;
       }
-      #approveTable td:nth-child(2n+1) {
+
+      #approveTable td:nth-child(2n + 1) {
         width: 30%;
       }
+
       #pushButton {
         margin-bottom: 2px;
+
         &:disabled {
           background-color: #ddd;
           border-color: #aaa;
@@ -272,6 +353,7 @@
           cursor: wait;
         }
       }
+
       #successDetails {
         font-size: 12px;
         margin-left: 5%;
@@ -281,9 +363,11 @@
         border-radius: 10px;
         padding: 10px;
       }
+
       #failedReason {
         overflow-wrap: break-word;
       }
+
       #failedReason pre {
         text-wrap: wrap;
         font-size: 10px;
@@ -293,24 +377,41 @@
         padding: 8px;
         margin: 0px 4px;
       }
+
       .failedReasonBackground {
         margin: 10px;
         padding: 2px 10px;
         background-color: #eee;
         border-radius: 10px;
       }
+
       #clickLogin {
         background-color: red;
       }
+
       @keyframes scale {
-        0%, 100% {transform: none} 50% {transform: scale3d(1.1, 1.1, 1)};
+        0%,
+        100% {
+          transform: none;
+        }
+
+        50% {
+          transform: scale3d(1.1, 1.1, 1);
+        }
       }
+
       @keyframes fill {
-        100% {box-shadow: inset 0px 0px 0px 30px #7ac142}
+        100% {
+          box-shadow: inset 0px 0px 0px 30px #7ac142;
+        }
       }
+
       @keyframes stroke {
-        100% {stroke-dashoffset: 0}
+        100% {
+          stroke-dashoffset: 0;
+        }
       }
+
       /* Universal / Traditional toggle */
       .instructions {
         display: flex;
@@ -319,110 +420,137 @@
         margin-bottom: 14px;
         font-size: 13px;
         border-radius: 10px;
+
         /* For each child */
         > * {
           width: 100%;
         }
       }
-      /* Hacky solution while we wait for Firefox to actually do work and add :has */
+
       .instructions-class {
-        width: 100%;
         display: none;
+
         &:checked + .instructions-label {
           font-weight: bolder;
           background-color: #555;
           color: white;
         }
       }
+
       .instructions-label {
-        border-radius: 5px;
         padding: 10px;
         background-color: white;
         cursor: pointer;
         transition: all 0.2s ease;
+
         &:hover {
           color: gray;
         }
       }
+
       .hidden-panel {
         display: none;
       }
-      #universal-button:checked ~ .slide .traditional-panel,
-      #traditional-button:checked ~ .slide .universal-panel {
+
+      .instructions:has(#universal-button:checked) ~ .slide .traditional-panel,
+      .instructions:has(#traditional-button:checked) ~ .slide .universal-panel {
         display: block;
         opacity: 1;
       }
+
+      select {
+        max-width: 90px;
+        align-self: center;
+        height: 80%;
+        border-radius: 3px;
+      }
+
       /* Dark theme */
       @media (prefers-color-scheme: dark) {
         html {
-          color: rgb(230,230,230);
+          color: rgb(230, 230, 230);
           background-color: #282828;
         }
+
         button {
           color: white;
           background-color: #555;
           border-color: #a6a6a6;
+
           &:disabled {
-            color: #AAA;
+            color: #aaa;
             background-color: #505050;
             border-color: #a6a6a6;
           }
         }
+
         a:hover {
           color: #bbb;
         }
+
         .failedReasonBackground {
           background-color: #282828;
-          border-radius: 10px;
         }
+
         .screen {
           background-color: #333;
         }
-        .slide, .oneSlide {
+
+        .slide,
+        .oneSlide {
           color: white;
           background-color: #282828;
         }
-        #settings {
-          margin-top: 5px;
-          border-radius: 12px;
-          overflow: hidden;
-          & td {
-            background-color: #333;
-          }
-        }
+
         .instructions-label {
           background-color: #333;
+
           &:hover {
             color: gray;
           }
         }
+
         .instructions-class {
           &:checked + .instructions-label {
             background-color: #eee;
             color: black;
           }
         }
+
+        select {
+          color: white;
+          background-color: #555;
+          border-color: #a6a6a6;
+        }
       }
     </style>
   </head>
-  <body>
-    <div style="display: inline-flex">
-      <img style="margin: 0; margin-right: 7px; border: none; width: 30px;" src="images/Auto 2FA.svg">
-      <h1 style="padding-top: 1px; margin: 0; font-weight: lighter;">Auto 2FA</h1>
+
+  <!-- Prevents weird visual artifacts from appearing while loading. JS clears the display -->
+  <body id="content" style="display: none">
+    <div style="display: inline-flex; width: 100%; justify-content: space-between">
+      <div style="display: flex">
+        <img style="margin: 0; margin-right: 7px; border: none; width: 30px" src="images/Auto 2FA.svg" />
+        <h1 style="padding-top: 1px; margin: 0; font-weight: lighter">Auto 2FA</h1>
+      </div>
       <!-- Gear SVG -->
-      <svg id="gear" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" width="26px" height="26px" viewBox="0 0 24 24" fill="gray">
-        <rect fill="none" height="26" width="26"></rect>
-        <path id="gearChange" d="M19.5,12c0-0.23-0.01-0.45-0.03-0.68l1.86-1.41c0.4-0.3,0.51-0.86,0.26-1.3l-1.87-3.23c-0.25-0.44-0.79-0.62-1.25-0.42 l-2.15,0.91c-0.37-0.26-0.76-0.49-1.17-0.68l-0.29-2.31C14.8,2.38,14.37,2,13.87,2h-3.73C9.63,2,9.2,2.38,9.14,2.88L8.85,5.19 c-0.41,0.19-0.8,0.42-1.17,0.68L5.53,4.96c-0.46-0.2-1-0.02-1.25,0.42L2.41,8.62c-0.25,0.44-0.14,0.99,0.26,1.3l1.86,1.41 C4.51,11.55,4.5,11.77,4.5,12s0.01,0.45,0.03,0.68l-1.86,1.41c-0.4,0.3-0.51,0.86-0.26,1.3l1.87,3.23c0.25,0.44,0.79,0.62,1.25,0.42 l2.15-0.91c0.37,0.26,0.76,0.49,1.17,0.68l0.29,2.31C9.2,21.62,9.63,22,10.13,22h3.73c0.5,0,0.93-0.38,0.99-0.88l0.29-2.31 c0.41-0.19,0.8-0.42,1.17-0.68l2.15,0.91c0.46,0.2,1,0.02,1.25-0.42l1.87-3.23c0.25-0.44,0.14-0.99-0.26-1.3l-1.86-1.41 C19.49,12.45,19.5,12.23,19.5,12z M12.04,15.5c-1.93,0-3.5-1.57-3.5-3.5s1.57-3.5,3.5-3.5s3.5,1.57,3.5,3.5S13.97,15.5,12.04,15.5z"></path>
-      </svg>
+      <div style="display: flex; gap: 6px; align-items: center">
+        <select id="deviceSelect">
+          <option value="-1">Add Device...</option>
+        </select>
+        <svg id="gear" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" width="26px" height="26px" viewBox="0 0 24 24" fill="gray">
+          <rect fill="none" height="26" width="26"></rect>
+          <path id="gearChange" d="M19.5,12c0-0.23-0.01-0.45-0.03-0.68l1.86-1.41c0.4-0.3,0.51-0.86,0.26-1.3l-1.87-3.23c-0.25-0.44-0.79-0.62-1.25-0.42 l-2.15,0.91c-0.37-0.26-0.76-0.49-1.17-0.68l-0.29-2.31C14.8,2.38,14.37,2,13.87,2h-3.73C9.63,2,9.2,2.38,9.14,2.88L8.85,5.19 c-0.41,0.19-0.8,0.42-1.17,0.68L5.53,4.96c-0.46-0.2-1-0.02-1.25,0.42L2.41,8.62c-0.25,0.44-0.14,0.99,0.26,1.3l1.86,1.41 C4.51,11.55,4.5,11.77,4.5,12s0.01,0.45,0.03,0.68l-1.86,1.41c-0.4,0.3-0.51,0.86-0.26,1.3l1.87,3.23c0.25,0.44,0.79,0.62,1.25,0.42 l2.15-0.91c0.37,0.26,0.76,0.49,1.17,0.68l0.29,2.31C9.2,21.62,9.63,22,10.13,22h3.73c0.5,0,0.93-0.38,0.99-0.88l0.29-2.31 c0.41-0.19,0.8-0.42,1.17-0.68l2.15,0.91c0.46,0.2,1,0.02,1.25-0.42l1.87-3.23c0.25-0.44,0.14-0.99-0.26-1.3l-1.86-1.41 C19.49,12.45,19.5,12.23,19.5,12z M12.04,15.5c-1.93,0-3.5-1.57-3.5-3.5s1.57-3.5,3.5-3.5s3.5,1.57,3.5,3.5S13.97,15.5,12.04,15.5z"></path>
+        </svg>
+      </div>
     </div>
-    <hr style="margin-top: 5px">
+    <hr style="margin-top: 5px" />
 
     <!-- Welcome screen -->
     <div class="screen" id="intro">
-      <h2>Disclaimer:</h2>
-      <h4>This extension is experimental. Functionality could break at any time, so keep backup devices on your account. This extension is an independent project and is not recognized, endorsed, or affiliated with Duo Mobile or Cisco Technology.</h4>
-      <hr>
-      <h4>Login to your Duo device manager website.</h4>
+      <h4>This extension is experimental. Functionality could break at any time. Always keep backup devices on your account. This extension is not recognized, endorsed, or affiliated with Duo Mobile or Cisco Technology.</h4>
+      <hr />
+      <h4>You're about to add a device to your Duo Mobile account. Login to your Duo device manager website.</h4>
       <button type="submit" id="introButton">Ok</button>
     </div>
 
@@ -430,56 +558,80 @@
     <div class="screen" id="activation">
       <h4 id="errorSplash">Switch between Universal or Traditional instructions.</h4>
 
-      <div class="steps" style="margin-top: 20px">
+      <div class="steps">
         <!-- Universal / Traditional buttons -->
-        <!-- We are waiting for Mozilla to get their shit together and release :has as a feature -->
-        <!-- Until then we can't use form, because that puts this out of scope and instructions doesn't work anymore -->
-        <!-- <form class="instructions"> -->
-          <input type="radio" name="traditional-input" id="universal-button" class="instructions-class" value="universal" checked>
+        <form class="instructions">
+          <input type="radio" name="traditional-input" id="universal-button" class="instructions-class" value="universal" checked />
           <label for="universal-button" class="instructions-label">Universal</label>
-          <input type="radio" name="traditional-input" id="traditional-button" class="instructions-class" value="traditional">
+          <input type="radio" name="traditional-input" id="traditional-button" class="instructions-class" value="traditional" />
           <label for="traditional-button" class="instructions-label">Traditional</label>
-        <!-- </form> -->
+        </form>
         <!-- Table to distribute buttons evenly -->
-        <table style="border-spacing: 0; margin-top: 20px">
+        <table style="border-spacing: 0">
           <tr>
             <td><button id="prev">&#10094;</button></td>
-            <td style="width: 50%"><p id="counter"></p></td>
+            <td style="width: 50%">
+              <p id="counter"></p>
+            </td>
             <td><button id="next">&#10095;</button></td>
           </tr>
         </table>
         <!-- Slide 1 -->
         <div class="slide">
-          <p style="margin-bottom: 10px">Click <b>Add a new device</b>.</p>
+          <p style="margin-bottom: 10px">
+            Click
+            <b>Add a new device</b>
+            .
+          </p>
           <!-- Universal -->
           <div class="hidden-panel traditional-panel">
-            <img src="/images/universal/0.png">
+            <img src="/images/universal/0.png" />
           </div>
           <!-- Traditional -->
           <div class="hidden-panel universal-panel">
-            <img src="/images/traditional/0.png">
+            <img src="/images/traditional/0.png" />
           </div>
         </div>
         <!-- Slide 2 -->
         <div class="slide">
           <div class="hidden-panel traditional-panel">
-            <p>Click <b>Duo Mobile</b>.</p>
-            <img src="/images/universal/1.png">
+            <p>
+              Click
+              <b>Duo Mobile</b>
+              .
+            </p>
+            <img src="/images/universal/1.png" />
           </div>
           <div class="hidden-panel universal-panel">
-            <p>Click <b>Tablet</b>, then <b>iOS</b>.</p>
-            <img src="/images/traditional/1.png">
+            <p>
+              Click
+              <b>Tablet</b>
+              , then
+              <b>iOS</b>
+              .
+            </p>
+            <img src="/images/traditional/1.png" />
           </div>
         </div>
         <!-- Slide 3 -->
         <div class="slide">
           <div class="hidden-panel traditional-panel">
-            <p>Click <b>I have a tablet</b>, then <b>Next</b>.</p>
-            <img src="/images/universal/2.png">
+            <p>
+              Click
+              <b>I have a tablet</b>
+              , then
+              <b>Next</b>
+              .
+            </p>
+            <img src="/images/universal/2.png" />
           </div>
           <div class="hidden-panel universal-panel">
-            <p>Click <b>I have Duo Mobile installed</b>.</p>
-            <img src="/images/traditional/2.png">
+            <p>
+              Click
+              <b>I have Duo Mobile installed</b>
+              .
+            </p>
+            <img src="/images/traditional/2.png" />
           </div>
         </div>
         <!-- Slide 4 -->
@@ -493,38 +645,42 @@
         <div class="slide">
           <p>Alternatively, you can send the code to your email.</p>
           <div class="hidden-panel traditional-panel">
-            <img src="/images/universal/4.png">
+            <img src="/images/universal/4.png" />
           </div>
           <div class="hidden-panel universal-panel">
-            <img src="/images/traditional/4.png">
+            <img src="/images/traditional/4.png" />
           </div>
         </div>
         <!-- Slide 6 -->
         <div class="slide">
-          <p>Open the link in the email, and copy the code into the box below. Click activate.</p>
-          <img src="/images/6.png">
-          <table>
-            <tr>
-              <td>
-                <input type="text" id="code" placeholder="Paste activation code">
-              </td>
-              <td style="width: 60%">
-                <button type="submit" id="activateButton">Activate</button>
-              </td>
-            </tr>
-          </table>
+          <p>Open the link sent to your inbox. Copy the code from the page into the box below. Click activate.</p>
+          <img src="/images/6.png" />
+          <div style="display: flex">
+            <input type="text" id="code" placeholder="Paste activation code" />
+            <button type="submit" id="activateButton">Activate</button>
+          </div>
         </div>
       </div>
-      <h4 style="margin: 0; padding: 0; font-size: 10px;">Confused? Checkout the <a href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/TUTORIAL.md" target="_blank">walkthrough</a>.</h4>
+      <h4 style="margin: 0; padding: 0; font-size: 10px">
+        Confused? Use the
+        <a href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/TUTORIAL.md" target="_blank">walkthrough</a>.
+      </h4>
     </div>
 
     <!-- Activation success page -->
     <div class="screen" id="activationSuccess">
-      <p><b>Activated!</b> Device name:</p>
-      <p id="newDeviceDisplay"></p>
-      <p>Next time you login, click <b>Other Options</b>, then send it to this new device.</p>
+      <p style="margin-bottom: 10px">
+        <b>Activated!</b>
+        Device name:
+      </p>
+      <p style="margin: 0" id="newDeviceDisplay"></p>
+      <p>
+        Next time you login, click
+        <b>Other Options</b>
+        , then send it to this new device.
+      </p>
       <div class="oneSlide">
-        <img src="/images/tutorial.png">
+        <img src="/images/tutorial.png" />
         <p>Then tap this extension to approve the login.</p>
       </div>
       <button type="submit" class="toMainScreen">Got it</button>
@@ -533,10 +689,10 @@
     <!-- Home screen -->
     <div class="screen" id="main">
       <!-- Elements dynamically altered in JS -->
-      <p id="splash" style="margin-top: 10px; margin-bottom: 15px;"></p>
+      <p id="splash" style="margin-top: 10px; margin-bottom: 15px"></p>
       <button type="submit" id="pushButton">Login</button>
       <!-- Help button -->
-      <img id="helpButton" src="images/help.svg">
+      <img id="helpButton" src="images/help.svg" />
     </div>
 
     <!-- Multiple push requests are active -->
@@ -549,76 +705,120 @@
     <!-- User fails to login multiple times -->
     <div class="screen" id="failedAttempts">
       <div class="oneSlide">
-        <p>Send a push to Auto 2FA by clicking <b>Other options</b>.</p>
-        <img src="/images/tutorial.png">
+        <p>
+          Send a push to Auto 2FA by clicking
+          <b>Other options</b>
+          .
+        </p>
+        <img src="/images/tutorial.png" />
         <p>Then click the extension to approve the login.</p>
       </div>
-      <p>Learn more <a href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/README.md#no-logins-found" target="_blank">here</a>.</p>
+      <p>
+        Learn more
+        <a href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/README.md#no-logins-found" target="_blank">here</a>
+        .
+      </p>
       <button type="submit" id="failureButton">Got it</button>
     </div>
 
     <!-- Success -->
     <div class="screen" id="success">
       <!-- Elements dynamically altered in JS -->
-      <p style="margin-bottom: 15px">Logged in!</p>
+      <div style="display: flex; display: inline-flex; gap: 10px; place-items: center">
+        <p style="margin-bottom: 15px">Logged in!</p>
+        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+          <circle class="checkmarkCircle" cx="26" cy="26" r="25" fill="none" />
+          <path class="checkmarkCheck" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+        </svg>
+      </div>
       <p id="successDetails"></p>
       <button type="submit" class="toMainScreen">Try Again</button>
-      <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-        <circle class="checkmarkCircle" cx="26" cy="26" r="25" fill="none"/>
-        <path class="checkmarkCheck" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-      </svg>
     </div>
 
     <!-- Denied -->
     <div class="screen" id="denied">
       <!-- Elements dynamically altered in JS -->
       <p style="margin-bottom: 15px">Login denied.</p>
-      <p>You denied a login attempt. If that wasn't you, please reset your password.</p>
+      <p>You denied a login attempt. If that wasn't you, reset your password.</p>
       <button type="submit" class="toMainScreen">Try Again</button>
     </div>
 
     <!-- Failure -->
     <div class="screen" id="failure">
-      <h4 style="text-decoration: underline;">An error occured:</h4>
+      <h3>An error occured:</h3>
       <div class="failedReasonBackground">
         <p id="failedReason"></p>
       </div>
-      <p>Try resetting Auto 2FA in settings. If this persists, <a href="https://github.com/FreshSupaSulley/Auto-2FA" target="_blank">open an issue</a>.</p>
+      <p>
+        You might've deleted the device.
+        <br />
+        If this issue persists,
+        <a href="https://github.com/FreshSupaSulley/Auto-2FA" target="_blank">open an issue</a>.
+      </p>
       <button type="submit" class="toMainScreen">Ok</button>
     </div>
 
     <div class="screen" id="settings">
+      <!-- Device settings -->
+      <table id="deviceSettingsDiv">
+        <caption>
+          Device
+        </caption>
+        <tbody>
+          <tr>
+            <th id="deviceNameFeedback">Name</th>
+            <td>
+              <input style="text-align: left" maxlength="64" placeholder="No data" id="deviceName" />
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <a id="clickLoginState" target="_blank" href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/README.md#login-clicks">No data</a>
+            </th>
+            <td>
+              <input type="range" min="1" max="3" value="2" class="slider" id="clickLogins" />
+            </td>
+          </tr>
+          <tr>
+            <th>Delete</th>
+            <td>
+              <button id="deleteButton" type="submit">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Global settings -->
       <table>
+        <caption>
+          General
+        </caption>
         <tr>
-          <td>
-            <input type="range" min="1" max="3" value="2" class="slider" id="clickLogins">
-          </td>
-          <td>
-            <h4><a id="clickLoginState" target="_blank" href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/README.md#login-clicks">No data</a></h4>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input style="width: 80%; margin-bottom: 4px;" placeholder="Paste data here" id="importText">
+          <th id="importSplash">Import data</th>
+          <td class="inputButtonCouple">
+            <input placeholder="Paste data here" id="importText" />
             <button type="submit" id="importButton">Import</button>
           </td>
-          <td>
-            <h4 id="importSplash" style="margin-top: 25px; margin-bottom: 25px">Import login data.</h4>
-          </td>
         </tr>
         <tr>
-          <td>
+          <th>Export data</th>
+          <td class="inputButtonCouple">
             <button type="submit" id="exportButton">Export</button>
-            <input style="width: 80%; margin-top: 4px;" placeholder="Click export" id="exportText" readonly>
-          </td>
-          <td>
-            <h4 style="margin-top: 35px; margin-bottom: 35px">Export login data.</h4>
+            <input placeholder="Click export" id="exportText" readonly />
           </td>
         </tr>
         <tr>
-          <td><button type="submit" id="resetButton">Reset</button></td>
-          <td><h4 id="resetSplash">Delete all data. You'll need to reactivate or import data.</h4></td>
+          <th id="resetSplash">Delete all data</th>
+          <td><button type="submit" id="resetButton">Delete all</button></td>
         </tr>
+        <!-- GOD I HATE FIREFOX -->
+        <!-- Required because the window alert (what chrome uses) won't fit in the damn window -->
+        <dialog open id="deleteAllModal">
+          <p>Are you sure you want to do this?</p>
+          <form method="dialog">
+            <button id="confirmDialog">Yes</button>
+            <button>No</button>
+          </form>
+        </dialog>
       </table>
     </div>
   </body>

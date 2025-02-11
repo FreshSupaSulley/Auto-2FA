@@ -1,23 +1,22 @@
 # Auto 2FA
 Login through Duo Mobile in your browser.
 
-The Duo Mobile app can be a nuisance; you might've lost your phone or maybe you're prone to getting distracted by Instagram. Now you can login with just a click.
+The Duo Mobile app can be a nuisance; you might've lost your phone or maybe you're prone to getting distracted by Instagram. Now you can login with just a click ([or hands-free!](#login-clicks)).
 
-Auto 2FA is currently on [Chrome, Edge](https://chromewebstore.google.com/detail/auto-2fa/bnfooenhhgcnhdkdjelgmmkpaemlnoek), and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/auto-2fa/). Safari was considered, but there's no way I'm paying $100/yr to be an Apple Developer. Outdated Safari source is available on this page if you would like to build it yourself, but it won't be on the App Store unless someone with a developer membership wants to publish it. If you'd like to see Auto 2FA added to another browser, open an issue.
+Auto 2FA is currently on [Chrome, Edge](https://chromewebstore.google.com/detail/auto-2fa/bnfooenhhgcnhdkdjelgmmkpaemlnoek), and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/auto-2fa/). Safari was considered, but there's no way I'm paying $100/yr to be an Apple Developer. Outdated Safari source is available on this page if you would like to build it yourself, but it won't be on the App Store unless someone with a developer membership wants to publish it for the community. If you'd like to see this project ported to another browser, open an issue.
 
 Disclaimer
 ----------
 This is an independent project and is not recognized, endorsed, or affiliated with Duo Mobile or Cisco Technology. All product names, logos, and brands are property of their respective owners.
-This project was named from DuOSU to Duochrome, and now to Auto 2FA in an effort to combat trademark violations.
 
 How it Works
 ------------
 Auto 2FA utilizes the knowledge gained from reverse engineering the official phone app (checkout [this repo](https://github.com/revalo/duo-bypass)). Turns out it's a simple process:
 
-1. Activate Auto 2FA as a new Duo Mobile device. Auto 2FA will communicate with Duo's API activation endpoint and register itself as your new iOS / Android tablet. "Device information" is created during this, and it's synced to your browser account if your settings allow it (see [Privacy](#privacy)).
-2. Approve transactions. A transaction, or a push request, represents a login attempt. When clicked, Auto 2FA approves a single transaction without asking you for approval for a seamless login (see [Login Clicks](#login-clicks)). If there are multiple push requests, you'll compare their details to weed out old or malicious ones.
-
-Auto 2FA can only approve push requests sent to the device it created during activation, meaning it can't approve a push request sent to the user's phone. This is not my decision, this is Duo's security. With this in mind, don't make Auto 2FA your only device capable of logging you in. It should be used as another option, not as the only option.
+1. Activation
+> Auto 2FA as a new Duo Mobile device. Auto 2FA will communicate with Duo's API activation endpoint and register itself as your new iOS / Android tablet. "Device information" is created during this, and it's synced to your browser account if your settings allow it (see [Privacy](#privacy)).
+2. Approving transactions
+> A transaction, or a push request, represents a login attempt. When clicked, Auto 2FA approves a single transaction without asking you for approval for a seamless login (see [Login Clicks](#login-clicks)). If there are multiple push requests, you'll compare their details to weed out old or malicious ones.
 
 Security
 --------
@@ -30,7 +29,7 @@ Auto 2FA is a *practical* secure alternative to the Duo Mobile app. For typical 
 
 2-step verification is something you know, and something you have. The premise of this extension is that you *know* your password, and you *have* Auto 2FA. But by using Auto 2FA, you're introducing new risks to your Duo Mobile protected account being compromised. Here's some examples:
 1. Your browser account (such as your Google profile if you're on Chrome) is hacked because you have a poor password, no 2FA, and syncing is enabled.
-2. You signed into a public machine, synced all your data to it, and walked away.
+2. You signed into a public machine, synced all your data to it, and walked away. Then someone decides to use your synced data to login to your Duo protected service.
 3. Someone, who already has your Duo Mobile account password, and who also knows you use Auto 2FA, decides to steal your exported login data off your computer when you're away from the machine.
 4. You are socially engineered to export your own Duo Mobile device information to an unauthorized party.
 5. You click Auto 2FA by accident, and as it just so happens, someone who knows your username and your password tried to login at the same time and you just approved their login.
@@ -39,9 +38,10 @@ What should be clear is that these kinds of attacks are pretty unlikely to happe
 
 #### Does this extension hack my Duo account to work?
 No. Auto 2FA establishes itself as a new device using the same process as the phone app.
+> But Cisco doesn't like it!
 
 #### Are browser extensions safe to be used as 2-factor authenticators?
-Yes. Extensions rely on the security of the browser they reside in. If the browser account is secure, then you shouldn't have anything to worry about. Modern browsers also protect extensions by using a system of [Isolated Worlds](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world) to separate them from each other and malicious web page JavaScript.
+Probably. Many already exist. Extensions rely on the security of the browser they reside in. If the browser account is secure, then you shouldn't have anything to worry about. Modern browsers also protect extensions by using a system of [Isolated Worlds](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#isolated_world) to separate them from each other and malicious code.
 
 #### What happens if there are multiple login attempts at the same time?
 If 2 or more push requests are active, they are presented to you to filter out the suspicious login attempts by comparing their details.
@@ -53,18 +53,14 @@ If 2 or more push requests are active, they are presented to you to filter out t
 
 No Logins Found
 ----------------
-If you keep seeing **No logins found!**, it means no push requests were sent to Auto 2FA. You probably sent the push request to another device (like your phone).
-
-Auto 2FA can't approve a request sent to your phone. You need to select **Other options** on the Duo login page, and choose the device created by Auto 2FA. It's only then that you can click Auto 2FA and log in.
+If you keep seeing **No logins found!**, it means no push requests were sent to Auto 2FA. You probably sent the push request to another device (like your phone). Auto 2FA can't approve a request sent to a device it didn't create. You need to select **Other options** on the Duo login page, and choose the device created by Auto 2FA. It's only then that you can click Auto 2FA and log in.
 
 Login Clicks
 ------------
-You can set the amount of clicks required to log you in with the slider in settings.
-If there are multiple active login attempts, Auto 2FA will always require you to review and select the correct one regardless of this setting.
+You can set the amount of clicks required to log you in with the slider in settings. If there are multiple active login attempts, Auto 2FA will always require you to review and select the correct one regardless of this setting.
 
 ### Zero-clicks
-Least safe, most convenient. When you browse to a Duo login page, Auto 2FA will start trying to approve a single login the moment it finds one. No click required.
-This is unsafe as it will start checking for login attempts before yours fully loads. I'm considering requiring at least the IP addresses of the client and the transaction to match in order to approve this type of login.
+Least safe, most convenient. When you browse to a Duo login page, Auto 2FA will start trying to approve a single login the moment it finds one. No click required. This is unsafe as it will start checking for login attempts before yours fully loads. I'm considering requiring at least the IP addresses of the client and the transaction to match in order to approve this type of login (if you want this to be a feature, let me know).
 
 ### One-click
 The default behavior. Clicking on the extension will approve a single login.
@@ -87,4 +83,4 @@ Here are repositories that helped make Auto 2FA possible or achieve similar purp
 
 Contributing
 ------------
-Feel free to share security concerns or adapt Auto 2FA into a project of your own. If you encounter errors, dislike the UI, or otherwise need to share something, please open an issue.
+Feel free to open pull requests, share security concerns, or adapt Auto 2FA into a project of your own.
