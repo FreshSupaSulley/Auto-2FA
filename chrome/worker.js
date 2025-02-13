@@ -161,7 +161,7 @@ async function getDeviceInfo() {
     });
   }).then(async (info) => {
     let newInfo = info;
-    // If there's no info yet OR it's old info (presence of info.host indicates this)
+    // If there's no info yet OR it's old info (presence of info.host indicates this [it's a single device])
     if (!info || info.host) {
       // Update 1.4.3 data -> 1.5.0
       // Data is still json object, update to array

@@ -10,7 +10,8 @@ Porting from Chrome to Firefox
 - browser.action.setBadgeText and shit is different
 > Replace `browser.action` with `browser.browserAction`
 - HTML CSS tag needs this line: font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-- Add `font-size: 14px;` to h4. Better yet just replace h4s in chrome so you don't have to do this
+- Add `font-size: 14px;` to h4 AND in & th { of settings. Better yet just replace h4s in chrome so you don't have to do this
+- Line 294 of firefox code (as of rn): > * { width: -moz-available; }
 - Body must inherit the width from html tag
 - Must remove “experimental” JS (bullshit things, like having using async before a method that’s not nested)
 > Wtf does this mean

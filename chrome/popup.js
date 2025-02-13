@@ -627,6 +627,16 @@ function arrayBufferToBase64(buffer) {
   return btoa(binary);
 }
 
+// Delete modals
+let deleteModal = document.getElementById("deleteModal");
+let modalPrompt = document.getElementById("modalPrompt");
+
+async function showDeleteModal(prompt, onAccept = () => {}) {
+  modalPrompt.innerText = prompt;
+  document.getElementById("confirmDialog").onclick = onAccept;
+  deleteModal.showModal();
+}
+
 // Update device name
 let deviceNameResponse = document.getElementById("deviceNameFeedback");
 let deviceName = document.getElementById("deviceName");
@@ -668,15 +678,16 @@ clickSlider.oninput = async function (event) {
 };
 
 // Delete device
-let deleteButton = document.getElementById("deleteButton");
-deleteButton.onclick = async () => {
-  // Before you do that
+document.getElementById("deleteButton").onclick = async () => {
   let data = await getDeviceInfo();
-  if (!window.confirm(`Are you sure you want to delete this device (${data.devices[data.activeDevice].name})? You'll need to delete it from your Duo account too.`)) return;
-  data.devices.splice(data.activeDevice);
-  // Go back to previous device, or if on 0 (the only device), this should take them to the add device screen
-  data.activeDevice = data.activeDevice - 1;
-  await setDeviceInfo(data);
+  showDeleteModal(`Are you sure you want to delete this device (${data.devices[data.activeDevice].name})? You'll need to delete it from your Duo account too.`, async () => {
+    // Before you do that
+    let data = await getDeviceInfo();
+    data.devices.splice(data.activeDevice, 1);
+    // Go back to previous device, or if on 0 (the only device), this should take them to the add device screen
+    data.activeDevice = data.devices.length - 1;
+    await setDeviceInfo(data);
+  });
 };
 
 // Import button
@@ -710,37 +721,32 @@ document.getElementById("importButton").addEventListener("click", async function
 // Export button
 let exportText = document.getElementById("exportText");
 document.getElementById("exportButton").addEventListener("click", async function () {
+  // Always will have data thanks to sanitization
   let info = await getDeviceInfo();
-  // If the user tried to export when we have no data
-  if (info == null) {
-    exportText.value = "No data!";
-  } else {
-    // Set text to be data. Scramble with Base64 so the user doesn't try to tamper any of this
-    exportText.value = btoa(JSON.stringify(info));
-  }
+  // Set text to be data. Scramble with Base64 so the user doesn't try to tamper any of this
+  exportText.value = btoa(JSON.stringify(info));
 });
 
 // Reset button
 let resetSplash = document.getElementById("resetSplash");
-document.getElementById("resetButton").addEventListener("click", function () {
-  // Before you do that
-  if (!window.confirm("Are you sure you want to delete all data?")) return;
-  // Delete chrome local / sync data
-  // We are not using local storage anymore, but it WAS being used in earlier versions
-  // I also don't know what happens if the user doesn't have syncing enabled
-  chrome.storage.session.clear(function () {
-    chrome.storage.sync.clear(function () {
-      chrome.storage.local.clear(function () {
-        // Reset main page
-        slideIndex = 0;
-        errorSplash.innerText = "Use arrows to flip through instructions:";
-        activateButton.innerText = "Activate";
-        resetSplash.innerText = "Data cleared. Import data or reactivate.";
-        getDeviceInfo().then(updatePage);
+document.getElementById("resetButton").onclick = () =>
+  showDeleteModal(`Are you sure you want to delete all data?`, async () => {
+    // Delete the entire thing
+    // Delete chrome local / sync data
+    // We are not using local storage anymore, but it WAS being used in earlier versions
+    // I also don't know what happens if the user doesn't have syncing enabled
+    chrome.storage.session.clear(() => {
+      chrome.storage.sync.clear(() => {
+        chrome.storage.local.clear(() => {
+          // Reset main page
+          slideIndex = 0;
+          errorSplash.innerText = "Use arrows to flip through instructions:";
+          activateButton.innerText = "Activate";
+          getDeviceInfo().then(updatePage);
+        });
       });
     });
   });
-});
 
 // Returns a promise of setting the device info (for consistency)
 async function setDeviceInfo(deviceInfo, update = true) {

@@ -7,7 +7,6 @@
       html {
         background-color: #f4f4f4;
         min-height: 30px;
-        /*Hack to make the the logo evenly spaced while storage is being loaded*/
         width: 300px;
         font-family: sans-serif;
       }
@@ -105,6 +104,12 @@
         &:hover {
           color: gray;
         }
+      }
+
+      dialog {
+        align-self: anchor-center;
+        margin: auto 5%;
+        transition: 0.5s;
       }
 
       /* Classes */
@@ -298,6 +303,7 @@
 
       .inputButtonCouple {
         padding: 0 !important;
+        margin: 0 !important;
         overflow: hidden;
         border-radius: 4px;
         border: 1px solid grey;
@@ -756,6 +762,13 @@
     </div>
 
     <div class="screen" id="settings">
+      <dialog id="deleteModal">
+        <p id="modalPrompt">Are you sure you want to do this?</p>
+        <form method="dialog">
+          <button autofocus id="confirmDialog">Yes</button>
+          <button>No</button>
+        </form>
+      </dialog>
       <!-- Device settings -->
       <table id="deviceSettingsDiv">
         <caption>
@@ -791,16 +804,20 @@
         </caption>
         <tr>
           <th id="importSplash">Import data</th>
-          <td class="inputButtonCouple">
-            <input placeholder="Paste data here" id="importText" />
-            <button type="submit" id="importButton">Import</button>
+          <td>
+            <div class="inputButtonCouple">
+              <input placeholder="Paste data here" id="importText" />
+              <button type="submit" id="importButton">Import</button>
+            </div>
           </td>
         </tr>
         <tr>
           <th>Export data</th>
-          <td class="inputButtonCouple">
-            <button type="submit" id="exportButton">Export</button>
-            <input placeholder="Click export" id="exportText" readonly />
+          <td>
+            <div class="inputButtonCouple">
+              <button type="submit" id="exportButton">Export</button>
+              <input placeholder="Click export" id="exportText" readonly />
+            </div>
           </td>
         </tr>
         <tr>

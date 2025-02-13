@@ -103,17 +103,15 @@ async function zeroClickLogin(id) {
         //     stopClickLogin(loadingInterval, "FC0D1B", "IP");
         // }
         console.log("Transaction found for device " + info.name);
-        await approveTransaction(info, transactions, transactions[0].urgid)
-          .then((success) => {
-            // Signal success
-            browser.browserAction.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => {});
-            stopClickLogin(loadingInterval, "#67B14A", "Done", id);
-          })
-          .catch((e) => {
-            // Signal failure
-            browser.browserAction.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => {});
-            stopClickLogin(loadingInterval, "#FC0D1B", "Err", id);
-          });
+        await approveTransaction(info, transactions, transactions[0].urgid).then((success) => {
+          // Signal success
+          browser.browserAction.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => {});
+          stopClickLogin(loadingInterval, "#67B14A", "Done", id);
+        }).catch(e => {
+          // Signal failure
+          browser.browserAction.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => {});
+          stopClickLogin(loadingInterval, "#FC0D1B", "Err", id);
+        });
         // Don't try other devices, we're done
         break;
       } else if (transactions.length > 1) {
@@ -163,7 +161,7 @@ async function getDeviceInfo() {
     });
   }).then(async (info) => {
     let newInfo = info;
-    // If there's no info yet OR it's old info (presence of info.host indicates this)
+    // If there's no info yet OR it's old info (presence of info.host indicates this [it's a single device])
     if (!info || info.host) {
       // Update 1.4.3 data -> 1.5.0
       // Data is still json object, update to array

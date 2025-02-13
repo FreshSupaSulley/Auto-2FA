@@ -7,7 +7,6 @@
       html {
         background-color: #f4f4f4;
         min-height: 30px;
-        /*Hack to make the the logo evenly spaced while storage is being loaded*/
         font-family: sans-serif;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
       }
@@ -107,6 +106,12 @@
         &:hover {
           color: gray;
         }
+      }
+
+      dialog {
+        align-self: anchor-center;
+        margin: auto 5%;
+        transition: 0.5s;
       }
 
       /* Classes */
@@ -285,6 +290,10 @@
         }
 
         & td {
+          /* FIREFOX SPECIFIC?? WHY??? */
+          > * {
+            width: -moz-available;
+          }
           padding: 6px 0;
         }
 
@@ -301,6 +310,7 @@
 
       .inputButtonCouple {
         padding: 0 !important;
+        margin: 0 !important;
         overflow: hidden;
         border-radius: 4px;
         border: 1px solid grey;
@@ -579,9 +589,7 @@
         <!-- Slide 1 -->
         <div class="slide">
           <p style="margin-bottom: 10px">
-            Click
-            <b>Add a new device</b>
-            .
+            Click <b>Add a new device</b>.
           </p>
           <!-- Universal -->
           <div class="hidden-panel traditional-panel">
@@ -596,19 +604,13 @@
         <div class="slide">
           <div class="hidden-panel traditional-panel">
             <p>
-              Click
-              <b>Duo Mobile</b>
-              .
+              Click <b>Duo Mobile</b>.
             </p>
             <img src="/images/universal/1.png" />
           </div>
           <div class="hidden-panel universal-panel">
             <p>
-              Click
-              <b>Tablet</b>
-              , then
-              <b>iOS</b>
-              .
+              Click <b>Tablet</b>, then <b>iOS</b>.
             </p>
             <img src="/images/traditional/1.png" />
           </div>
@@ -617,19 +619,13 @@
         <div class="slide">
           <div class="hidden-panel traditional-panel">
             <p>
-              Click
-              <b>I have a tablet</b>
-              , then
-              <b>Next</b>
-              .
+              Click <b>I have a tablet</b>, then <b>Next</b>.
             </p>
             <img src="/images/universal/2.png" />
           </div>
           <div class="hidden-panel universal-panel">
             <p>
-              Click
-              <b>I have Duo Mobile installed</b>
-              .
+              Click <b>I have Duo Mobile installed</b>.
             </p>
             <img src="/images/traditional/2.png" />
           </div>
@@ -670,14 +666,11 @@
     <!-- Activation success page -->
     <div class="screen" id="activationSuccess">
       <p style="margin-bottom: 10px">
-        <b>Activated!</b>
-        Device name:
+        <b>Activated!</b> Device name:
       </p>
       <p style="margin: 0" id="newDeviceDisplay"></p>
       <p>
-        Next time you login, click
-        <b>Other Options</b>
-        , then send it to this new device.
+        Next time you login, click <b>Other Options</b>, then send it to this new device.
       </p>
       <div class="oneSlide">
         <img src="/images/tutorial.png" />
@@ -706,17 +699,13 @@
     <div class="screen" id="failedAttempts">
       <div class="oneSlide">
         <p>
-          Send a push to Auto 2FA by clicking
-          <b>Other options</b>
-          .
+          Send a push to Auto 2FA by clicking <b>Other options</b>.
         </p>
         <img src="/images/tutorial.png" />
         <p>Then click the extension to approve the login.</p>
       </div>
       <p>
-        Learn more
-        <a href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/README.md#no-logins-found" target="_blank">here</a>
-        .
+        Learn more <a href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/README.md#no-logins-found" target="_blank">here</a>.
       </p>
       <button type="submit" id="failureButton">Got it</button>
     </div>
@@ -759,6 +748,13 @@
     </div>
 
     <div class="screen" id="settings">
+      <dialog id="deleteModal">
+        <p id="modalPrompt">Are you sure you want to do this?</p>
+        <form method="dialog">
+          <button autofocus id="confirmDialog">Yes</button>
+          <button>No</button>
+        </form>
+      </dialog>
       <!-- Device settings -->
       <table id="deviceSettingsDiv">
         <caption>
@@ -794,31 +790,26 @@
         </caption>
         <tr>
           <th id="importSplash">Import data</th>
-          <td class="inputButtonCouple">
-            <input placeholder="Paste data here" id="importText" />
-            <button type="submit" id="importButton">Import</button>
+          <td>
+            <div class="inputButtonCouple">
+              <input placeholder="Paste data here" id="importText" />
+              <button type="submit" id="importButton">Import</button>
+            </div>
           </td>
         </tr>
         <tr>
           <th>Export data</th>
-          <td class="inputButtonCouple">
-            <button type="submit" id="exportButton">Export</button>
-            <input placeholder="Click export" id="exportText" readonly />
+          <td>
+            <div class="inputButtonCouple">
+              <button type="submit" id="exportButton">Export</button>
+              <input placeholder="Click export" id="exportText" readonly />
+            </div>
           </td>
         </tr>
         <tr>
           <th id="resetSplash">Delete all data</th>
           <td><button type="submit" id="resetButton">Delete all</button></td>
         </tr>
-        <!-- GOD I HATE FIREFOX -->
-        <!-- Required because the window alert (what chrome uses) won't fit in the damn window -->
-        <dialog open id="deleteAllModal">
-          <p>Are you sure you want to do this?</p>
-          <form method="dialog">
-            <button id="confirmDialog">Yes</button>
-            <button>No</button>
-          </form>
-        </dialog>
       </table>
     </div>
   </body>

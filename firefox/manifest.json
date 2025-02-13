@@ -9,7 +9,6 @@
   "background": {
     "scripts": ["worker.js"]
   },
-  "browser_specific_settings": {"gecko": {"id": "extensionname@example.org","strict_min_version": "88.0"}},
   "content_scripts": [
     {
       "matches": ["https://*.duosecurity.com/*"],
