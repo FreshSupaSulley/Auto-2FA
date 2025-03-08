@@ -1,7 +1,7 @@
 {
   "name": "Auto 2FA",
   "description": "Login through Duo Mobile in your browser.",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "manifest_version": 2,
   "permissions": [
     "storage", "https://*.duosecurity.com/"
@@ -15,7 +15,7 @@
       "js": ["scan_script.js"]
     },
     {
-      "matches": ["https://*.duosecurity.com/frame/*/auth/prompt*"],
+      "matches": ["https://*.duosecurity.com/frame/*/auth/prompt*", "https://*.duosecurity.com/frame/prompt/*"],
       "js": ["login_script.js"]
     }
   ],
