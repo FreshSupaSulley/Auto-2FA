@@ -53,14 +53,14 @@ If 2 or more push requests are active, they are presented to you to filter out t
 
 No Logins Found
 ----------------
-If you keep seeing **No logins found!**, it means no push requests were sent to Auto 2FA. You probably sent the push request to another device (like your phone). Auto 2FA can't approve a request sent to a device it didn't create. You need to select **Other options** on the Duo login page, and choose the device created by Auto 2FA. It's only then that you can click Auto 2FA and log in.
+If you keep seeing **No logins found!**, it means no push requests were sent to Auto 2FA. You probably sent the push request to another device (like your phone). Auto 2FA can't approve a request sent to a device it didn't create. You need to select **Other options**, and choose the device created by Auto 2FA. It's only then that you can click Auto 2FA and log in.
 
 Login Clicks
 ------------
 You can set the amount of clicks required to log you in with the slider in settings. If there are multiple active login attempts, Auto 2FA will always require you to review and select the correct one regardless of this setting.
 
 ### Zero-clicks
-Least safe, most convenient. When you browse to a Duo login page, Auto 2FA will start trying to approve a single login the moment it finds one. No click required. This is unsafe as it will start checking for login attempts before yours fully loads. I'm considering requiring at least the IP addresses of the client and the transaction to match in order to approve this type of login (if you want this to be a feature, let me know).
+Least safe, most convenient. When you browse to a Duo login page (pages that match https://\*.duosecurity.com/frame/\*/auth/prompt\* or https://\*.duosecurity.com/frame/prompt\*), Auto 2FA will start trying to approve a single login the moment it finds one. No click required. This is unsafe as it will start checking for login attempts before yours fully loads. I'm considering requiring at least the IP addresses of the client and the transaction to match in order to approve this type of login (if you want this to be a feature, let me know).
 
 ### One-click
 The default behavior. Clicking on the extension will approve a single login.
