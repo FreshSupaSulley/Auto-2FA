@@ -67,7 +67,6 @@
         margin-left: auto;
         margin-right: auto;
         border-radius: 3px;
-        margin-bottom: 10px;
         user-select: none;
       }
 
@@ -116,8 +115,8 @@
       .screen {
         background-color: white;
         text-align: center;
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
         padding: 5px 0px;
       }
 
@@ -155,7 +154,8 @@
         stroke-miterlimit: 10;
         box-shadow: inset 0px 0px 0px #7ac142;
         /* Total time, start time */
-        animation: fill 0.3s ease-in-out 0.2s forwards, scale 1s ease-in-out 0.1s both;
+        animation: fill 0.3s ease-in-out 0.2s forwards,
+          scale 1s ease-in-out 0.1s both;
       }
 
       /* Circle outline */
@@ -225,7 +225,7 @@
         width: 26px;
         position: absolute;
         right: 10px;
-        bottom: 0px;
+        bottom: 10px;
         transform-origin: center;
         transition: transform 0.25s ease-out;
         border: none;
@@ -236,6 +236,12 @@
           transform: scale(1.15);
           transition: transform 0.25s ease-out;
         }
+      }
+
+      #totpCode {
+        font-size: 12px;
+        padding: 2px;
+        margin: 0;
       }
 
       #gear {
@@ -301,34 +307,19 @@
         border-bottom: 1px solid grey;
       }
 
-      .inputButtonCouple {
-        padding: 0 !important;
-        margin: 0 !important;
-        overflow: hidden;
-        border-radius: 4px;
-        border: 1px solid grey;
-        > * {
-          width: 100%;
-          margin: 0;
-          padding: 0;
-          border: none;
-        }
-      }
-
-      #resetButton,
-      #deleteButton,
       #importButton,
-      #exportButton {
+      #exportButton,
+      #exportTOTPButton {
         padding: 6px 12px;
+        border-radius: 0px;
         width: 100%;
-        border-radius: 0;
       }
 
+      /* Evil red bg */
       #deleteButton,
       #resetButton {
         border-radius: 5px;
-        /* padding: 6px 12px; */
-
+        width: 100%;
         &:hover {
           color: white;
           opacity: 1;
@@ -461,10 +452,22 @@
         opacity: 1;
       }
 
+      .inputButtonCouple {
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden;
+        border-radius: 4px;
+        border: 1px solid grey;
+        > * {
+          width: 100%;
+          margin: 0;
+          padding: 0;
+          border: none;
+        }
+      }
+
       select {
-        max-width: 90px;
-        align-self: center;
-        height: 80%;
+        max-width: 140px;
         border-radius: 3px;
       }
 
@@ -521,9 +524,40 @@
         }
 
         select {
+          height: 25px;
           color: white;
           background-color: #555;
           border-color: #a6a6a6;
+        }
+      }
+
+      /* Ripped from Authenticator extension <3 */
+      #totp {
+        user-select: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        width: 100%;
+      }
+      #totp svg {
+        width: 12px;
+        height: 12px;
+      }
+      #totp circle {
+        fill: none;
+        stroke: grey;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+        stroke-width: 8px;
+        stroke-dasharray: 25.12;
+        animation-name: timer;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+      }
+      @keyframes timer {
+        to {
+          stroke-dashoffset: -25.12;
         }
       }
     </style>
@@ -531,19 +565,47 @@
 
   <!-- Prevents weird visual artifacts from appearing while loading. JS clears the display -->
   <body id="content" style="display: none">
-    <div style="display: inline-flex; width: 100%; justify-content: space-between">
-      <div style="display: flex">
-        <img style="margin: 0; margin-right: 7px; border: none; width: 30px" src="images/Auto 2FA.svg" />
-        <h1 style="padding-top: 1px; margin: 0; font-weight: lighter">Auto 2FA</h1>
-      </div>
+    <div style="display: flex; gap: 8px; align-items: center">
+      <!-- Logo -->
+      <img
+        style="margin: 0; border: none; width: 30px"
+        src="images/Auto 2FA.svg"
+      />
+      <!-- Select device -->
+      <select id="deviceSelect">
+        <option value="-1">Add Device...</option>
+      </select>
+      <!-- Device TOTP -->
+      <!-- TOTP -->
+      <a id="totp">
+        <svg viewBox="0 0 16 16">
+          <circle
+            cx="8"
+            cy="8"
+            r="4"
+            id="totpCircle"
+            style="animation-duration: 30s"
+          ></circle>
+        </svg>
+        <p id="totpCode"></p>
+        <!-- add spinning wheel here to indicate time? or just a countdown -->
+      </a>
       <!-- Gear SVG -->
-      <div style="display: flex; gap: 6px; align-items: center">
-        <select id="deviceSelect">
-          <option value="-1">Add Device...</option>
-        </select>
-        <svg id="gear" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" width="26px" height="26px" viewBox="0 0 24 24" fill="gray">
+      <div style="margin-left: auto">
+        <svg
+          id="gear"
+          xmlns="http://www.w3.org/2000/svg"
+          enable-background="new 0 0 24 24"
+          width="26px"
+          height="26px"
+          viewBox="0 0 24 24"
+          fill="gray"
+        >
           <rect fill="none" height="26" width="26"></rect>
-          <path id="gearChange" d="M19.5,12c0-0.23-0.01-0.45-0.03-0.68l1.86-1.41c0.4-0.3,0.51-0.86,0.26-1.3l-1.87-3.23c-0.25-0.44-0.79-0.62-1.25-0.42 l-2.15,0.91c-0.37-0.26-0.76-0.49-1.17-0.68l-0.29-2.31C14.8,2.38,14.37,2,13.87,2h-3.73C9.63,2,9.2,2.38,9.14,2.88L8.85,5.19 c-0.41,0.19-0.8,0.42-1.17,0.68L5.53,4.96c-0.46-0.2-1-0.02-1.25,0.42L2.41,8.62c-0.25,0.44-0.14,0.99,0.26,1.3l1.86,1.41 C4.51,11.55,4.5,11.77,4.5,12s0.01,0.45,0.03,0.68l-1.86,1.41c-0.4,0.3-0.51,0.86-0.26,1.3l1.87,3.23c0.25,0.44,0.79,0.62,1.25,0.42 l2.15-0.91c0.37,0.26,0.76,0.49,1.17,0.68l0.29,2.31C9.2,21.62,9.63,22,10.13,22h3.73c0.5,0,0.93-0.38,0.99-0.88l0.29-2.31 c0.41-0.19,0.8-0.42,1.17-0.68l2.15,0.91c0.46,0.2,1,0.02,1.25-0.42l1.87-3.23c0.25-0.44,0.14-0.99-0.26-1.3l-1.86-1.41 C19.49,12.45,19.5,12.23,19.5,12z M12.04,15.5c-1.93,0-3.5-1.57-3.5-3.5s1.57-3.5,3.5-3.5s3.5,1.57,3.5,3.5S13.97,15.5,12.04,15.5z"></path>
+          <path
+            id="gearChange"
+            d="M19.5,12c0-0.23-0.01-0.45-0.03-0.68l1.86-1.41c0.4-0.3,0.51-0.86,0.26-1.3l-1.87-3.23c-0.25-0.44-0.79-0.62-1.25-0.42 l-2.15,0.91c-0.37-0.26-0.76-0.49-1.17-0.68l-0.29-2.31C14.8,2.38,14.37,2,13.87,2h-3.73C9.63,2,9.2,2.38,9.14,2.88L8.85,5.19 c-0.41,0.19-0.8,0.42-1.17,0.68L5.53,4.96c-0.46-0.2-1-0.02-1.25,0.42L2.41,8.62c-0.25,0.44-0.14,0.99,0.26,1.3l1.86,1.41 C4.51,11.55,4.5,11.77,4.5,12s0.01,0.45,0.03,0.68l-1.86,1.41c-0.4,0.3-0.51,0.86-0.26,1.3l1.87,3.23c0.25,0.44,0.79,0.62,1.25,0.42 l2.15-0.91c0.37,0.26,0.76,0.49,1.17,0.68l0.29,2.31C9.2,21.62,9.63,22,10.13,22h3.73c0.5,0,0.93-0.38,0.99-0.88l0.29-2.31 c0.41-0.19,0.8-0.42,1.17-0.68l2.15,0.91c0.46,0.2,1,0.02,1.25-0.42l1.87-3.23c0.25-0.44,0.14-0.99-0.26-1.3l-1.86-1.41 C19.49,12.45,19.5,12.23,19.5,12z M12.04,15.5c-1.93,0-3.5-1.57-3.5-3.5s1.57-3.5,3.5-3.5s3.5,1.57,3.5,3.5S13.97,15.5,12.04,15.5z"
+          ></path>
         </svg>
       </div>
     </div>
@@ -551,23 +613,49 @@
 
     <!-- Welcome screen -->
     <div class="screen" id="intro">
-      <h4>This extension is experimental. Functionality could break at any time. Always keep backup devices on your account. This extension is not recognized, endorsed, or affiliated with Duo Mobile or Cisco Technology.</h4>
+      <h4>
+        This extension is experimental. Functionality could break at any time.
+        Always keep backup devices on your account. This extension is not
+        recognized, endorsed, or affiliated with Duo Mobile or Cisco Technology.
+      </h4>
       <hr />
-      <h4>You're about to add a device to your Duo Mobile account. Login to your Duo device manager website.</h4>
+      <h4>
+        You're about to add a device to your Duo Mobile account. Login to your
+        Duo device manager website.
+      </h4>
       <button type="submit" id="introButton">Ok</button>
     </div>
 
     <!-- Activation screen -->
     <div class="screen" id="activation">
-      <h4 id="errorSplash">Switch between Universal or Traditional instructions.</h4>
+      <h4 id="errorSplash">
+        Switch between Universal or Traditional instructions.
+      </h4>
 
       <div class="steps">
         <!-- Universal / Traditional buttons -->
         <form class="instructions">
-          <input type="radio" name="traditional-input" id="universal-button" class="instructions-class" value="universal" checked />
-          <label for="universal-button" class="instructions-label">Universal</label>
-          <input type="radio" name="traditional-input" id="traditional-button" class="instructions-class" value="traditional" />
-          <label for="traditional-button" class="instructions-label">Traditional</label>
+          <input
+            type="radio"
+            name="traditional-input"
+            id="universal-button"
+            class="instructions-class"
+            value="universal"
+            checked
+          />
+          <label for="universal-button" class="instructions-label"
+            >Universal</label
+          >
+          <input
+            type="radio"
+            name="traditional-input"
+            id="traditional-button"
+            class="instructions-class"
+            value="traditional"
+          />
+          <label for="traditional-button" class="instructions-label"
+            >Traditional</label
+          >
         </form>
         <!-- Table to distribute buttons evenly -->
         <table style="border-spacing: 0">
@@ -581,9 +669,7 @@
         </table>
         <!-- Slide 1 -->
         <div class="slide">
-          <p style="margin-bottom: 10px">
-            Click <b>Add a new device</b>.
-          </p>
+          <p style="margin-bottom: 10px">Click <b>Add a new device</b>.</p>
           <!-- Universal -->
           <div class="hidden-panel traditional-panel">
             <img src="/images/universal/0.png" />
@@ -596,30 +682,22 @@
         <!-- Slide 2 -->
         <div class="slide">
           <div class="hidden-panel traditional-panel">
-            <p>
-              Click <b>Duo Mobile</b>.
-            </p>
+            <p>Click <b>Duo Mobile</b>.</p>
             <img src="/images/universal/1.png" />
           </div>
           <div class="hidden-panel universal-panel">
-            <p>
-              Click <b>Tablet</b>, then <b>iOS</b>.
-            </p>
+            <p>Click <b>Tablet</b>, then <b>iOS</b>.</p>
             <img src="/images/traditional/1.png" />
           </div>
         </div>
         <!-- Slide 3 -->
         <div class="slide">
           <div class="hidden-panel traditional-panel">
-            <p>
-              Click <b>I have a tablet</b>, then <b>Next</b>.
-            </p>
+            <p>Click <b>I have a tablet</b>, then <b>Next</b>.</p>
             <img src="/images/universal/2.png" />
           </div>
           <div class="hidden-panel universal-panel">
-            <p>
-              Click <b>I have Duo Mobile installed</b>.
-            </p>
+            <p>Click <b>I have Duo Mobile installed</b>.</p>
             <img src="/images/traditional/2.png" />
           </div>
         </div>
@@ -627,7 +705,9 @@
         <div class="slide">
           <p id="qrSearchText">Searching for a QR code...</p>
           <p id="qrErrorText"></p>
-          <h5 style="font-weight: normal">Auto 2FA will find the QR code on the current tab.</h5>
+          <h5 style="font-weight: normal">
+            Auto 2FA will find the QR code on the current tab.
+          </h5>
           <h5>Not working? Go to Step 5.</h5>
         </div>
         <!-- Slide 5 -->
@@ -642,8 +722,11 @@
         </div>
         <!-- Slide 6 -->
         <div class="slide">
-          <p>Open the link sent to your inbox. Copy the code from the page into the box below. Click activate.</p>
-          <img src="/images/6.png" />
+          <p>
+            Open the link sent to your inbox. Copy the code from the page into
+            the box below. Click activate.
+          </p>
+          <img src="/images/6.png" style="margin-bottom: 10px" />
           <div style="display: flex">
             <input type="text" id="code" placeholder="Paste activation code" />
             <button type="submit" id="activateButton">Activate</button>
@@ -652,18 +735,21 @@
       </div>
       <h4 style="margin: 0; padding: 0; font-size: 10px">
         Confused? Use the
-        <a href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/TUTORIAL.md" target="_blank">walkthrough</a>.
+        <a
+          href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/TUTORIAL.md"
+          target="_blank"
+          >walkthrough</a
+        >.
       </h4>
     </div>
 
     <!-- Activation success page -->
     <div class="screen" id="activationSuccess">
-      <p style="margin-bottom: 10px">
-        <b>Activated!</b> Device name:
-      </p>
+      <p style="margin-bottom: 10px"><b>Activated!</b> Device name:</p>
       <p style="margin: 0" id="newDeviceDisplay"></p>
       <p>
-        Next time you login, click <b>Other Options</b>, then send it to this new device.
+        Next time you login, click <b>Other Options</b>, then send it to this
+        new device.
       </p>
       <div class="oneSlide">
         <img src="/images/tutorial.png" />
@@ -691,14 +777,17 @@
     <!-- User fails to login multiple times -->
     <div class="screen" id="failedAttempts">
       <div class="oneSlide">
-        <p>
-          Send a push to Auto 2FA by clicking <b>Other options</b>.
-        </p>
+        <p>Send a push to Auto 2FA by clicking <b>Other options</b>:</p>
         <img src="/images/tutorial.png" />
         <p>Then click the extension to approve the login.</p>
       </div>
       <p>
-        Learn more <a href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/README.md#no-logins-found" target="_blank">here</a>.
+        Learn more
+        <a
+          href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/README.md#no-logins-found"
+          target="_blank"
+          >here</a
+        >.
       </p>
       <button type="submit" id="failureButton">Got it</button>
     </div>
@@ -706,11 +795,26 @@
     <!-- Success -->
     <div class="screen" id="success">
       <!-- Elements dynamically altered in JS -->
-      <div style="display: flex; display: inline-flex; gap: 10px; place-items: center">
+      <div
+        style="
+          display: flex;
+          display: inline-flex;
+          gap: 10px;
+          place-items: center;
+        "
+      >
         <p style="margin-bottom: 15px">Logged in!</p>
-        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+        <svg
+          class="checkmark"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 52 52"
+        >
           <circle class="checkmarkCircle" cx="26" cy="26" r="25" fill="none" />
-          <path class="checkmarkCheck" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+          <path
+            class="checkmarkCheck"
+            fill="none"
+            d="M14.1 27.2l7.1 7.2 16.7-16.8"
+          />
         </svg>
       </div>
       <p id="successDetails"></p>
@@ -721,7 +825,9 @@
     <div class="screen" id="denied">
       <!-- Elements dynamically altered in JS -->
       <p style="margin-bottom: 15px">Login denied.</p>
-      <p>You denied a login attempt. If that wasn't you, reset your password.</p>
+      <p>
+        You denied a login attempt. If that wasn't you, reset your password.
+      </p>
       <button type="submit" class="toMainScreen">Try Again</button>
     </div>
 
@@ -735,9 +841,17 @@
         You might've deleted the device.
         <br />
         If this issue persists,
-        <a href="https://github.com/FreshSupaSulley/Auto-2FA" target="_blank">open an issue</a>.
+        <a href="https://github.com/FreshSupaSulley/Auto-2FA" target="_blank"
+          >open an issue</a
+        >.
       </p>
       <button type="submit" class="toMainScreen">Ok</button>
+    </div>
+
+    <!-- Offline -->
+    <div class="screen" id="offline">
+      <h3>You're offline</h3>
+      <p>Connect to the internet.</p>
     </div>
 
     <div class="screen" id="settings">
@@ -757,15 +871,32 @@
           <tr>
             <th id="deviceNameFeedback">Name</th>
             <td>
-              <input style="text-align: left" maxlength="64" placeholder="No data" id="deviceName" />
+              <input
+                style="text-align: left"
+                maxlength="64"
+                placeholder="No data"
+                id="deviceName"
+              />
             </td>
           </tr>
           <tr>
             <th>
-              <a id="clickLoginState" target="_blank" href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/README.md#login-clicks">No data</a>
+              <a
+                id="clickLoginState"
+                target="_blank"
+                href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/README.md#login-clicks"
+                >No data</a
+              >
             </th>
             <td>
-              <input type="range" min="1" max="3" value="2" class="slider" id="clickLogins" />
+              <input
+                type="range"
+                min="1"
+                max="3"
+                value="2"
+                class="slider"
+                id="clickLogins"
+              />
             </td>
           </tr>
           <tr>
@@ -782,23 +913,27 @@
           General
         </caption>
         <tr>
-          <th id="importSplash">Import data</th>
-          <td>
-            <div class="inputButtonCouple">
-              <input placeholder="Paste data here" id="importText" />
-              <button type="submit" id="importButton">Import</button>
-            </div>
+          <th id="importSplash"></th>
+          <td class="inputButtonCouple">
+            <input
+              type="file"
+              id="importFile"
+              accept=".txt"
+              style="display: none"
+            />
+            <button id="importButton" style="border-bottom: inherit">
+              Import
+            </button>
+            <button type="submit" id="exportButton">Export</button>
+            <button type="submit" id="exportTOTPButton">Export TOTPs</button>
           </td>
         </tr>
-        <tr>
-          <th>Export data</th>
+        <!-- <tr>
+          <th>Download data</th>
           <td>
-            <div class="inputButtonCouple">
-              <button type="submit" id="exportButton">Export</button>
-              <input placeholder="Click export" id="exportText" readonly />
-            </div>
+            
           </td>
-        </tr>
+        </tr> -->
         <tr>
           <th id="resetSplash">Delete all data</th>
           <td><button type="submit" id="resetButton">Delete all</button></td>

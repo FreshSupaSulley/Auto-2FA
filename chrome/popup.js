@@ -1,3 +1,8 @@
+// otplib
+import './libs/buffer.js';
+import './libs/index.js';
+const { totp } = window.otplib;
+
 // Determines which slide should be visible on startup page
 let slideIndex = 0;
 
@@ -182,17 +187,15 @@ async function activateDevice(rawCode) {
       // If successful
       if (result.stat == "OK") {
         // Get device info as JSON
-        let newDevice = {
-          // akey not used but why not
-          akey: result.response.akey,
-          pkey: result.response.pkey,
-          host,
-          name: `${activationInfo.model} (#${devicesCount + 1})`, // not gonna do a bounds check on this one
-          clickLevel: "2", // default value is one click login
-          // Encode keys to Base64 for JSON serializing
-          publicRaw,
-          privateRaw,
-        };
+        let newDevice = result.response;
+        delete newDevice.customer_logo; // takes up too much space
+        // Add custom data per device
+        newDevice.name = `${activationInfo.model} (#${devicesCount + 1})`, // not gonna do a bounds check on this one
+          newDevice.clickLevel = "2"; // default value is one click login (this is what 2 means)
+        newDevice.host = host;
+        newDevice.publicRaw = publicRaw;
+        newDevice.privateRaw = privateRaw;
+
         document.getElementById("newDeviceDisplay").innerHTML = `<b>${activationInfo.model}</b> (${activationInfo.platform})`;
         // Store device info in chrome sync
         deviceInfo.devices.push(newDevice);
@@ -234,6 +237,17 @@ deviceSelect.addEventListener("change", async (e) => {
     // This way if you're in settings, you stay in settings
     initialize();
   }
+});
+
+// TOTP code
+let totpCode = document.getElementById("totpCode");
+
+// On TOTP
+let totpWrapper = document.getElementById("totp");
+totpWrapper.addEventListener("mouseleave", () => updateTOTP());
+totpWrapper.addEventListener("click", () => {
+  navigator.clipboard.writeText(totpCode.innerText); // Copy code to clipboard
+  totpCode.innerText = "Copied";
 });
 
 // On settings gear clicked
@@ -469,7 +483,7 @@ document.getElementById("introButton").addEventListener("click", function () {
 });
 
 // Change the current slide on activation screen
-function Timer(fn, timeout, onStop = () => {}) {
+function Timer(fn, timeout, onStop = () => { }) {
   let runner = null;
   this.start = () => {
     if (!runner) {
@@ -631,7 +645,7 @@ function arrayBufferToBase64(buffer) {
 let deleteModal = document.getElementById("deleteModal");
 let modalPrompt = document.getElementById("modalPrompt");
 
-async function showDeleteModal(prompt, onAccept = () => {}) {
+async function showDeleteModal(prompt, onAccept = () => { }) {
   modalPrompt.innerText = prompt;
   document.getElementById("confirmDialog").onclick = onAccept;
   deleteModal.showModal();
@@ -655,6 +669,21 @@ deviceName.oninput = async (e) => {
     });
   }
 };
+
+// void hotp(key, counter, digits = 6, digest = 'sha1')
+// {
+//   key = base64.b32decode(key.upper() + '=' * ((8 - len(key)) % 8))
+//   counter = struct.pack('>Q', counter)
+//   mac = hmac.new(key, counter, digest).digest()
+//   offset = mac[-1] & 0x0f
+//   binary = struct.unpack('>L', mac[offset: offset + 4])[0] & 0x7fffffff
+//   return str(binary)[-digits:].zfill(digits)
+// }
+
+// (key, time_step = 30, digits = 6, digest = 'sha1')
+// {
+// return hotp(key, int(time.time() / time_step), digits, digest)
+// }
 
 // Click login slider
 var clickSlider = document.getElementById("clickLogins");
@@ -691,41 +720,102 @@ document.getElementById("deleteButton").onclick = async () => {
 };
 
 // Import button
-let importText = document.getElementById("importText");
 let importSplash = document.getElementById("importSplash");
 document.getElementById("importButton").addEventListener("click", async function () {
+  document.getElementById("importFile").click();
+});
+
+document.getElementById("importFile").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  // Get original (working) data
   let ogData = await getDeviceInfo();
-  try {
-    // Tell user we are verifying the integrity of the data
-    importSplash.innerHTML = "Verifying...";
-    // Set the data with new data. If it fails we simply fallback to ogData
-    await setDeviceInfo(JSON.parse(atob(importText.value)), false);
-    // Get sanitized data
-    let newData = await getDeviceInfo();
-    // Ensure transactions for all devices still work
-    for (let device of newData.devices) {
-      (await buildRequest(device, "GET", "/push/v2/device/transactions")).response.transactions;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      importSplash.innerHTML = "Verifying...";
+      // Set the data with new data. If it fails we simply fallback to ogData
+      await setDeviceInfo(JSON.parse(atob(e.target.result)), false);
+      // Get sanitized data
+      let newData = await getDeviceInfo();
+      // Ensure transactions for all devices still work
+      for (let device of newData.devices) {
+        (await buildRequest(device, "GET", "/push/v2/device/transactions")).response.transactions;
+      }
+      // Success! Above code didn't throw errors
+      updatePage(newData);
+      importSplash.innerHTML = "Data imported!";
+      // You can now populate fields or use the data as needed
+    } catch (err) {
+      console.error("Failed to verify data", err);
+      // If it failed, go back to OG data
+      await setDeviceInfo(ogData);
+      // Tell the user this is an invalid code
+      importSplash.innerText = `Invalid data`;
     }
-    // Success! Above code didn't throw errors
-    updatePage(newData);
-    importSplash.innerHTML = "Data imported!";
-  } catch (e) {
-    console.error("Failed to verify data", e);
-    // If it failed, go back to OG data
-    await setDeviceInfo(ogData);
-    // Tell the user this is an invalid code
-    importSplash.innerHTML = `<b>Invalid data</b>:<br>${e}`;
-  }
+  };
+  reader.readAsText(file);
 });
 
 // Export button
-let exportText = document.getElementById("exportText");
 document.getElementById("exportButton").addEventListener("click", async function () {
+  // Needs to save a file
   // Always will have data thanks to sanitization
   let info = await getDeviceInfo();
-  // Set text to be data. Scramble with Base64 so the user doesn't try to tamper any of this
-  exportText.value = btoa(JSON.stringify(info));
+  // Set text to be data. Scramble with Base64
+  downloadFile(btoa(JSON.stringify(info)), "auto-2fa.txt");
 });
+
+// Export TOTPs
+document.getElementById("exportTOTPButton").addEventListener("click", async function () {
+  let info = await getDeviceInfo();
+  let totps = [];
+  // Get all devices that have TOTP data
+  for (let device of info.devices) {
+    if (device.hotp_secret) {
+      totps.push(totp.keyuri(device.name, 'Duo Mobile', base32Encode(device.hotp_secret)));
+    }
+  }
+  if (!totps.length) {
+    importSplash.innerHTML = "No devices have TOTP data";
+  } else {
+    downloadFile(totps.join("\n"), "duo-mobile-totps.txt");
+    if (totps.length == info.devices.length) {
+      importSplash.innerHTML = `Exported all devices`;
+    } else {
+      importSplash.innerHTML = `Exported ${totps.length} of ${info.devices.length}`;
+    }
+  }
+});
+
+function base32Encode(input) {
+  const base32Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+  let binary = "";
+  for (let i = 0; i < input.length; i++) {
+    binary += input[i].charCodeAt(0).toString(2).padStart(8, '0');
+  }
+  let encoded = "";
+  for (let i = 0; i < binary.length; i += 5) {
+    const chunk = binary.slice(i, i + 5).padEnd(5, '0');
+    const index = parseInt(chunk, 2);
+    encoded += base32Alphabet[index];
+  }
+  // while (encoded.length % 8 !== 0) {
+  //   encoded += "=";
+  // }
+  return encoded;
+}
+
+// thank you authenticator <3
+function downloadFile(data, filename) {
+  const blob = new Blob([data], { type: "text/plain" });
+  // Simulate pressing <a> tag
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
 
 // Reset button
 let resetSplash = document.getElementById("resetSplash");
@@ -761,7 +851,7 @@ async function setDeviceInfo(deviceInfo, update = true) {
 let deviceSettingsDiv = document.getElementById("deviceSettingsDiv");
 function updatePage(deviceInfo) {
   // Reset globals
-  importSplash.innerHTML = "Import data";
+  importSplash.innerHTML = "Manage data";
   // Remove devices already added
   while (deviceSelect.firstChild.value != -1) {
     deviceSelect.removeChild(deviceSelect.firstChild);
@@ -776,13 +866,16 @@ function updatePage(deviceInfo) {
   }
   // If we're not on the "Add device..." device
   if (deviceInfo.activeDevice != -1) {
+    let activeDevice = deviceInfo.devices[deviceInfo.activeDevice];
+    // Update its spinner
+    document.getElementById("totpCircle").style.animationDelay = `-${Math.floor(Date.now() / 1000) % 30}s`;
     deviceSettingsDiv.style.display = "revert";
-    deviceName.value = deviceInfo.devices[deviceInfo.activeDevice].name;
+    deviceName.value = activeDevice.name;
     deviceNameResponse.innerHTML = "Name";
     // Update selected device value
     deviceSelect.value = deviceInfo.activeDevice;
     // Update slider for this device
-    clickSlider.value = deviceInfo.devices[deviceInfo.activeDevice].clickLevel;
+    clickSlider.value = activeDevice.clickLevel;
     switch (clickSlider.value) {
       case "1":
         clickSliderState.innerText = "Zero-click login";
@@ -798,7 +891,33 @@ function updatePage(deviceInfo) {
     // Hide device settings
     deviceSettingsDiv.style.display = "none";
   }
+  // Show device TOTP
+  updateTOTP();
 }
+
+async function updateTOTP() {
+  let deviceInfo = await getDeviceInfo();
+  let hideTOTP = true;
+  if (deviceInfo.activeDevice != -1) {
+    let activeDevice = deviceInfo.devices[deviceInfo.activeDevice];
+    if (activeDevice.use_totp) {
+      hideTOTP = false;
+      totpCode.innerText = totp.generate(activeDevice.hotp_secret);
+    }
+  }
+  if(hideTOTP) {
+    // Hide TOTP
+    totpWrapper.style.display = "none";
+  }
+}
+
+// Constantly update TOTPs
+// updateTOTP handles if there's no active device
+setInterval(() => {
+  if (30 - (Math.floor(Date.now() / 1000) % 30) === 30) {
+    updateTOTP();
+  }
+}, 1000);
 
 // On startup
 await initialize().finally(() => {
@@ -811,9 +930,11 @@ async function initialize() {
   failedAttempts = 0;
   let data = await getDeviceInfo();
   updatePage(data);
-  // If we have device data
-  if (data.activeDevice != -1) {
-    // Set to main screen
+  // If we're offline
+  if (!navigator.onLine) {
+    changeScreen("offline");
+  } else if (data.activeDevice != -1) {
+    // If we have device data, set to main screen
     changeScreen("main");
   } else {
     let activeSlide = (await chrome.storage.session.get("activeSlide")).activeSlide;
