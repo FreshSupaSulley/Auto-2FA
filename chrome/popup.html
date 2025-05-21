@@ -560,6 +560,32 @@
           stroke-dashoffset: -25.12;
         }
       }
+
+      /* https://stackoverflow.com/questions/71372712/how-to-create-a-4-digit-input-series-without-javascript */
+      .pinBox {
+        --width: 296px;
+        --height: 74px;
+        --spacing: 47px;
+
+        display: inline-block;
+        position: relative;
+        width: var(--width);
+        height: var(--height);
+        background-image: url(https://i.sstatic.net/JbkZl.png);
+      }
+
+      .pinEntry {
+        position: absolute;
+        padding-left: 21px;
+        font-family: courier, monospaced;
+        font-size: var(--spacing);
+        height: var(--height);
+        letter-spacing: var(--spacing);
+        background-color: transparent;
+        border: 0;
+        outline: none;
+        clip: rect(0px, calc(var(--width) - 21px), var(--height), 0px);
+      }
     </style>
   </head>
 
@@ -588,7 +614,6 @@
           ></circle>
         </svg>
         <p id="totpCode"></p>
-        <!-- add spinning wheel here to indicate time? or just a countdown -->
       </a>
       <!-- Gear SVG -->
       <div style="margin-left: auto">
@@ -772,6 +797,22 @@
       <!-- Elements dynamically altered in JS -->
       <p id="transactionsSplash"></p>
       <table id="approveTable"></table>
+    </div>
+
+    <!-- Duo verified push -->
+    <div class="screen" id="verifiedPush">
+      <!-- Elements dynamically altered in JS -->
+      <p id="transactionsSplash">Enter your 4 digit code:</p>
+      <!-- https://stackoverflow.com/questions/71372712/how-to-create-a-4-digit-input-series-without-javascript -->
+      <div class="pinBox">
+        <input
+          id="pinEntry"
+          name="token"
+          type="text"
+          maxlength="4"
+          autocomplete="off"
+        />
+      </div>
     </div>
 
     <!-- User fails to login multiple times -->

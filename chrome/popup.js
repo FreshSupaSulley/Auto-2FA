@@ -867,8 +867,6 @@ function updatePage(deviceInfo) {
   // If we're not on the "Add device..." device
   if (deviceInfo.activeDevice != -1) {
     let activeDevice = deviceInfo.devices[deviceInfo.activeDevice];
-    // Update its spinner
-    document.getElementById("totpCircle").style.animationDelay = `-${Math.floor(Date.now() / 1000) % 30}s`;
     deviceSettingsDiv.style.display = "revert";
     deviceName.value = activeDevice.name;
     deviceNameResponse.innerHTML = "Name";
@@ -905,22 +903,21 @@ async function updateTOTP() {
       totpCode.innerText = totp.generate(activeDevice.hotp_secret);
     }
   }
-  if(hideTOTP) {
-    // Hide TOTP
-    totpWrapper.style.display = "none";
-  }
+  // Hide or show
+  // Setting display stops the animation so this is the alternative
+  totpWrapper.style.visibility = hideTOTP ? "hidden" : "inherit";
 }
 
 // Constantly update TOTPs
 // updateTOTP handles if there's no active device
-setInterval(() => {
-  if (30 - (Math.floor(Date.now() / 1000) % 30) === 30) {
-    updateTOTP();
-  }
-}, 1000);
+setTimeout(() => {
+  updateTOTP();
+  setInterval(updateTOTP, 30000);
+}, 30000 - Date.now() % 30000);
 
 // On startup
 await initialize().finally(() => {
+  document.getElementById("totpCircle").style.animationDelay = `-${(Date.now() % 30000) / 1000}s`;
   // Show body when done
   document.getElementById("content").style.display = "";
 });
