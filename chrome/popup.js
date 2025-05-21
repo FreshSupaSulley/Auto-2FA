@@ -305,10 +305,10 @@ pushButton.addEventListener("click", async function () {
       // Push the single transaction
       // Throws an error if something goes wrong
       await approveTransaction(info, transactions, transactions[0].urgid);
-      // Switch to success screen
-      successDetails.innerHTML = traverse(transactions[0].attributes);
-      failedAttempts = 0;
-      changeScreen("success");
+      // // Switch to success screen
+      // successDetails.innerHTML = traverse(transactions[0].attributes);
+      // failedAttempts = 0;
+      // changeScreen("success");
     }
     // There shouldn't be more than one transaction
     // Present all to the user
@@ -336,8 +336,8 @@ pushButton.addEventListener("click", async function () {
             transactionsSplash.innerText = "Working...";
             // Approve the transaction
             await approveTransaction(info, transactions, transactions[i].urgid);
-            successDetails.innerHTML = traverse(transactions[i].attributes);
-            changeScreen("success");
+            // successDetails.innerHTML = traverse(transactions[i].attributes);
+            // changeScreen("success");
           } catch (error) {
             // Catching the error a bit earlier than the one below but probably redundant
             failedReason.innerHTML = error;
@@ -971,28 +971,83 @@ async function getDeviceInfo() {
 }
 
 // Makes a request to the Duo API
-async function buildRequest(info, method, path) {
+async function buildRequest(info, method, path, extraParam) {
   return sendToWorker({
     intent: "buildRequest",
     params: {
       info,
       method,
       path,
+      extraParam
     },
   });
 }
 
+var verifiedPushUrgID;
+
+document.getElementById("verifyButton").addEventListener("click", async () => {
+  try {
+    // Use push urgID to approve it
+    await buildRequest(info, "POST", "/push/v2/device/transactions/" + verifiedPushUrgID, {
+      answer: "approve",
+      txId: verifiedPushUrgID,
+      // is this all we need? do we even need step_up_code_autofilled?
+      step_up_code: document.getElementById("pinEntry").value,
+      step_up_code_autofilled: false
+    });
+    // If successful (throws an error otherwise)
+    successDetails.innerHTML = traverse(transactions[i].attributes);
+    failedAttempts = 0;
+    changeScreen("success");
+  } catch (e) {
+    console.error(error);
+    failedReason.innerHTML = error;
+    failedAttempts = 0;
+    changeScreen("failure");
+  }
+});
+
 // Approves the transaction ID provided, denies all others
 // Throws an exception if no transactions are active
 async function approveTransaction(info, transactions, txID) {
-  return sendToWorker({
-    intent: "approveTransaction",
-    params: {
-      info,
-      transactions,
-      txID,
-    },
-  });
+  if (transactions.length == 0) {
+    throw "No transactions found (request expired)";
+  }
+  // Check for duo verified push
+  for (let i = 0; i < transactions.length; i++) {
+    let urgID = transactions[i].urgid;
+    if (txID == urgID) {
+      // Only approve this one
+      // First check if its a duo verified push
+      let stepUpCode = transactions[i].step_up_code_info;
+      if (stepUpCode) {
+        console.error("Duo verified push");
+        // Set input box to # of digits requested
+        document.getElementById("pinEntry").maxlength = num_digits;
+        // Store this transaction for after we receive the code
+        verifiedPushUrgID = urgID;
+        changeScreen("verifiedPush");
+      } else {
+        // Not a verified push, approve it
+        await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, { answer: "approve", txId: urgID });
+        // If successful (throws an error otherwise)
+        successDetails.innerHTML = traverse(transactions[i].attributes);
+        failedAttempts = 0;
+        changeScreen("success");
+      }
+    } else {
+      // Deny all others
+      await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, { answer: "deny", txId: urgID });
+    }
+  }
+  // return sendToWorker({
+  //   intent: "approveTransaction",
+  //   params: {
+  //     info,
+  //     transactions,
+  //     txID,
+  //   },
+  // });
 }
 
 // Handles errors with service worker which stores all the important functions

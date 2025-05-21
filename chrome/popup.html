@@ -574,7 +574,7 @@
         background-image: url(https://i.sstatic.net/JbkZl.png);
       }
 
-      .pinEntry {
+      #pinEntry {
         position: absolute;
         padding-left: 21px;
         font-family: courier, monospaced;
@@ -802,7 +802,7 @@
     <!-- Duo verified push -->
     <div class="screen" id="verifiedPush">
       <!-- Elements dynamically altered in JS -->
-      <p id="transactionsSplash">Enter your 4 digit code:</p>
+      <p id="transactionsSplash">Enter verification code:</p>
       <!-- https://stackoverflow.com/questions/71372712/how-to-create-a-4-digit-input-series-without-javascript -->
       <div class="pinBox">
         <input
@@ -812,6 +812,7 @@
           maxlength="4"
           autocomplete="off"
         />
+        <button type="submit" id="verifyButton">Verify</button>
       </div>
     </div>
 

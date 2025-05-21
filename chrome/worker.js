@@ -16,18 +16,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       break;
     }
     case "buildRequest": {
-      buildRequest(params.info, params.method, params.path)
+      buildRequest(params.info, params.method, params.path, params.extraParam)
         .then(sendResponse)
         .catch((reason) => onError(reason, sendResponse));
       break;
     }
-    case "approveTransaction": {
-      // sendResponse is still required to break the await in popup.js
-      approveTransaction(params.info, params.transactions, params.txID)
-        .then(sendResponse)
-        .catch((reason) => onError(reason, sendResponse));
-      break;
-    }
+    // case "approveTransaction": {
+    //   // sendResponse is still required to break the await in popup.js
+    //   approveTransaction(params.info, params.transactions, params.txID)
+    //     .then(sendResponse)
+    //     .catch((reason) => onError(reason, sendResponse));
+    //   break;
+    // }
     // Called when the content script is injected on a Duo login page
     case "onLoginPage": {
       zeroClickLogin(sender.tab.id);
@@ -179,21 +179,21 @@ async function getDeviceInfo() {
 
 // Approves the transaction ID provided, denies all others
 // Throws an exception if no transactions are active
-async function approveTransaction(info, transactions, txID) {
-  if (transactions.length == 0) {
-    throw "No transactions found (request expired)";
-  }
-  for (let i = 0; i < transactions.length; i++) {
-    let urgID = transactions[i].urgid;
-    if (txID == urgID) {
-      // Only approve this one
-      await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, { answer: "approve" }, { txId: urgID });
-    } else {
-      // Deny all others
-      await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, { answer: "deny" }, { txId: urgID });
-    }
-  }
-}
+// async function approveTransaction(info, transactions, txID) {
+//   if (transactions.length == 0) {
+//     throw "No transactions found (request expired)";
+//   }
+//   for (let i = 0; i < transactions.length; i++) {
+//     let urgID = transactions[i].urgid;
+//     if (txID == urgID) {
+//       // Only approve this one
+//       await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, { answer: "approve" }, { txId: urgID });
+//     } else {
+//       // Deny all others
+//       await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, { answer: "deny" }, { txId: urgID });
+//     }
+//   }
+// }
 
 // Makes a request to the Duo API
 async function buildRequest(info, method, path, extraParam = {}) {
