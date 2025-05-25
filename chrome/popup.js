@@ -92,11 +92,11 @@ activateButton.addEventListener("click", async function () {
       console.error(error);
       errorSplash.innerText = "Invalid code. Open the link sent to your inbox, and paste the code below.";
     }
+  } finally {
+    // Re-enable button
+    activateButton.disabled = false;
+    activateButton.innerText = "Retry";
   }
-
-  // Re-enable button
-  activateButton.disabled = false;
-  activateButton.innerText = "Retry";
 });
 
 // Switch to main page after success button is pressed
@@ -303,12 +303,7 @@ pushButton.addEventListener("click", async function () {
     // Only auto-approve this transaction if one-click logins aren't 3 (indicates two click login)
     else if (transactions.length == 1 && info.clickLevel != "3") {
       // Push the single transaction
-      // Throws an error if something goes wrong
-      await approveTransaction(info, transactions, transactions[0].urgid);
-      // // Switch to success screen
-      // successDetails.innerHTML = traverse(transactions[0].attributes);
-      // failedAttempts = 0;
-      // changeScreen("success");
+      await handleTransaction(info, transactions, transactions[0].urgid); // this will handle switching screens
     }
     // There shouldn't be more than one transaction
     // Present all to the user
@@ -335,7 +330,7 @@ pushButton.addEventListener("click", async function () {
             approveTable.style.display = "none";
             transactionsSplash.innerText = "Working...";
             // Approve the transaction
-            await approveTransaction(info, transactions, transactions[i].urgid);
+            await handleTransaction(info, transactions, transactions[i].urgid);
             // successDetails.innerHTML = traverse(transactions[i].attributes);
             // changeScreen("success");
           } catch (error) {
@@ -380,8 +375,7 @@ pushButton.addEventListener("click", async function () {
               approveTable.style.display = "none";
               transactionsSplash.innerText = "Working...";
               // Approve an invalid transaction, which denies all transactions
-              await approveTransaction(info, transactions, -1);
-              changeScreen("denied");
+              await handleTransaction(info, transactions, -1); // this handles switching to denied screen
             } catch (error) {
               // Catching the error a bit earlier than the one below but probably redundant
               failedReason.innerHTML = error;
@@ -983,76 +977,122 @@ async function buildRequest(info, method, path, extraParam) {
   });
 }
 
+var verifiedTransactions;
 var verifiedPushUrgID;
 
-document.getElementById("verifyButton").addEventListener("click", async () => {
+let verifyButton = document.getElementById("verifyButton");
+verifyButton.addEventListener("click", async () => {
+  // Disable button so user can't spam it
+  verifyButton.disabled = true;
+  verifyButton.innerText = "Working...";
+
   try {
     // Use push urgID to approve it
-    await buildRequest(info, "POST", "/push/v2/device/transactions/" + verifiedPushUrgID, {
-      answer: "approve",
-      txId: verifiedPushUrgID,
-      // is this all we need? do we even need step_up_code_autofilled?
-      step_up_code: document.getElementById("pinEntry").value,
-      step_up_code_autofilled: false
+    let info = await getDeviceInfo().then((data) => data.devices[data.activeDevice]);
+    let response = await sendToWorker({
+      intent: "approveTransaction", params: {
+        info, verifiedTransactions, verifiedPushUrgID,
+        // Presence of verificationCode signals to add step_up_code bs to approve request
+        verificationCode: Array.from(document.querySelectorAll('.pin-input')).map(input => input.value).join(''), // assemble all digits into one string
+      },
     });
+    console.log("Response from worker: ", response);
     // If successful (throws an error otherwise)
     successDetails.innerHTML = traverse(transactions[i].attributes);
     failedAttempts = 0;
     changeScreen("success");
-  } catch (e) {
+  } catch (error) {
     console.error(error);
     failedReason.innerHTML = error;
     failedAttempts = 0;
     changeScreen("failure");
+  } finally {
+    // Probably doesn't hurt to reset it although there's no need to
+    verifiedTransactions = null;
+    verifiedPushUrgID = null;
+    // Re-enable button
+    verifyButton.disabled = false;
+    verifyButton.innerText = "Verify";
   }
 });
 
 // Approves the transaction ID provided, denies all others
 // Throws an exception if no transactions are active
-async function approveTransaction(info, transactions, txID) {
+async function handleTransaction(info, transactions, txID) {
   if (transactions.length == 0) {
     throw "No transactions found (request expired)";
   }
-  // Check for duo verified push
-  for (let i = 0; i < transactions.length; i++) {
-    let urgID = transactions[i].urgid;
-    if (txID == urgID) {
-      // Only approve this one
-      // First check if its a duo verified push
-      let stepUpCode = transactions[i].step_up_code_info;
-      if (stepUpCode) {
-        console.error("Duo verified push");
-        // Set input box to # of digits requested
-        document.getElementById("pinEntry").maxlength = num_digits;
-        // Store this transaction for after we receive the code
-        verifiedPushUrgID = urgID;
-        changeScreen("verifiedPush");
-      } else {
-        // Not a verified push, approve it
-        await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, { answer: "approve", txId: urgID });
-        // If successful (throws an error otherwise)
-        successDetails.innerHTML = traverse(transactions[i].attributes);
-        failedAttempts = 0;
-        changeScreen("success");
+  let selectedTransaction = transactions.find(sample => sample.urgid == txID);
+  if (selectedTransaction) {
+    // Only approve this one
+    // First check if its a duo verified push
+    let stepUpCode = selectedTransaction.step_up_code_info;
+    if (stepUpCode) {
+      console.log("Duo verified push");
+      let container = document.getElementById('pin-container');
+      container.innerHTML = ''; // clear previous elements
+      container.style.gridTemplateColumns = `repeat(${stepUpCode.num_digits}, 1fr)`;
+      // Set input box to # of digits requested
+      for (let i = 0; i < stepUpCode.num_digits; i++) {
+        const input = document.createElement('input');
+        input.maxLength = 1;
+        input.className = 'pin-input';
+        // Validate only digits
+        input.addEventListener('beforeinput', e => {
+          let value = e.target.value;
+          let nextVal = value.substring(0, e.target.selectionStart) + (e.data ?? '') + value.substring(e.target.selectionEnd);
+          // Only allow a single digit
+          if (!/^\d?$/.test(nextVal)) {
+            e.preventDefault();
+          }
+        });
+        // Go to next entry when there's an input
+        input.addEventListener('input', (e) => {
+          const value = e.target.value;
+          const nextInput = container.children[i + 1];
+          if (value.length === 1 && nextInput) {
+            nextInput.focus();
+          }
+        });
+        // Go back
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !input.value && i > 0) {
+            container.children[i - 1].focus();
+          }
+        });
+        container.appendChild(input);
       }
+      // Store this transaction for after we receive the code
+      verifiedTransactions = transactions;
+      verifiedPushUrgID = urgID;
+      changeScreen("verifiedPush");
     } else {
-      // Deny all others
-      await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, { answer: "deny", txId: urgID });
+      // Not a verified push, approve it
+      await sendToWorker({
+        intent: "approveTransaction", params: {
+          info, transactions, txID,
+        }
+      });
+      // await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, { answer: "approve", txId: urgID });
+      // If successful (throws an error otherwise)
+      successDetails.innerHTML = traverse(selectedTransaction.attributes);
+      failedAttempts = 0;
+      changeScreen("success");
     }
+  } else {
+    // Selected transaction not found! Deny everything (txID == -1 [probably])
+    await sendToWorker({
+      intent: "approveTransaction", params: {
+        info, transactions, txID,
+      }
+    });
+    changeScreen("denied");
   }
-  // return sendToWorker({
-  //   intent: "approveTransaction",
-  //   params: {
-  //     info,
-  //     transactions,
-  //     txID,
-  //   },
-  // });
 }
 
 // Handles errors with service worker which stores all the important functions
-async function sendToWorker(intent, params = {}) {
-  let response = await chrome.runtime.sendMessage(intent, params);
+async function sendToWorker(intent) {
+  let response = await chrome.runtime.sendMessage(intent);
   if (response && response.error) {
     throw response.reason;
   }

@@ -337,7 +337,8 @@
         width: 30%;
       }
 
-      #pushButton {
+      #pushButton,
+      #verifyButton {
         margin-bottom: 2px;
 
         &:disabled {
@@ -561,30 +562,25 @@
         }
       }
 
-      /* https://stackoverflow.com/questions/71372712/how-to-create-a-4-digit-input-series-without-javascript */
-      .pinBox {
-        --width: 296px;
-        --height: 74px;
-        --spacing: 47px;
-
-        display: inline-block;
-        position: relative;
-        width: var(--width);
-        height: var(--height);
-        background-image: url(https://i.sstatic.net/JbkZl.png);
+      #verifyButton {
+        margin-top: 10px;
       }
 
-      #pinEntry {
-        position: absolute;
-        padding-left: 21px;
-        font-family: courier, monospaced;
-        font-size: var(--spacing);
-        height: var(--height);
-        letter-spacing: var(--spacing);
-        background-color: transparent;
-        border: 0;
-        outline: none;
-        clip: rect(0px, calc(var(--width) - 21px), var(--height), 0px);
+      #pin-container {
+        padding: 6px;
+        display: grid;
+        gap: 0.5rem;
+        margin: 0 auto;
+      }
+
+      .pin-input {
+        font-size: 2rem;
+        text-align: center;
+        padding: 4px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        width: 100%;
+        box-sizing: border-box;
       }
     </style>
   </head>
@@ -802,9 +798,10 @@
     <!-- Duo verified push -->
     <div class="screen" id="verifiedPush">
       <!-- Elements dynamically altered in JS -->
-      <p id="transactionsSplash">Enter verification code:</p>
+      <p style="margin-bottom: revert">Enter verification code:</p>
+      <div id="pin-container"></div>
       <!-- https://stackoverflow.com/questions/71372712/how-to-create-a-4-digit-input-series-without-javascript -->
-      <div class="pinBox">
+      <!-- <div class="pinBox">
         <input
           id="pinEntry"
           name="token"
@@ -812,8 +809,8 @@
           maxlength="4"
           autocomplete="off"
         />
-        <button type="submit" id="verifyButton">Verify</button>
-      </div>
+      </div> -->
+      <button type="submit" id="verifyButton">Verify</button>
     </div>
 
     <!-- User fails to login multiple times -->

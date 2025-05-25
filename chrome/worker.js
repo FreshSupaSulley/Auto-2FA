@@ -5,6 +5,8 @@ chrome.runtime.onInstalled.addListener((event) => {
   }
 });
 
+let currentAbortController = null;
+
 // Trying to keep all of the methods in the same place to reduce space
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   let params = message.params;
@@ -21,16 +23,26 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         .catch((reason) => onError(reason, sendResponse));
       break;
     }
-    // case "approveTransaction": {
-    //   // sendResponse is still required to break the await in popup.js
-    //   approveTransaction(params.info, params.transactions, params.txID)
-    //     .then(sendResponse)
-    //     .catch((reason) => onError(reason, sendResponse));
-    //   break;
-    // }
+    case "approveTransaction": {
+      // sendResponse is still required to break the await in popup.js
+      approveTransaction(params.info, params.transactions, params.txID, {
+        ...(params.verificationCode ? {
+          // is this all we need? do we even need step_up_code_autofilled?
+          step_up_code: params.verificationCode,
+          step_up_code_autofilled: false
+        } : {})
+      }).then(sendResponse).catch((reason) => onError(reason, sendResponse));
+      break;
+    }
     // Called when the content script is injected on a Duo login page
     case "onLoginPage": {
-      zeroClickLogin(sender.tab.id);
+      if (currentAbortController) {
+        console.log("Cancelling previous zero click login attempt");
+        currentAbortController.abort();
+      }
+      currentAbortController = new AbortController();
+      const signal = currentAbortController.signal;
+      zeroClickLogin(sender.tab.id, signal, params.verificationCode);
       break;
     }
   }
@@ -45,18 +57,21 @@ function onError(reason, sendResponse) {
 
 const maxAttempts = 10;
 const zeroClickCooldown = 1000;
-var lastZeroClick = 0;
-async function zeroClickLogin(id) {
+var lastSuccessfulZeroClick = 0;
+
+async function zeroClickLogin(id, signal, verificationCode) {
+  clearBadge(id);
   // let clientIP = await fetch('https://api.ipify.org?format=json').then(response => response.json()).then(data => {
   //     return data.ip;
   // }).catch(error => {
   //     console.log("Failed to get IP", error);
   // });
-  // If there was another request to start a zero-click login while this one is going, OR it hasn't been long enough since the last zero-click login, ignore it
-  // I am arbitrarily setting the zero-click login cooldown to be twice as long as it takes
-  let time = Date.now();
-  if (time - lastZeroClick < maxAttempts * zeroClickCooldown * 2) return;
-  lastZeroClick = time;
+  // Ignore if we approved something recently (arbitrarily setting cooldown to 10s)
+  if (Date.now() - lastSuccessfulZeroClick < 10000) {
+    console.log("Zero click logged-in recently, not trying again");
+    return;
+  }
+  // lastZeroClick = time;
   // Get all devices that use 0 clicks (1 indicates zero-click login, 1-3 total range)
   let zeroClickDevices = (await getDeviceInfo()).devices.filter((device) => device.clickLevel == "1");
   console.log("Eligible devices to 0 click in with", zeroClickDevices);
@@ -68,12 +83,17 @@ async function zeroClickLogin(id) {
   console.log("Attempting to zero-click login");
   let attempts = 0;
   let loadingInterval = setInterval(async () => {
+    if (signal.aborted) {
+      console.log("Zero click aborted before attempt ", attempts + 1);
+      clearInterval(loadingInterval);
+      return;
+    }
     // Only continue the load if on the same tab, because the prompt screen is one thing, and Duo picking the device is another
     let [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
     console.log("Waiting for user to navigate to login page");
     if (!tab || tab.id != id) return;
     // Update attempts
-    let result = await chrome.action.setBadgeText({ text: `${++attempts} / ${maxAttempts}`, tabId: id }).catch((e) => {
+    let result = await chrome.action.setBadgeText({ text: `${++attempts}/${maxAttempts}`, tabId: id }).catch((e) => {
       // The tab was closed
       console.log("Tab was closed");
       clearInterval(loadingInterval);
@@ -92,6 +112,7 @@ async function zeroClickLogin(id) {
       ).response.transactions;
       // If there's just 1 login attempt
       if (transactions.length == 1) {
+        lastSuccessfulZeroClick = Date.now();
         // Ensure the IPs match
         // let duoIP = extractIP(transactions[0]);
         // Approve it ONLY IF IPs match
@@ -103,13 +124,13 @@ async function zeroClickLogin(id) {
         //     stopClickLogin(loadingInterval, "FC0D1B", "IP");
         // }
         console.log("Transaction found for device " + info.name);
-        await approveTransaction(info, transactions, transactions[0].urgid).then((success) => {
+        await approveTransaction(info, transactions, transactions[0].urgid, verificationCode).then((success) => {
           // Signal success
-          chrome.action.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => {});
+          chrome.action.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => { });
           stopClickLogin(loadingInterval, "#67B14A", "Done", id);
         }).catch(e => {
           // Signal failure
-          chrome.action.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => {});
+          chrome.action.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => { });
           stopClickLogin(loadingInterval, "#FC0D1B", "Err", id);
         });
         // Don't try other devices, we're done
@@ -144,13 +165,16 @@ async function zeroClickLogin(id) {
 async function stopClickLogin(loadingInterval, badgeColor, badgeText, id) {
   clearInterval(loadingInterval);
   // Tab is supposed to exist
-  chrome.action.setBadgeBackgroundColor({ color: badgeColor, tabId: id }).catch((e) => {});
-  chrome.action.setBadgeText({ text: badgeText, tabId: id }).catch((e) => {});
+  chrome.action.setBadgeBackgroundColor({ color: badgeColor, tabId: id }).catch((e) => { });
+  chrome.action.setBadgeText({ text: badgeText, tabId: id }).catch((e) => { });
   // Clear
-  setTimeout(() => {
-    chrome.action.setBadgeText({ text: ``, tabId: id }).catch((e) => {});
-    chrome.action.setBadgeTextColor({ color: `#000`, tabId: id }).catch((e) => {});
-  }, 5000);
+  setTimeout(() => clearBadge(id), 5000);
+}
+
+async function clearBadge(id) {
+  chrome.action.setBadgeText({ text: ``, tabId: id }).catch((e) => { });
+  chrome.action.setBadgeTextColor({ color: `#000`, tabId: id }).catch((e) => { });
+  chrome.action.setBadgeBackgroundColor({ color: "#FFF", tabId: id }).catch((e) => { });
 }
 
 // Gets the device info
@@ -179,21 +203,25 @@ async function getDeviceInfo() {
 
 // Approves the transaction ID provided, denies all others
 // Throws an exception if no transactions are active
-// async function approveTransaction(info, transactions, txID) {
-//   if (transactions.length == 0) {
-//     throw "No transactions found (request expired)";
-//   }
-//   for (let i = 0; i < transactions.length; i++) {
-//     let urgID = transactions[i].urgid;
-//     if (txID == urgID) {
-//       // Only approve this one
-//       await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, { answer: "approve" }, { txId: urgID });
-//     } else {
-//       // Deny all others
-//       await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, { answer: "deny" }, { txId: urgID });
-//     }
-//   }
-// }
+async function approveTransaction(info, transactions, txID, extraParam = {}) {
+  if (transactions.length == 0) {
+    throw "No transactions found (request expired)";
+  }
+  for (let i = 0; i < transactions.length; i++) {
+    let urgID = transactions[i].urgid;
+    if (txID == urgID) {
+      // Only approve this one
+      await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, {
+        ...extraParam,
+        answer: "approve",
+        txId: urgID
+      });
+    } else {
+      // Deny all others
+      await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, { answer: "deny", txId: urgID });
+    }
+  }
+}
 
 // Makes a request to the Duo API
 async function buildRequest(info, method, path, extraParam = {}) {
