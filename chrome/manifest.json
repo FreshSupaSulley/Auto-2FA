@@ -16,7 +16,7 @@
       "js": ["scan_script.js"]
     },
     {
-      "matches": ["https://*.duosecurity.com/frame/*/auth/prompt*", "https://*.duosecurity.com/frame/prompt*"],
+      "matches": ["https://*.duosecurity.com/frame/*/auth/prompt*", "https://*.duosecurity.com/frame/prompt*", "file:///Users/boschert.12/Desktop/shit/auto/testVerificationPage.html"],
       "js": ["login_script.js"]
     }
   ],

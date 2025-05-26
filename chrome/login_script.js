@@ -45,4 +45,13 @@
     });
     // Just in case the element is already there on load
     checkVerificationCode();
+
+    // FOR TESTING: Inject a fake verification code after 2 seconds
+    // setTimeout(() => {
+    //     const fakeCodeElement = document.createElement("div");
+    //     fakeCodeElement.className = "verification-code";
+    //     fakeCodeElement.innerText = "123456"; // fake code
+    //     document.body.appendChild(fakeCodeElement);
+    //     console.log("Fake verification code injected for testing.");
+    // }, 2000);
 })();

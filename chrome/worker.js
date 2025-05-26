@@ -31,17 +31,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
     case "approveTransaction": {
       // sendResponse is still required to break the await in popup.js
-      approveTransaction(params.info, params.transactions, params.txID, {
-        ...(params.verificationCode
-          ? {
-              // is this all we need? do we even need step_up_code_autofilled?
-              step_up_code: params.verificationCode,
-              step_up_code_autofilled: false,
-            }
-          : {}),
-      })
-        .then(sendResponse)
-        .catch((reason) => onError(reason, sendResponse));
+      approveTransactionHandler(params.info, params.transactions, params.txID, params.verificationCode).then(sendResponse).catch((reason) => onError(reason, sendResponse));
       break;
     }
     // Called when the content script is injected on a Duo login page
@@ -59,6 +49,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // Indicate this is asynchronous
   return true;
 });
+
+// ... because zero click logins use this too
+function approveTransactionHandler(info, transactions, txID, verificationCode) {
+  return approveTransaction(info, transactions, txID, {
+    ...(verificationCode
+      ? {
+        // is this all we need? do we even need step_up_code_autofilled?
+        step_up_code: verificationCode,
+        step_up_code_autofilled: false,
+      }
+      : {}),
+  });
+}
 
 function onError(reason, sendResponse) {
   // Ok, new JS quirk discovered: you can't just say reason, you have to parse it to a string otherwise it'll get sent as {} sometimes
@@ -83,7 +86,8 @@ async function zeroClickLogin(id, signal, verificationCode) {
   }
   // lastZeroClick = time;
   // Get all devices that use 0 clicks (1 indicates zero-click login, 1-3 total range)
-  let zeroClickDevices = (await getDeviceInfo()).devices.filter((device) => device.clickLevel == "1");
+  let deviceInfo = await getDeviceInfo();
+  let zeroClickDevices = Object.values(await new Promise((resolve) => chrome.storage.sync.get(deviceInfo.devices, resolve))).filter((device) => device.clickLevel == "1");
   console.log("Eligible devices to 0 click in with", zeroClickDevices);
   if (!zeroClickDevices.length) {
     console.log("No devices to zero-click with, aborting");
@@ -100,8 +104,10 @@ async function zeroClickLogin(id, signal, verificationCode) {
     }
     // Only continue the load if on the same tab, because the prompt screen is one thing, and Duo picking the device is another
     let [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
-    console.log("Waiting for user to navigate to login page");
-    if (!tab || tab.id != id) return;
+    if (!tab || tab.id != id) {
+      console.log("Waiting for user to navigate to login page");
+      return;
+    }
     // Update attempts
     let result = await chrome.action.setBadgeText({ text: `${++attempts}/${maxAttempts}`, tabId: id }).catch((e) => {
       // The tab was closed
@@ -134,15 +140,15 @@ async function zeroClickLogin(id, signal, verificationCode) {
         //     stopClickLogin(loadingInterval, "FC0D1B", "IP");
         // }
         console.log("Transaction found for device " + info.name);
-        await approveTransaction(info, transactions, transactions[0].urgid, verificationCode)
+        await approveTransactionHandler(info, transactions, transactions[0].urgid, verificationCode)
           .then((success) => {
             // Signal success
-            chrome.action.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => {});
+            chrome.action.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => { });
             stopClickLogin(loadingInterval, "#67B14A", "Done", id);
           })
           .catch((e) => {
             // Signal failure
-            chrome.action.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => {});
+            chrome.action.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => { });
             stopClickLogin(loadingInterval, "#FC0D1B", "Err", id);
           });
         // Don't try other devices, we're done
@@ -177,16 +183,16 @@ async function zeroClickLogin(id, signal, verificationCode) {
 async function stopClickLogin(loadingInterval, badgeColor, badgeText, id) {
   clearInterval(loadingInterval);
   // Tab is supposed to exist
-  chrome.action.setBadgeBackgroundColor({ color: badgeColor, tabId: id }).catch((e) => {});
-  chrome.action.setBadgeText({ text: badgeText, tabId: id }).catch((e) => {});
+  chrome.action.setBadgeBackgroundColor({ color: badgeColor, tabId: id }).catch((e) => { });
+  chrome.action.setBadgeText({ text: badgeText, tabId: id }).catch((e) => { });
   // Clear
   setTimeout(() => clearBadge(id), 5000);
 }
 
 async function clearBadge(id) {
-  chrome.action.setBadgeText({ text: ``, tabId: id }).catch((e) => {});
-  chrome.action.setBadgeTextColor({ color: `#000`, tabId: id }).catch((e) => {});
-  chrome.action.setBadgeBackgroundColor({ color: "#FFF", tabId: id }).catch((e) => {});
+  chrome.action.setBadgeText({ text: ``, tabId: id }).catch((e) => { });
+  chrome.action.setBadgeTextColor({ color: `#000`, tabId: id }).catch((e) => { });
+  chrome.action.setBadgeBackgroundColor({ color: "#FFF", tabId: id }).catch((e) => { });
 }
 
 // Gets the device info
@@ -198,45 +204,51 @@ function getDeviceInfo() {
   }).then(sanitizeData);
 }
 
-function setDeviceInfo(info) {
-  return sanitizeData(info).then((data) => chrome.storage.sync.set({ deviceInfo: data }).then(() => data));
+async function setDeviceInfo(info) {
+  let sanitized = await sanitizeData(info);
+  // if (JSON.stringify(sanitized) !== JSON.stringify(info)) {
+  console.log("Contents changed! Updating device info");
+  console.log("Old", info, "New", sanitized);
+  await chrome.storage.sync.set({ deviceInfo: sanitized });
+  // }
+  return sanitized;
 }
 
 async function sanitizeData(info) {
   let newInfo = !info ? undefined : JSON.parse(JSON.stringify(info)); // create a full copy
-  // If there's no info yet OR it's old info (presence of info.host indicates this [it's a single device])
-  if (!info || info.host) {
+  // If there's no info yet OR it's old info (presence of any single values (like pkey) indicates it's a single device)
+  if (!info || info.pkey) {
     // Update 1.4.3 data -> 1.5.0
     // Data is still json object, update to array
     newInfo = {
-      // If there's already a device available use 0 otherwise -1 for new device
-      activeDevice: info && info.host ? 0 : -1,
+      // If there's already a device available use pkey for identifier, otherwise -1 for new device
+      activeDevice: info && info.host ? info.pkey : -1,
       // Add default name too. Earlier versions of DuOSU didn't have clickLevel yet, so we're defaulting one here
       devices: info ? [{ ...info, clickLevel: info.clickLevel ?? "2", name: "Device 1" }] : [],
     };
   }
   // New in 1.6.0
+  // ... and this is also necessary for imports
   // If we have individual device data still in devices
   if (newInfo?.devices?.some((device) => !!device.pkey)) {
     // Break apart each device into their own JSON objects
     for (let device of newInfo.devices) {
+      console.log("Setting device info for ", device.pkey)
       await chrome.storage.sync.set({ [device.pkey]: device }); // fuck it, don't remove pkey from device. One duplicate row ain't gonna hurt
     }
     // Devices array now only holds it's pkey, and it stores the device info under that pkey separately
     newInfo.devices = newInfo.devices.map((device) => device.pkey);
   }
-  // Update data (check if newInfo != info)
-  if (JSON.stringify(newInfo) !== JSON.stringify(info)) {
-    console.log("Contents changed! Updating device info");
-    console.log("Old", info, "New", newInfo);
-    await chrome.storage.sync.set({ deviceInfo: newInfo });
+  // Now ensure activeDevice is pointing to a valid place
+  if (newInfo.activeDevice != -1) {
+    newInfo.activeDevice = newInfo.devices.includes(newInfo.activeDevice) ? newInfo.activeDevice : newInfo.devices[0] || -1;
   }
   return newInfo;
 }
 
 // Approves the transaction ID provided, denies all others
 // Throws an exception if no transactions are active
-async function approveTransaction(info, transactions, txID, extraParam = {}) {
+async function approveTransaction(singleDeviceInfo, transactions, txID, extraParam = {}) {
   if (transactions.length == 0) {
     throw "No transactions found (request expired)";
   }
@@ -244,20 +256,20 @@ async function approveTransaction(info, transactions, txID, extraParam = {}) {
     let urgID = transactions[i].urgid;
     if (txID == urgID) {
       // Only approve this one
-      await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, {
+      await buildRequest(singleDeviceInfo, "POST", "/push/v2/device/transactions/" + urgID, {
         ...extraParam,
         answer: "approve",
         txId: urgID,
       });
     } else {
       // Deny all others
-      await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, { answer: "deny", txId: urgID });
+      await buildRequest(singleDeviceInfo, "POST", "/push/v2/device/transactions/" + urgID, { answer: "deny", txId: urgID });
     }
   }
 }
 
 // Makes a request to the Duo API
-async function buildRequest(info, method, path, extraParam = {}) {
+async function buildRequest(singleDeviceInfo, method, path, extraParam = {}) {
   // Manually convert date to UTC
   let now = new Date();
   // var utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
@@ -276,7 +288,7 @@ async function buildRequest(info, method, path, extraParam = {}) {
   // Create canolicalized request (signature of auth header)
   // Technically, these parameters should be sorted alphabetically
   // But for our purposes we don't need to for our only extra parameter (answer=approve)
-  let canonRequest = date + "\n" + method + "\n" + info.host + "\n" + path + "\n";
+  let canonRequest = date + "\n" + method + "\n" + singleDeviceInfo.host + "\n" + path + "\n";
   let params = "";
 
   // We only use 1 extra parameter, but this shouldn't break for extra
@@ -294,8 +306,8 @@ async function buildRequest(info, method, path, extraParam = {}) {
   }
 
   // Import keys (convert form Base64 back into ArrayBuffer)
-  let publicKey = await crypto.subtle.importKey("spki", base64ToArrayBuffer(info.publicRaw), { name: "RSASSA-PKCS1-v1_5", hash: { name: "SHA-512" } }, true, ["verify"]);
-  let privateKey = await crypto.subtle.importKey("pkcs8", base64ToArrayBuffer(info.privateRaw), { name: "RSASSA-PKCS1-v1_5", hash: { name: "SHA-512" } }, true, ["sign"]);
+  let publicKey = await crypto.subtle.importKey("spki", base64ToArrayBuffer(singleDeviceInfo.publicRaw), { name: "RSASSA-PKCS1-v1_5", hash: { name: "SHA-512" } }, true, ["verify"]);
+  let privateKey = await crypto.subtle.importKey("pkcs8", base64ToArrayBuffer(singleDeviceInfo.privateRaw), { name: "RSASSA-PKCS1-v1_5", hash: { name: "SHA-512" } }, true, ["sign"]);
 
   // Sign canonicalized request using RSA private key
   let toEncrypt = new TextEncoder().encode(canonRequest);
@@ -309,11 +321,11 @@ async function buildRequest(info, method, path, extraParam = {}) {
 
   // Required headers for all requests
   let headers = {
-    Authorization: "Basic " + btoa(info.pkey + ":" + arrayBufferToBase64(signed)),
+    Authorization: "Basic " + btoa(singleDeviceInfo.pkey + ":" + arrayBufferToBase64(signed)),
     "x-duo-date": date,
   };
 
-  let finalPath = "https://" + info.host + path + params;
+  let finalPath = "https://" + singleDeviceInfo.host + path + params;
   let result = await fetch(finalPath, {
     method: method,
     headers: headers,
