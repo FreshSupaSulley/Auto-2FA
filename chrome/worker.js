@@ -17,6 +17,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         .catch((reason) => onError(reason, sendResponse));
       break;
     }
+    case "setDeviceInfo": {
+      setDeviceInfo(params.info)
+        .then(sendResponse)
+        .catch((reason) => onError(reason, sendResponse));
+      break;
+    }
     case "buildRequest": {
       buildRequest(params.info, params.method, params.path, params.extraParam)
         .then(sendResponse)
@@ -26,12 +32,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case "approveTransaction": {
       // sendResponse is still required to break the await in popup.js
       approveTransaction(params.info, params.transactions, params.txID, {
-        ...(params.verificationCode ? {
-          // is this all we need? do we even need step_up_code_autofilled?
-          step_up_code: params.verificationCode,
-          step_up_code_autofilled: false
-        } : {})
-      }).then(sendResponse).catch((reason) => onError(reason, sendResponse));
+        ...(params.verificationCode
+          ? {
+              // is this all we need? do we even need step_up_code_autofilled?
+              step_up_code: params.verificationCode,
+              step_up_code_autofilled: false,
+            }
+          : {}),
+      })
+        .then(sendResponse)
+        .catch((reason) => onError(reason, sendResponse));
       break;
     }
     // Called when the content script is injected on a Duo login page
@@ -124,15 +134,17 @@ async function zeroClickLogin(id, signal, verificationCode) {
         //     stopClickLogin(loadingInterval, "FC0D1B", "IP");
         // }
         console.log("Transaction found for device " + info.name);
-        await approveTransaction(info, transactions, transactions[0].urgid, verificationCode).then((success) => {
-          // Signal success
-          chrome.action.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => { });
-          stopClickLogin(loadingInterval, "#67B14A", "Done", id);
-        }).catch(e => {
-          // Signal failure
-          chrome.action.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => { });
-          stopClickLogin(loadingInterval, "#FC0D1B", "Err", id);
-        });
+        await approveTransaction(info, transactions, transactions[0].urgid, verificationCode)
+          .then((success) => {
+            // Signal success
+            chrome.action.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => {});
+            stopClickLogin(loadingInterval, "#67B14A", "Done", id);
+          })
+          .catch((e) => {
+            // Signal failure
+            chrome.action.setBadgeTextColor({ color: `#FFF`, tabId: id }).catch((e) => {});
+            stopClickLogin(loadingInterval, "#FC0D1B", "Err", id);
+          });
         // Don't try other devices, we're done
         break;
       } else if (transactions.length > 1) {
@@ -165,40 +177,61 @@ async function zeroClickLogin(id, signal, verificationCode) {
 async function stopClickLogin(loadingInterval, badgeColor, badgeText, id) {
   clearInterval(loadingInterval);
   // Tab is supposed to exist
-  chrome.action.setBadgeBackgroundColor({ color: badgeColor, tabId: id }).catch((e) => { });
-  chrome.action.setBadgeText({ text: badgeText, tabId: id }).catch((e) => { });
+  chrome.action.setBadgeBackgroundColor({ color: badgeColor, tabId: id }).catch((e) => {});
+  chrome.action.setBadgeText({ text: badgeText, tabId: id }).catch((e) => {});
   // Clear
   setTimeout(() => clearBadge(id), 5000);
 }
 
 async function clearBadge(id) {
-  chrome.action.setBadgeText({ text: ``, tabId: id }).catch((e) => { });
-  chrome.action.setBadgeTextColor({ color: `#000`, tabId: id }).catch((e) => { });
-  chrome.action.setBadgeBackgroundColor({ color: "#FFF", tabId: id }).catch((e) => { });
+  chrome.action.setBadgeText({ text: ``, tabId: id }).catch((e) => {});
+  chrome.action.setBadgeTextColor({ color: `#000`, tabId: id }).catch((e) => {});
+  chrome.action.setBadgeBackgroundColor({ color: "#FFF", tabId: id }).catch((e) => {});
 }
 
 // Gets the device info
-async function getDeviceInfo() {
-  return await new Promise((resolve) => {
+function getDeviceInfo() {
+  return new Promise((resolve) => {
     chrome.storage.sync.get("deviceInfo", (json) => {
       resolve(json.deviceInfo);
     });
-  }).then(async (info) => {
-    let newInfo = info;
-    // If there's no info yet OR it's old info (presence of info.host indicates this [it's a single device])
-    if (!info || info.host) {
-      // Update 1.4.3 data -> 1.5.0
-      // Data is still json object, update to array
-      newInfo = {
-        // If there's already a device available use 0 otherwise -1 for new device
-        activeDevice: info && info.host ? 0 : -1,
-        // Add default name too. Earlier versions of DuOSU didn't have clickLevel yet, so we're defaulting one here
-        devices: info ? [{ ...info, clickLevel: info.clickLevel ?? "2", name: "Device 1" }] : [],
-      };
-      await chrome.storage.sync.set({ deviceInfo: newInfo });
+  }).then(sanitizeData);
+}
+
+function setDeviceInfo(info) {
+  return sanitizeData(info).then((data) => chrome.storage.sync.set({ deviceInfo: data }).then(() => data));
+}
+
+async function sanitizeData(info) {
+  let newInfo = !info ? undefined : JSON.parse(JSON.stringify(info)); // create a full copy
+  // If there's no info yet OR it's old info (presence of info.host indicates this [it's a single device])
+  if (!info || info.host) {
+    // Update 1.4.3 data -> 1.5.0
+    // Data is still json object, update to array
+    newInfo = {
+      // If there's already a device available use 0 otherwise -1 for new device
+      activeDevice: info && info.host ? 0 : -1,
+      // Add default name too. Earlier versions of DuOSU didn't have clickLevel yet, so we're defaulting one here
+      devices: info ? [{ ...info, clickLevel: info.clickLevel ?? "2", name: "Device 1" }] : [],
+    };
+  }
+  // New in 1.6.0
+  // If we have individual device data still in devices
+  if (newInfo?.devices?.some((device) => !!device.pkey)) {
+    // Break apart each device into their own JSON objects
+    for (let device of newInfo.devices) {
+      await chrome.storage.sync.set({ [device.pkey]: device }); // fuck it, don't remove pkey from device. One duplicate row ain't gonna hurt
     }
-    return newInfo;
-  });
+    // Devices array now only holds it's pkey, and it stores the device info under that pkey separately
+    newInfo.devices = newInfo.devices.map((device) => device.pkey);
+  }
+  // Update data (check if newInfo != info)
+  if (JSON.stringify(newInfo) !== JSON.stringify(info)) {
+    console.log("Contents changed! Updating device info");
+    console.log("Old", info, "New", newInfo);
+    await chrome.storage.sync.set({ deviceInfo: newInfo });
+  }
+  return newInfo;
 }
 
 // Approves the transaction ID provided, denies all others
@@ -214,7 +247,7 @@ async function approveTransaction(info, transactions, txID, extraParam = {}) {
       await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, {
         ...extraParam,
         answer: "approve",
-        txId: urgID
+        txId: urgID,
       });
     } else {
       // Deny all others
