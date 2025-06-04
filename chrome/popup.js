@@ -1134,7 +1134,7 @@ async function handleTransaction(info, transactions, txID) {
       }
       // Store this transaction for after we receive the code
       verifiedTransactions = transactions;
-      verifiedPushUrgID = urgID;
+      verifiedPushUrgID = txID;
       changeScreen("verifiedPush");
     } else {
       // Not a verified push, approve it
