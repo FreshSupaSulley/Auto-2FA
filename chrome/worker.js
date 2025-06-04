@@ -249,9 +249,8 @@ async function sanitizeData(info) {
 // Approves the transaction ID provided, denies all others
 // Throws an exception if no transactions are active
 async function approveTransaction(singleDeviceInfo, transactions, txID, extraParam = {}) {
-  if (transactions.length == 0) {
-    throw "No transactions found (request expired)";
-  }
+  if(!transactions) throw "Transactions is undefined";
+  if (transactions.length == 0) throw "No transactions found (request expired)";
   for (let i = 0; i < transactions.length; i++) {
     let urgID = transactions[i].urgid;
     if (txID == urgID) {

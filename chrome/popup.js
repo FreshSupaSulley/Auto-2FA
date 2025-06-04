@@ -1058,8 +1058,8 @@ verifyButton.addEventListener("click", async () => {
       intent: "approveTransaction",
       params: {
         info,
-        verifiedTransactions,
-        verifiedPushUrgID,
+        transactions: verifiedTransactions,
+        txID: verifiedPushUrgID,
         // Presence of verificationCode signals to add step_up_code bs to approve request
         verificationCode: Array.from(document.querySelectorAll(".pin-input"))
           .map((input) => input.value)
@@ -1068,7 +1068,7 @@ verifyButton.addEventListener("click", async () => {
     });
     console.log("Response from worker: ", response);
     // If successful (throws an error otherwise)
-    successDetails.innerHTML = traverse(transactions[i].attributes);
+    successDetails.innerHTML = traverse(verifiedTransactions[i].attributes);
     failedAttempts = 0;
     changeScreen("success");
   } catch (error) {
