@@ -747,7 +747,14 @@ document.getElementById("deleteButton").onclick = async () => {
 // Import button
 let importSplash = document.getElementById("importSplash");
 document.getElementById("importButton").addEventListener("click", async function () {
-  document.getElementById("importFile").click();
+  // Warn if we're going to override devices
+  if ((await getDeviceInfo()).devices?.length > 0) {
+    showDeleteModal(`This will replace all data! Continue?`, () => {
+      document.getElementById("importFile").click();
+    });
+  } else {
+    document.getElementById("importFile").click();
+  }
 });
 
 const importFile = document.getElementById("importFile");
