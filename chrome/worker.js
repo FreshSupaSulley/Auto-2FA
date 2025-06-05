@@ -57,7 +57,7 @@ function approveTransactionHandler(info, transactions, txID, verificationCode) {
       ? {
         // is this all we need? do we even need step_up_code_autofilled?
         step_up_code: verificationCode,
-        step_up_code_autofilled: false,
+        // step_up_code_autofilled: false,
       }
       : {}),
   });
