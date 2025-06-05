@@ -1102,8 +1102,19 @@ verifyButton.addEventListener("click", async () => {
       },
     });
     console.log("Response from worker: ", response);
-    // If successful (throws an error otherwise)
-    successDetails.innerHTML = traverse(verifiedTransactions[i].attributes);
+ 
+    // Instead of using the nonexistent `i` variable, find by urgid:
+    const matchedTx = verifiedTransactions.find(
+      (tx) => tx.urgid === verifiedPushUrgID
+    );
+
+    if (!matchedTx) {
+      successDetails.innerHTML =
+        "<b>Approval succeeded</b>, but could not locate transaction details.";
+    } else {
+      successDetails.innerHTML = traverse(matchedTx.attributes);
+    }
+
     failedAttempts = 0;
     changeScreen("success");
   } catch (error) {
