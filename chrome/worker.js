@@ -270,81 +270,134 @@ async function approveTransaction(singleDeviceInfo, transactions, txID, extraPar
 
 // Makes a request to the Duo API
 async function buildRequest(singleDeviceInfo, method, path, extraParam = {}) {
-  // Manually convert date to UTC
+  // 1. Get the Date header in UTC form
   let now = new Date();
-  // var utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+  let date = now.toUTCString(); // e.g. "Thu, 05 Jun 2025 01:26:58 GMT"
 
-  // Manually format time because JS doesn't provide regex functions for this
-  // let date = utc.toLocaleString('en-us', {weekday: 'long'}).substring(0, 3) + ", ";
-  // date += utc.getDate() + " ";
-  // date += utc.toLocaleString('en-us', {month: 'long'}).substring(0, 3) + " ";
-  // date += 1900 + utc.getYear() + " ";
-  // date += twoDigits(utc.getHours()) + ":";
-  // date += twoDigits(utc.getMinutes()) + ":";
-  // date += twoDigits(utc.getSeconds()) + " -0000";
-  // let date = utc.toUTCString();
-  let date = now.toUTCString();
+  // 2. Build the canonical request string exactly as Duo expects:
+  //    <date>\n
+  //    <HTTP_METHOD>\n
+  //    <host>\n
+  //    <path>\n
+  //    <sorted query string>
+  //
+  const host = singleDeviceInfo.host.trim(); // e.g. "api-46217189.duosecurity.com"
+  let canonicalRequest = "";
+  canonicalRequest += date + "\n";
+  canonicalRequest += method.toUpperCase() + "\n";
+  canonicalRequest += host + "\n";
+  canonicalRequest += path + "\n";
 
-  // Create canolicalized request (signature of auth header)
-  // Technically, these parameters should be sorted alphabetically
-  // But for our purposes we don't need to for our only extra parameter (answer=approve)
-  let canonRequest = date + "\n" + method + "\n" + singleDeviceInfo.host + "\n" + path + "\n";
-  let params = "";
-
-  // We only use 1 extra parameter, but this shouldn't break for extra
-  for (const [key, value] of Object.entries(extraParam)) {
-    params += "&" + key + "=" + value;
+  // 3. Sort and URL-encode extraParam lexicographically by key
+  //
+  // Convert each key/value to string, sort by key (ASCII order), then
+  // create a queryString like "answer=approve&step_up_code=123456&txId=67890"
+  const sortedEntries = Object.entries(extraParam)
+    .map(([k, v]) => [String(k), String(v)])
+    .sort((a, b) => a[0].localeCompare(b[0], "en", { numeric: false }));
+  let queryString = "";
+  if (sortedEntries.length > 0) {
+    queryString = sortedEntries
+      .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+      .join("&");
+  }
+  // If queryString is nonempty, append it to canonicalRequest (no leading “?”)
+  if (queryString.length > 0) {
+    canonicalRequest += queryString;
   }
 
-  // Add extra params to canonical request for auth
-  if (params.length != 0) {
-    // Cutoff first '&'
-    params = params.substring(1);
-    canonRequest += params;
-    // Add '?' for URL when we make fetch request
-    params = "?" + params;
-  }
+  // (Optional) Debug: print canonicalRequest to console
+  // console.debug("[Duo Signature] Canonical Request:\n" + canonicalRequest);
 
-  // Import keys (convert form Base64 back into ArrayBuffer)
-  let publicKey = await crypto.subtle.importKey("spki", base64ToArrayBuffer(singleDeviceInfo.publicRaw), { name: "RSASSA-PKCS1-v1_5", hash: { name: "SHA-512" } }, true, ["verify"]);
-  let privateKey = await crypto.subtle.importKey("pkcs8", base64ToArrayBuffer(singleDeviceInfo.privateRaw), { name: "RSASSA-PKCS1-v1_5", hash: { name: "SHA-512" } }, true, ["sign"]);
+  // 4. Import the RSA keys for signing/verification
+  const publicKeyBuffer = base64ToArrayBuffer(singleDeviceInfo.publicRaw);
+  const privateKeyBuffer = base64ToArrayBuffer(singleDeviceInfo.privateRaw);
+  const publicKey = await crypto.subtle.importKey(
+    "spki",
+    publicKeyBuffer,
+    { name: "RSASSA-PKCS1-v1_5", hash: { name: "SHA-512" } },
+    true,
+    ["verify"]
+  );
+  const privateKey = await crypto.subtle.importKey(
+    "pkcs8",
+    privateKeyBuffer,
+    { name: "RSASSA-PKCS1-v1_5", hash: { name: "SHA-512" } },
+    true,
+    ["sign"]
+  );
 
-  // Sign canonicalized request using RSA private key
-  let toEncrypt = new TextEncoder().encode(canonRequest);
-  let signed = await crypto.subtle.sign({ name: "RSASSA-PKCS1-v1_5" }, privateKey, toEncrypt);
-  let verified = await crypto.subtle.verify({ name: "RSASSA-PKCS1-v1_5" }, publicKey, signed, toEncrypt);
+  // 5. Sign the canonical request
+  const encoder = new TextEncoder();
+  const dataToSign = encoder.encode(canonicalRequest);
+  const signatureArrayBuffer = await crypto.subtle.sign(
+    { name: "RSASSA-PKCS1-v1_5" },
+    privateKey,
+    dataToSign
+  );
 
-  // Ensure keys match
-  if (!verified) {
-    throw "Failed to verify signature with RSA keys";
-  }
+  // (Optional) Verify the signature locally—purely for debugging
+  // const locallyVerified = await crypto.subtle.verify(
+  //   { name: "RSASSA-PKCS1-v1_5" },
+  //   publicKey,
+  //   signatureArrayBuffer,
+  //   dataToSign
+  // );
+  // if (!locallyVerified) {
+  //   throw new Error("Duo buildRequest: Local verification of signature failed");
+  // }
 
-  // Required headers for all requests
-  let headers = {
-    Authorization: "Basic " + btoa(singleDeviceInfo.pkey + ":" + arrayBufferToBase64(signed)),
-    "x-duo-date": date,
-  };
+  // 6. Base64-encode the signature
+  const signatureBase64 = arrayBufferToBase64(signatureArrayBuffer);
 
-  let finalPath = "https://" + singleDeviceInfo.host + path + params;
-  let result = await fetch(finalPath, {
-    method: method,
-    headers: headers,
-  })
-    .then(async (response) => {
-      if (!response.ok) {
-        // Banking on it actually returning JSON, which it should
-        let apiData = await response.json();
-        throw `<pre>${response.statusText} (${response.status}):<br>${JSON.stringify(apiData, null, 1)}</pre>`;
-      } else {
-        return response.json();
-      }
-    })
-    .catch((e) => {
-      console.error(e);
-      throw `Failed to fetch ${finalPath}:<br><br>${e}`;
+  // 7. Form the Authorization header
+  const credentialString = `${singleDeviceInfo.pkey}:${signatureBase64}`;
+  const authHeaderValue = "Basic " + btoa(credentialString);
+
+  // 8. Assemble the full URL (prepend “?” if queryString is nonempty)
+  const url = `https://${host}${path}${queryString ? "?" + queryString : ""}`;
+
+  // 9. Dispatch the actual HTTP request using fetch()
+  let fetchResponse;
+  try {
+    fetchResponse = await fetch(url, {
+      method: method.toUpperCase(),
+      headers: {
+        Authorization: authHeaderValue,
+        "x-duo-date": date,
+      },
     });
+  } catch (networkErr) {
+    console.error("[Duo buildRequest] Network error fetching", url, networkErr);
+    throw new Error(`Failed to fetch ${url}: ${networkErr}`);
+  }
 
-  return result;
+  // 10. If not OK, throw a detailed error with Duo’s JSON payload
+  if (!fetchResponse.ok) {
+    let errorPayload = await fetchResponse.text();
+    let statusText = fetchResponse.statusText;
+    let statusCode = fetchResponse.status;
+    let parsed;
+    try {
+      parsed = JSON.parse(errorPayload);
+    } catch (_) {
+      parsed = null;
+    }
+    console.error(
+      `[Duo buildRequest] Duo responded ${statusCode} ${statusText}:`,
+      parsed || errorPayload
+    );
+    throw new Error(
+      `<pre>${statusText} (${statusCode}):<br>${JSON.stringify(
+        parsed || errorPayload,
+        null,
+        2
+      )}</pre>`
+    );
+  }
+
+  // 11. Otherwise, return the JSON response
+  return fetchResponse.json();
 }
 
 // Convert an ArrayBuffer to Base64 encoded string
