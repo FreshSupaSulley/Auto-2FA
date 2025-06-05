@@ -20,6 +20,7 @@
       "js": ["login_script.js"]
     }
   ],
+  "options_page": "options.html",
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
