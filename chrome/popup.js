@@ -1086,9 +1086,6 @@ verifyButton.addEventListener("click", async () => {
 
   try {
     let info = await getSingleDeviceInfo(); // get active device
-    console.log("ABOUT TO APPROVE A VERIFIED LOGIN!")
-    console.log("UrgID: ", verifiedPushUrgID)
-    console.log("Transactions: ", verifiedTransactions);
     let response = await sendToWorker({
       intent: "approveTransaction",
       params: {
@@ -1102,8 +1099,9 @@ verifyButton.addEventListener("click", async () => {
       },
     });
     console.log("Response from worker: ", response);
- 
+
     // Instead of using the nonexistent `i` variable, find by urgid:
+    // we could probably use response instead of this but whatever
     const matchedTx = verifiedTransactions.find(
       (tx) => tx.urgid === verifiedPushUrgID
     );
