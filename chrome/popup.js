@@ -300,6 +300,38 @@ pushButton.addEventListener("click", async function () {
   try {
     let info = await getSingleDeviceInfo(); // this gets the active device when no pkey is supplied
     let transactions = (await buildRequest(info, "GET", "/push/v2/device/transactions")).response.transactions;
+    // let transactions = [
+    //   {
+    //     "access_device_ble_status": "unknown",
+    //     "akey": "****",
+    //     "attributes": [
+    //       [
+    //         [
+    //           "Organization",
+    //           "Oregon State University"
+    //         ],
+    //         [
+    //           "Integration",
+    //           "OSU Login"
+    //         ]
+    //       ],
+    //     ],
+    //     "block_biometric_pin_fallback": false,
+    //     "expiration": 1749059460,
+    //     "is_proximity_push": false,
+    //     "is_strict_proximity_push": false,
+    //     "phone_notification_type": "visible_notification",
+    //     "require_lock": false,
+    //     "require_touch_id": false,
+    //     "step_up_code_info": {
+    //       "num_digits": 3
+    //     },
+    //     "summary": "OSU Login",
+    //     "txid": "txIDss,",
+    //     "type": "Login",
+    //     "urgid": "urgidd"
+    //   }
+    // ];
     // If no transactions exist at the moment
     if (transactions.length == 0) {
       failedAttempts++;
@@ -554,9 +586,9 @@ let checkQR = new Timer(async () => {
 
 // Changes the active screen of the page (activation or main)
 async function changeScreen(id) {
-  chrome.storage.sync.get(null, function (items) {
-    console.log("ALL DATA", items);  // This will log all the data stored in chrome.storage.sync
-  });
+  // chrome.storage.sync.get(null, function (items) {
+  //   console.log("ALL DATA", items);  // This will log all the data stored in chrome.storage.sync
+  // });
   // Global resetting
   checkQR.stop();
   inSettings = false;
@@ -1054,6 +1086,9 @@ verifyButton.addEventListener("click", async () => {
 
   try {
     let info = await getSingleDeviceInfo(); // get active device
+    console.log("ABOUT TO APPROVE A VERIFIED LOGIN!")
+    console.log("UrgID: ", verifiedPushUrgID)
+    console.log("Transactions: ", verifiedTransactions);
     let response = await sendToWorker({
       intent: "approveTransaction",
       params: {

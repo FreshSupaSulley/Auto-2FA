@@ -254,6 +254,7 @@ async function approveTransaction(singleDeviceInfo, transactions, txID, extraPar
   for (let i = 0; i < transactions.length; i++) {
     let urgID = transactions[i].urgid;
     if (txID == urgID) {
+      console.log("Found transaction matching UrgID: ", txID);
       // Only approve this one
       await buildRequest(singleDeviceInfo, "POST", "/push/v2/device/transactions/" + urgID, {
         ...extraParam,
