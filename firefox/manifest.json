@@ -1,7 +1,7 @@
 {
   "name": "Auto 2FA",
   "description": "Login through Duo Mobile in your browser.",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "manifest_version": 2,
   "permissions": [
     "storage", "https://*.duosecurity.com/"
@@ -19,6 +19,7 @@
       "js": ["login_script.js"]
     }
   ],
+  "options_page": "options.html",
   "browser_action": {
     "default_title": "Auto 2FA",
     "default_popup": "popup.html",
@@ -34,5 +35,6 @@
     "32": "/images/logo_32.png",
     "48": "/images/logo_48.png",
     "128": "/images/logo_128.png"
-  }
+  },
+  "browser_specific_settings": {"gecko": {"id": "extensionname@example.org","strict_min_version": "88.0"}}
 }

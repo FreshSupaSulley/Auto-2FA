@@ -1,3 +1,8 @@
+// otplib
+import "./libs/buffer.js";
+import "./libs/index.js";
+const { totp } = window.otplib;
+
 // Determines which slide should be visible on startup page
 let slideIndex = 0;
 
@@ -87,11 +92,11 @@ activateButton.addEventListener("click", async function () {
       console.error(error);
       errorSplash.innerText = "Invalid code. Open the link sent to your inbox, and paste the code below.";
     }
+  } finally {
+    // Re-enable button
+    activateButton.disabled = false;
+    activateButton.innerText = "Retry";
   }
-
-  // Re-enable button
-  activateButton.disabled = false;
-  activateButton.innerText = "Retry";
 });
 
 // Switch to main page after success button is pressed
@@ -169,7 +174,7 @@ async function activateDevice(rawCode) {
   }
 
   // Grab number of devices for naming the new device
-  var deviceInfo = await getDeviceInfo();
+  let deviceInfo = await getDeviceInfo();
   let devicesCount = deviceInfo.devices.length;
   // Initialize new HTTP request
   let request = new XMLHttpRequest();
@@ -182,22 +187,22 @@ async function activateDevice(rawCode) {
       // If successful
       if (result.stat == "OK") {
         // Get device info as JSON
-        let newDevice = {
-          // akey not used but why not
-          akey: result.response.akey,
-          pkey: result.response.pkey,
-          host,
-          name: `${activationInfo.model} (#${devicesCount + 1})`, // not gonna do a bounds check on this one
-          clickLevel: "2", // default value is one click login
-          // Encode keys to Base64 for JSON serializing
-          publicRaw,
-          privateRaw,
-        };
+        let newDevice = result.response;
+        delete newDevice.customer_logo; // takes up too much space
+        // Add custom data per device
+        (newDevice.name = `${activationInfo.model} (#${devicesCount + 1})`), // not gonna do a bounds check on this one
+          (newDevice.clickLevel = "2"); // default value is one click login (this is what 2 means)
+        newDevice.host = host;
+        newDevice.publicRaw = publicRaw;
+        newDevice.privateRaw = privateRaw;
+
         document.getElementById("newDeviceDisplay").innerHTML = `<b>${activationInfo.model}</b> (${activationInfo.platform})`;
-        // Store device info in chrome sync
-        deviceInfo.devices.push(newDevice);
+        // Create new storage slot for device
+        await browser.storage.sync.set({ [newDevice.pkey]: newDevice });
+        // Add new device to info
+        deviceInfo.devices.push(newDevice.pkey);
         // Set active device to one just added
-        deviceInfo.activeDevice = deviceInfo.devices.length - 1;
+        deviceInfo.activeDevice = newDevice.pkey;
         await setDeviceInfo(deviceInfo);
         resolve("Success");
       } else {
@@ -222,18 +227,34 @@ async function activateDevice(rawCode) {
 }
 
 // On device change
-let deviceSelect = document.getElementById("deviceSelect");
+const deviceSelect = document.getElementById("deviceSelect");
 deviceSelect.addEventListener("change", async (e) => {
   let info = await getDeviceInfo();
-  info.activeDevice = e.target.value;
   // This will cause updatePage to be fired
-  await setDeviceInfo(info);
+  try {
+    // Can fail from MAX_WRITE quotas
+    await setDeviceInfo({ ...info, activeDevice: e.target.value });
+  } catch (e) {
+    // Go back if we couldn't switch the device
+    deviceSelect.value = info.activeDevice;
+  }
   // If not in settings, reinitialize
   if (!inSettings) {
     // Trigger a refresh
     // This way if you're in settings, you stay in settings
     initialize();
   }
+});
+
+// TOTP code
+let totpCode = document.getElementById("totpCode");
+
+// On TOTP
+let totpWrapper = document.getElementById("totp");
+totpWrapper.addEventListener("mouseleave", () => updateTOTP());
+totpWrapper.addEventListener("click", () => {
+  navigator.clipboard.writeText(totpCode.innerText); // Copy code to clipboard
+  totpCode.innerText = "Copied";
 });
 
 // On settings gear clicked
@@ -277,8 +298,7 @@ pushButton.addEventListener("click", async function () {
     dots = (dots + 1) % 3;
   }, 300);
   try {
-    // Get active device
-    let info = await getDeviceInfo().then((data) => data.devices[data.activeDevice]);
+    let info = await getSingleDeviceInfo(); // this gets the active device when no pkey is supplied
     let transactions = (await buildRequest(info, "GET", "/push/v2/device/transactions")).response.transactions;
     // If no transactions exist at the moment
     if (transactions.length == 0) {
@@ -289,12 +309,7 @@ pushButton.addEventListener("click", async function () {
     // Only auto-approve this transaction if one-click logins aren't 3 (indicates two click login)
     else if (transactions.length == 1 && info.clickLevel != "3") {
       // Push the single transaction
-      // Throws an error if something goes wrong
-      await approveTransaction(info, transactions, transactions[0].urgid);
-      // Switch to success screen
-      successDetails.innerHTML = traverse(transactions[0].attributes);
-      failedAttempts = 0;
-      changeScreen("success");
+      await handleTransaction(info, transactions, transactions[0].urgid); // this will handle switching screens
     }
     // There shouldn't be more than one transaction
     // Present all to the user
@@ -321,9 +336,9 @@ pushButton.addEventListener("click", async function () {
             approveTable.style.display = "none";
             transactionsSplash.innerText = "Working...";
             // Approve the transaction
-            await approveTransaction(info, transactions, transactions[i].urgid);
-            successDetails.innerHTML = traverse(transactions[i].attributes);
-            changeScreen("success");
+            await handleTransaction(info, transactions, transactions[i].urgid);
+            // successDetails.innerHTML = traverse(transactions[i].attributes);
+            // changeScreen("success");
           } catch (error) {
             // Catching the error a bit earlier than the one below but probably redundant
             failedReason.innerHTML = error;
@@ -366,8 +381,7 @@ pushButton.addEventListener("click", async function () {
               approveTable.style.display = "none";
               transactionsSplash.innerText = "Working...";
               // Approve an invalid transaction, which denies all transactions
-              await approveTransaction(info, transactions, -1);
-              changeScreen("denied");
+              await handleTransaction(info, transactions, -1); // this handles switching to denied screen
             } catch (error) {
               // Catching the error a bit earlier than the one below but probably redundant
               failedReason.innerHTML = error;
@@ -469,7 +483,7 @@ document.getElementById("introButton").addEventListener("click", function () {
 });
 
 // Change the current slide on activation screen
-function Timer(fn, timeout, onStop = () => {}) {
+function Timer(fn, timeout, onStop = () => { }) {
   let runner = null;
   this.start = () => {
     if (!runner) {
@@ -511,7 +525,7 @@ let checkQR = new Timer(async () => {
         await activateDevice(code);
         changeScreen("activationSuccess");
       } catch (e) {
-        qrSearchText.innerText = "Hmm... something went wrong. Go to Step 6 instead.";
+        qrSearchText.innerText = "Something went wrong. Go to Step 6 instead.";
         console.error(e);
       }
     } catch (e) {
@@ -540,6 +554,9 @@ let checkQR = new Timer(async () => {
 
 // Changes the active screen of the page (activation or main)
 async function changeScreen(id) {
+  // browser.storage.sync.get(null, function (items) {
+  //   console.log("ALL DATA", items);  // This will log all the data stored in browser.storage.sync
+  // });
   // Global resetting
   checkQR.stop();
   inSettings = false;
@@ -607,10 +624,10 @@ function updateSlide(newIndex) {
 
 // Convert Base64 string to an ArrayBuffer
 function base64ToArrayBuffer(base64) {
-  var binary_string = atob(base64);
-  var len = binary_string.length;
-  var bytes = new Uint8Array(len);
-  for (var i = 0; i < len; i++) {
+  let binary_string = atob(base64);
+  let len = binary_string.length;
+  let bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
     bytes[i] = binary_string.charCodeAt(i);
   }
   return bytes.buffer;
@@ -631,7 +648,7 @@ function arrayBufferToBase64(buffer) {
 let deleteModal = document.getElementById("deleteModal");
 let modalPrompt = document.getElementById("modalPrompt");
 
-async function showDeleteModal(prompt, onAccept = () => {}) {
+async function showDeleteModal(prompt, onAccept = () => { }) {
   modalPrompt.innerText = prompt;
   document.getElementById("confirmDialog").onclick = onAccept;
   deleteModal.showModal();
@@ -646,162 +663,138 @@ deviceName.oninput = async (e) => {
     deviceNameResponse.innerHTML = `Must be within 1-64 characters`;
     return;
   }
-  let info = await getDeviceInfo();
-  // If not on the add device screen
-  if (info.activeDevice > -1) {
-    info.devices[info.activeDevice].name = value;
-    await setDeviceInfo(info).catch((e) => {
-      deviceNameResponse.innerHTML = `<b>Invalid data</b>:<br>${e}`;
-    });
-  }
+  let info = await getSingleDeviceInfo();
+  info.name = value;
+  await setSingleDeviceInfo(info).then(() => {
+    deviceSelect.querySelector(`option[value="${info.pkey}"]`).innerText = value;
+    // updatePage();
+  }).catch((e) => {
+    deviceNameResponse.innerHTML = `<b>Invalid data</b>:<br>${e}`;
+  });
 };
 
 // Click login slider
-var clickSlider = document.getElementById("clickLogins");
-var clickSliderState = document.getElementById("clickLoginState");
+const clickSlider = document.getElementById("clickLogins");
+const clickSliderState = document.getElementById("clickLoginState");
 
 // Update the current slider value (each time you drag the slider handle)
 clickSlider.oninput = async function (event) {
   let value = event.target.value;
   // Update data if it changed
-  let data = await getDeviceInfo();
-  if (data.devices[data.activeDevice].clickLevel != value) {
-    data.devices[data.activeDevice].clickLevel = value;
+  let data = await getSingleDeviceInfo();
+  if (data.clickLevel != value) {
+    data.clickLevel = value;
     // No need to update the page here, slider already updated it
-    await setDeviceInfo(data).catch((e) => {
+    await setSingleDeviceInfo(data).then(() => {
+      updateClickSlider(value);
+    }).catch((e) => {
+      console.error(e);
+      // Go back to old value
+      updateClickSlider();
       // In case the user is literally MASHING the slider just tell them if it refuses to save their data
       clickSliderState.innerText = e;
-      // Go back to old value
-      clickSlider.value = value;
     });
   }
 };
 
 // Delete device
 document.getElementById("deleteButton").onclick = async () => {
-  let data = await getDeviceInfo();
-  showDeleteModal(`Are you sure you want to delete this device (${data.devices[data.activeDevice].name})? You'll need to delete it from your Duo account too.`, async () => {
-    // Before you do that
+  let data = await getSingleDeviceInfo();
+  showDeleteModal(`Are you sure you want to delete this device (${data.name})? You'll need to delete it from your Duo account too.`, async () => {
     let data = await getDeviceInfo();
-    data.devices.splice(data.activeDevice, 1);
-    // Go back to previous device, or if on 0 (the only device), this should take them to the add device screen
-    data.activeDevice = data.devices.length - 1;
+    // Delete the single device data
+    await browser.storage.sync.remove(data.activeDevice);
+    // Remove from devices
+    data.devices = data.devices.filter(item => item != data.activeDevice);
+    // Go back to previous device, or if on the only device, this should take them to the add device screen
+    data.activeDevice = data.devices.length ? data.devices[data.devices.length - 1] : -1;
     await setDeviceInfo(data);
   });
 };
 
-// Import button
-let importText = document.getElementById("importText");
-let importSplash = document.getElementById("importSplash");
-document.getElementById("importButton").addEventListener("click", async function () {
-  let ogData = await getDeviceInfo();
-  try {
-    // Tell user we are verifying the integrity of the data
-    importSplash.innerHTML = "Verifying...";
-    // Set the data with new data. If it fails we simply fallback to ogData
-    await setDeviceInfo(JSON.parse(atob(importText.value)), false);
-    // Get sanitized data
-    let newData = await getDeviceInfo();
-    // Ensure transactions for all devices still work
-    for (let device of newData.devices) {
-      (await buildRequest(device, "GET", "/push/v2/device/transactions")).response.transactions;
-    }
-    // Success! Above code didn't throw errors
-    updatePage(newData);
-    importSplash.innerHTML = "Data imported!";
-  } catch (e) {
-    console.error("Failed to verify data", e);
-    // If it failed, go back to OG data
-    await setDeviceInfo(ogData);
-    // Tell the user this is an invalid code
-    importSplash.innerHTML = `<b>Invalid data</b>:<br>${e}`;
+document.getElementById("openOptions").addEventListener("click", () => {
+  // https://developer.browser.com/docs/extensions/develop/ui/options-page#linking
+  if (browser.runtime.openOptionsPage) {
+    browser.runtime.openOptionsPage();
+  } else {
+    window.open(browser.runtime.getURL('options.html'));
   }
 });
-
-// Export button
-let exportText = document.getElementById("exportText");
-document.getElementById("exportButton").addEventListener("click", async function () {
-  // Always will have data thanks to sanitization
-  let info = await getDeviceInfo();
-  // Set text to be data. Scramble with Base64 so the user doesn't try to tamper any of this
-  exportText.value = btoa(JSON.stringify(info));
-});
-
-// Reset button
-let resetSplash = document.getElementById("resetSplash");
-document.getElementById("resetButton").onclick = () =>
-  showDeleteModal(`Are you sure you want to delete all data?`, async () => {
-    // Delete the entire thing
-    // Delete chrome local / sync data
-    // We are not using local storage anymore, but it WAS being used in earlier versions
-    // I also don't know what happens if the user doesn't have syncing enabled
-    browser.storage.session.clear(() => {
-      browser.storage.sync.clear(() => {
-        browser.storage.local.clear(() => {
-          // Reset main page
-          slideIndex = 0;
-          errorSplash.innerText = "Use arrows to flip through instructions:";
-          activateButton.innerText = "Activate";
-          getDeviceInfo().then(updatePage);
-        });
-      });
-    });
-  });
-
-// Returns a promise of setting the device info (for consistency)
-async function setDeviceInfo(deviceInfo, update = true) {
-  return await browser.storage.sync.set({ deviceInfo }).then(() => {
-    if (update) updatePage(deviceInfo);
-    // Unused result (for now)
-    return deviceInfo;
-  });
-}
 
 // Updates page information to new device information
-let deviceSettingsDiv = document.getElementById("deviceSettingsDiv");
-function updatePage(deviceInfo) {
-  // Reset globals
-  importSplash.innerHTML = "Import data";
+const deviceSettingsDiv = document.getElementById("deviceSettingsDiv");
+async function updatePage(deviceInfo) {
   // Remove devices already added
-  while (deviceSelect.firstChild.value != -1) {
-    deviceSelect.removeChild(deviceSelect.firstChild);
-  }
-  // Add updatePage to frontend
-  for (let item in deviceInfo.devices) {
+  Array.from(deviceSelect.options).forEach(option => {
+    if (option.value !== "-1") deviceSelect.removeChild(option);
+  });
+  let allDevices = await new Promise((resolve) => browser.storage.sync.get(deviceInfo.devices, resolve));
+  // Add to select device box
+  for (let device in allDevices) {
     let newDevice = document.createElement("option");
-    newDevice.value = item;
-    newDevice.innerText = deviceInfo.devices[item].name;
+    newDevice.value = device;//deviceInfo.devices.indexOf(device);
+    newDevice.innerText = allDevices[device].name;
     deviceSelect.appendChild(newDevice);
     deviceSelect.insertBefore(newDevice, deviceSelect.firstChild);
   }
   // If we're not on the "Add device..." device
   if (deviceInfo.activeDevice != -1) {
+    let activeDevice = allDevices[deviceInfo.activeDevice];
     deviceSettingsDiv.style.display = "revert";
-    deviceName.value = deviceInfo.devices[deviceInfo.activeDevice].name;
+    deviceName.value = activeDevice.name;
     deviceNameResponse.innerHTML = "Name";
     // Update selected device value
     deviceSelect.value = deviceInfo.activeDevice;
-    // Update slider for this device
-    clickSlider.value = deviceInfo.devices[deviceInfo.activeDevice].clickLevel;
-    switch (clickSlider.value) {
-      case "1":
-        clickSliderState.innerText = "Zero-click login";
-        break;
-      case "2":
-        clickSliderState.innerText = "One-click login";
-        break;
-      case "3":
-        clickSliderState.innerText = "Two-click login";
-        break;
-    }
+    updateClickSlider(activeDevice.clickLevel);
   } else {
     // Hide device settings
     deviceSettingsDiv.style.display = "none";
   }
+  // Show device TOTP
+  updateTOTP();
 }
+
+function updateClickSlider(clickLevel) {
+  // Update slider for this device
+  clickSlider.value = clickLevel;
+  switch (clickSlider.value) {
+    case "1":
+      clickSliderState.innerText = "Zero-click login";
+      break;
+    case "2":
+      clickSliderState.innerText = "One-click login";
+      break;
+    case "3":
+      clickSliderState.innerText = "Two-click login";
+      break;
+  }
+}
+
+async function updateTOTP() {
+  let deviceInfo = await getDeviceInfo();
+  let hideTOTP = true;
+  if (deviceInfo.activeDevice != -1) {
+    let activeDevice = await getSingleDeviceInfo();
+    if (activeDevice.use_totp) {
+      hideTOTP = false;
+      totpCode.innerText = totp.generate(activeDevice.hotp_secret);
+    }
+  }
+  // Hide or show
+  // Setting display stops the animation so this is the alternative
+  totpWrapper.style.visibility = hideTOTP ? "hidden" : "inherit";
+}
+
+// Constantly update TOTPs
+// updateTOTP handles if there's no active device
+setTimeout(() => {
+  updateTOTP();
+  setInterval(updateTOTP, 30000);
+}, 30000 - (Date.now() % 30000));
 
 // On startup
 await initialize().finally(() => {
+  document.getElementById("totpCircle").style.animationDelay = `-${(Date.now() % 30000) / 1000}s`;
   // Show body when done
   document.getElementById("content").style.display = "";
 });
@@ -811,9 +804,11 @@ async function initialize() {
   failedAttempts = 0;
   let data = await getDeviceInfo();
   updatePage(data);
-  // If we have device data
-  if (data.activeDevice != -1) {
-    // Set to main screen
+  // If we're offline
+  if (!navigator.onLine) {
+    changeScreen("offline");
+  } else if (data.activeDevice != -1) {
+    // If we have device data, set to main screen
     changeScreen("main");
   } else {
     let activeSlide = (await browser.storage.session.get("activeSlide")).activeSlide;
@@ -847,39 +842,192 @@ async function getQRLinkFromPage() {
 
 // Returns a promise of the device info
 async function getDeviceInfo() {
-  return sendToWorker({ intent: "deviceInfo" }).then((data) => {
-    return data;
+  return sendToWorker({ intent: "deviceInfo" });
+}
+
+// Returns a promise of setting the device info (for consistency)
+async function setDeviceInfo(info, update = true) {
+  return sendToWorker({
+    intent: "setDeviceInfo",
+    params: {
+      info,
+    },
+  }).then((response) => {
+    // Response is the sanitized data
+    if (update) updatePage(response);
+    // Might as well return it even if it does nothing atm
+    return response;
   });
 }
 
+async function getSingleDeviceInfo(pkey) {
+  if (!pkey) {
+    const info = await getDeviceInfo();
+    pkey = info.activeDevice;
+  }
+  return await new Promise((resolve) =>
+    browser.storage.sync.get(pkey, (json) => {
+      // First key is always the identifier
+      resolve(json[Object.keys(json)[0]]);
+    })
+  );
+}
+
+function setSingleDeviceInfo(rawDevice) {
+  return browser.storage.sync.set({ [rawDevice.pkey]: rawDevice });
+}
+
 // Makes a request to the Duo API
-async function buildRequest(info, method, path) {
+function buildRequest(info, method, path, extraParam) {
   return sendToWorker({
     intent: "buildRequest",
     params: {
       info,
       method,
       path,
+      extraParam,
     },
   });
 }
+
+let verifiedTransactions;
+let verifiedPushUrgID;
+
+let verifyButton = document.getElementById("verifyButton");
+verifyButton.addEventListener("click", async () => {
+  // Disable button so user can't spam it
+  verifyButton.disabled = true;
+  verifyButton.innerText = "Working...";
+
+  try {
+    let info = await getSingleDeviceInfo(); // get active device
+    let response = await sendToWorker({
+      intent: "approveTransaction",
+      params: {
+        info,
+        transactions: verifiedTransactions,
+        txID: verifiedPushUrgID,
+        // Presence of verificationCode signals to add step_up_code bs to approve request
+        verificationCode: Array.from(document.querySelectorAll(".pin-input"))
+          .map((input) => input.value)
+          .join(""), // assemble all digits into one string
+      },
+    });
+    console.log("Response from worker: ", response);
+
+    // Instead of using the nonexistent `i` variable, find by urgid:
+    // we could probably use response instead of this but whatever
+    const matchedTx = verifiedTransactions.find(
+      (tx) => tx.urgid === verifiedPushUrgID
+    );
+
+    if (!matchedTx) {
+      successDetails.innerHTML =
+        "<b>Approval succeeded</b>, but could not locate transaction details.";
+    } else {
+      successDetails.innerHTML = traverse(matchedTx.attributes);
+    }
+
+    failedAttempts = 0;
+    changeScreen("success");
+  } catch (error) {
+    console.error(error);
+    failedReason.innerHTML = error;
+    failedAttempts = 0;
+    changeScreen("failure");
+  } finally {
+    // Probably doesn't hurt to reset it although there's no need to
+    verifiedTransactions = null;
+    verifiedPushUrgID = null;
+    // Re-enable button
+    verifyButton.disabled = false;
+    verifyButton.innerText = "Verify";
+  }
+});
 
 // Approves the transaction ID provided, denies all others
 // Throws an exception if no transactions are active
-async function approveTransaction(info, transactions, txID) {
-  return sendToWorker({
-    intent: "approveTransaction",
-    params: {
-      info,
-      transactions,
-      txID,
-    },
-  });
+async function handleTransaction(info, transactions, txID) {
+  if (transactions.length == 0) {
+    throw "No transactions found (request expired)";
+  }
+  let selectedTransaction = transactions.find((sample) => sample.urgid == txID);
+  if (selectedTransaction) {
+    // Only approve this one
+    // First check if its a duo verified push
+    let stepUpCode = selectedTransaction.step_up_code_info;
+    if (stepUpCode) {
+      console.log("Duo verified push");
+      let container = document.getElementById("pin-container");
+      container.innerHTML = ""; // clear previous elements
+      container.style.gridTemplateColumns = `repeat(${stepUpCode.num_digits}, 1fr)`;
+      // Set input box to # of digits requested
+      for (let i = 0; i < stepUpCode.num_digits; i++) {
+        const input = document.createElement("input");
+        input.maxLength = 1;
+        input.className = "pin-input";
+        // Validate only digits
+        input.addEventListener("beforeinput", (e) => {
+          let value = e.target.value;
+          let nextVal = value.substring(0, e.target.selectionStart) + (e.data ?? "") + value.substring(e.target.selectionEnd);
+          // Only allow a single digit
+          if (!/^\d?$/.test(nextVal)) {
+            e.preventDefault();
+          }
+        });
+        // Go to next entry when there's an input
+        input.addEventListener("input", (e) => {
+          const value = e.target.value;
+          const nextInput = container.children[i + 1];
+          if (value.length === 1 && nextInput) {
+            nextInput.focus();
+          }
+        });
+        // Go back
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Backspace" && !input.value && i > 0) {
+            container.children[i - 1].focus();
+          }
+        });
+        container.appendChild(input);
+      }
+      // Store this transaction for after we receive the code
+      verifiedTransactions = transactions;
+      verifiedPushUrgID = txID;
+      changeScreen("verifiedPush");
+    } else {
+      // Not a verified push, approve it
+      await sendToWorker({
+        intent: "approveTransaction",
+        params: {
+          info,
+          transactions,
+          txID,
+        },
+      });
+      // await buildRequest(info, "POST", "/push/v2/device/transactions/" + urgID, { answer: "approve", txId: urgID });
+      // If successful (throws an error otherwise)
+      successDetails.innerHTML = traverse(selectedTransaction.attributes);
+      failedAttempts = 0;
+      changeScreen("success");
+    }
+  } else {
+    // Selected transaction not found! Deny everything (txID == -1 [probably])
+    await sendToWorker({
+      intent: "approveTransaction",
+      params: {
+        info,
+        transactions,
+        txID,
+      },
+    });
+    changeScreen("denied");
+  }
 }
 
 // Handles errors with service worker which stores all the important functions
-async function sendToWorker(intent, params = {}) {
-  let response = await browser.runtime.sendMessage(intent, params);
+async function sendToWorker(intent) {
+  let response = await browser.runtime.sendMessage(intent);
   if (response && response.error) {
     throw response.reason;
   }

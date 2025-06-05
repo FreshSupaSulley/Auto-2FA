@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<script type="module" src="options.js"></script>
+<html>
+<head>
+  <title>Auto 2FA Options</title>
+  <link rel="stylesheet" href="styles.css" type="text/css">
+</head>
+
+<body id="content">
+  <table>
+    <caption>
+      General Settings
+    </caption>
+    <tr>
+      <th id="importSplash">Manage data</th>
+      <td class="inputButtonCouple">
+        <input type="file" id="importFile" accept=".txt" style="display: none" />
+        <button id="importButton" style="border-bottom: inherit">
+          Import
+        </button>
+        <button type="submit" id="exportButton">Export</button>
+        <button type="submit" id="exportTOTPButton">Export TOTPs</button>
+      </td>
+    </tr>
+    <tr>
+      <th id="resetSplash">Delete all data</th>
+      <td><button type="submit" id="resetButton">Delete all</button></td>
+    </tr>
+  </table>
+</body>
+</html>
