@@ -745,7 +745,7 @@ document.getElementById("deleteButton").onclick = async () => {
 };
 
 // Import button
-let importSplash = document.getElementById("importSplash");
+let dataSplash = document.getElementById("importSplash");
 document.getElementById("importButton").addEventListener("click", async function () {
   // Warn if we're going to override devices
   if ((await getDeviceInfo()).devices?.length > 0) {
@@ -767,7 +767,7 @@ importFile.addEventListener("change", async (e) => {
   reader.onload = async (e) => {
     console.log("Importing data");
     try {
-      importSplash.innerHTML = "Checking...";
+      dataSplash.innerHTML = "Checking...";
       // In case this is successful data, we need to clear all devices so old ones don't get retained
       await clearAll();
       // Set the data with new data. If it fails we simply fallback to ogData
@@ -778,7 +778,7 @@ importFile.addEventListener("change", async (e) => {
       let invalidDevices = 0;
       for (let index in newData.devices) {
         let device = newData.devices[index];
-        importSplash.innerHTML = `Verifying ${Number(index) + 1} / ${newData.devices.length}...`;
+        dataSplash.innerHTML = `Verifying ${Number(index) + 1} / ${newData.devices.length}...`;
         // Grab that data
         // Wait for the device data to load
         let singleDevice = await getSingleDeviceInfo(device);
@@ -793,12 +793,12 @@ importFile.addEventListener("change", async (e) => {
       // If none of the devices worked
       if (invalidDevices == newData.devices.length) throw new Error("None of the devices passed validation");
       // Success! Above code didn't throw errors
-      importSplash.innerHTML = `Updating data...`;
+      dataSplash.innerHTML = `Updating data...`;
       await setDeviceInfo(newData);
       if (invalidDevices > 0) {
-        importSplash.innerHTML = `Data imported, but ${invalidDevices} device${invalidDevices == 1 ? "" : "s"} failed validation`;
+        dataSplash.innerHTML = `Data imported, but ${invalidDevices} device${invalidDevices == 1 ? "" : "s"} failed validation`;
       } else {
-        importSplash.innerHTML = "Data imported!";
+        dataSplash.innerHTML = "Data imported!";
       }
       // You can now populate fields or use the data as needed
     } catch (err) {
@@ -806,11 +806,11 @@ importFile.addEventListener("change", async (e) => {
       // If it failed, go back to OG data
       setDeviceInfo(ogData).then(() => {
         // Tell the user this is an invalid code
-        importSplash.innerText = `Invalid data`;
+        dataSplash.innerText = `Invalid data`;
       }).catch(e => {
         console.error("Failed to set back to original data");
         // Tell the user this is an invalid code
-        importSplash.innerText = `Failed to set back to old data. Reimport this later!`;
+        dataSplash.innerText = `Failed to set back to old data. Reimport this later!`;
         downloadFile(btoa(JSON.stringify(ogData)), "auto-2fa.txt");
       });
     } finally {
@@ -824,7 +824,12 @@ importFile.addEventListener("change", async (e) => {
 document.getElementById("exportButton").addEventListener("click", async function () {
   // Needs to save a file
   // Set text to be data. Scramble with Base64
-  downloadFile(btoa(JSON.stringify(await getExportableData())), "auto-2fa.txt");
+  if ((await getDeviceInfo()).devices?.length > 0) {
+    downloadFile(btoa(JSON.stringify(await getExportableData())), "auto-2fa.txt");
+    dataSplash.innerText = `Data exported!`;
+  } else {
+    dataSplash.innerText = `No data to export!`;
+  }
 });
 
 async function getExportableData() {
@@ -849,13 +854,13 @@ document.getElementById("exportTOTPButton").addEventListener("click", async func
     }
   }
   if (!totps.length) {
-    importSplash.innerHTML = "No devices have TOTP data";
+    dataSplash.innerHTML = "No devices have TOTP data!";
   } else {
     downloadFile(totps.join("\n"), "duo-mobile-totps.txt");
     if (totps.length == info.devices.length) {
-      importSplash.innerHTML = `Exported all devices`;
+      dataSplash.innerHTML = `Exported all devices`;
     } else {
-      importSplash.innerHTML = `Exported ${totps.length} of ${info.devices.length}`;
+      dataSplash.innerHTML = `Exported ${totps.length} of ${info.devices.length}`;
     }
   }
 });
@@ -915,7 +920,7 @@ async function clearAll() {
 const deviceSettingsDiv = document.getElementById("deviceSettingsDiv");
 async function updatePage(deviceInfo) {
   // Reset globals
-  importSplash.innerHTML = "Manage data";
+  dataSplash.innerHTML = "Manage data";
   // Remove devices already added
   Array.from(deviceSelect.options).forEach(option => {
     if (option.value !== "-1") deviceSelect.removeChild(option);
