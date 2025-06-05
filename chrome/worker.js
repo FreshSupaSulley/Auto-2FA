@@ -9,6 +9,9 @@ let currentAbortController = null;
 
 // Trying to keep all of the methods in the same place to reduce space
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  // https://github.com/FreshSupaSulley/Auto-2FA/issues/22
+  if(sender.id !== chrome.runtime.id) return;
+  
   let params = message.params;
   switch (message.intent) {
     case "deviceInfo": {

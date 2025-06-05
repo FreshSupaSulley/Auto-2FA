@@ -1,7 +1,7 @@
 (function () {
     // Notify the service worker we are on a login page
     function notify() {
-        browser.runtime.sendMessage({
+        chrome.runtime.sendMessage({
             intent: "onLoginPage", params: {
                 // If a verification code exists on this page, this will notify the extension
                 verificationCode: document.querySelector(".verification-code")?.innerText

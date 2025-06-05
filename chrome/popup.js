@@ -419,6 +419,13 @@ pushButton.addEventListener("click", async function () {
   }
 });
 
+// Security concern for traverse
+function escapeHTML(unsafeText) {
+  let div = document.createElement('div');
+  div.innerText = unsafeText;
+  return div.innerHTML;
+}
+
 function traverse(json) {
   // If JSON is an array
   if (json !== null && Array.isArray(json)) {
@@ -447,7 +454,7 @@ function traverse(json) {
           value = display;
           break;
       }
-      return `<b>${key}</b>: ${value}<br>`;
+      return `<b>${escapeHTML(key)}</b>: ${escapeHTML(value)}<br>`;
     } else {
       // Traverse
       let data = "";
@@ -461,7 +468,7 @@ function traverse(json) {
     }
   } else {
     // Wrong format (shouldn't happen)
-    console.error("Unexpected JSON format: " + json);
+    console.error("Unexpected JSON format ", json);
     return null;
   }
 }
@@ -543,8 +550,7 @@ let checkQR = new Timer(async () => {
           break;
         }
         default: {
-          console.error(`An unexpected error occured finding QR code\n${e}`);
-          console.log(e);
+          console.error(`An unexpected error occured finding QR code`, e);
           break;
         }
       }
@@ -687,7 +693,7 @@ clickSlider.oninput = async function (event) {
     // No need to update the page here, slider already updated it
     await setSingleDeviceInfo(data).then(() => {
       updateClickSlider(value);
-    }).catch((e) => {
+    }).catch(e => {
       console.error(e);
       // Go back to old value
       updateClickSlider();
