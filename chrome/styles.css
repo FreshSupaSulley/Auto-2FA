@@ -471,6 +471,7 @@ dialog {
 }
 
 select {
+    height: 25px;
     max-width: 140px;
     border-radius: 3px;
 }
@@ -528,7 +529,6 @@ select {
     }
 
     select {
-        height: 25px;
         color: white;
         background-color: #555;
         border-color: #a6a6a6;
