@@ -1,16 +1,22 @@
 package org.example;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateKeySpec;
+import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -26,7 +32,7 @@ import dev.samstevens.totp.code.HashingAlgorithm;
 import dev.samstevens.totp.exceptions.CodeGenerationException;
 import dev.samstevens.totp.time.SystemTimeProvider;
 
-public class App {
+public class PingID {
 	
 	private static final BigInteger MODULUS = new BigInteger("31699142174809458850082382402788043663106991194823033018937598360175543864008929147299064252168453738943971427430573724299451532315792264426805566434465462934418283232907859404393018571514608788370423091472983586618753610753267691204574928448208043716881455949580766738255691280349814402624986309907947002933353231849001791191635190937132539826983405101078519868057148135558938382459177989299888762060399149632192621098665680524371521279226055278689674546320728943602920232032098494228433554236457762609352311775484579991903198376092701627874966808866193660346730954051618204007340985917068527050534376051268966999771");
 	private static final BigInteger EXPONENT = new BigInteger("8390693331667715754486841459516999365942117120896479321543860529977649986738710932492645637036975315262074009145244330413121373527140490213833553011610077029080079472402903566194789045414798906819901957357333762132365354876517253966024742836188550565002991548062199230845028067898567303195705479517343037267195140328879700808761291392618146199430046719804491789584673789462898476730059543679735181586708922509533904621815010091105621437823269586493885296838942592259446770902301835233439160257329392427991032084412600737879553876421234934024950683990086122360023203904332094142305147536789666403169204321784566223333");
@@ -54,6 +60,24 @@ public class App {
 		metaHeader.put("vendor", "Google");
 	}
 	
+	public static void writePEMFile()
+	{
+		RSAPublicKeySpec keySpec = new RSAPublicKeySpec(MODULUS, EXPONENT);
+		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+		PublicKey publicKey = keyFactory.generatePublic(keySpec);
+		
+		byte[] encoded = publicKey.getEncoded();
+		
+		String base64Encoded = Base64.getMimeEncoder(64, new byte[]{'\n'}).encodeToString(encoded);
+		String pem = "-----BEGIN PUBLIC KEY-----\n" + base64Encoded + "\n-----END PUBLIC KEY-----";
+		
+		try (FileWriter writer = new FileWriter("pingid.pem")) {
+			writer.write(pem);
+		}
+		
+		System.out.println("PEM public key written to pingid.pem");
+	}
+
 	public void getGreeting()
 	{
 		final String activationCode = "445049883716";
@@ -202,6 +226,24 @@ public class App {
 		// Wait (optional if you're in a main method)
 		future.join();
 		
+	}
+	
+	public PublicKey getAppKeyFromFile(String pemFilePath) throws Exception {
+		// Read all bytes from the PEM file
+		String pem = new String(Files.readAllBytes(new File(pemFilePath).toPath()));
+
+		// Remove PEM headers and decode Base64
+		String base64 = pem
+				.replace("-----BEGIN PUBLIC KEY-----", "")
+				.replace("-----END PUBLIC KEY-----", "")
+				.replaceAll("\\s", "");
+
+		byte[] keyBytes = Base64.getDecoder().decode(base64);
+		
+		// Generate public key from X.509 encoded key spec
+		X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+		return keyFactory.generatePublic(keySpec);
 	}
 	
 	private PrivateKey getAppKey() throws Exception
