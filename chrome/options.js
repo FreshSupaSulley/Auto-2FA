@@ -10,7 +10,7 @@ async function showDeleteModal(prompt, onAccept = () => { }) {
 }
 
 // Import button
-let dataSplash = document.getElementById("importSplash");
+let feedback = document.getElementById("feedback");
 document.getElementById("importButton").addEventListener("click", async function () {
   // Warn if we're going to override devices
   if ((await getDeviceInfo()).devices?.length > 0) {
@@ -32,7 +32,7 @@ importFile.addEventListener("change", async (e) => {
   reader.onload = async (e) => {
     console.log("Importing data");
     try {
-      dataSplash.innerHTML = "Checking...";
+      feedback.innerHTML = "Checking...";
       // In case this is successful data, we need to clear all devices so old ones don't get retained
       await clearAll();
       // Set the data with new data. If it fails we simply fallback to ogData
@@ -43,7 +43,7 @@ importFile.addEventListener("change", async (e) => {
       let invalidDevices = 0;
       for (let index in newData.devices) {
         let device = newData.devices[index];
-        dataSplash.innerHTML = `Verifying ${Number(index) + 1} / ${newData.devices.length}...`;
+        feedback.innerHTML = `Verifying ${Number(index) + 1} / ${newData.devices.length}...`;
         // Grab that data
         // Wait for the device data to load
         let singleDevice = await getSingleDeviceInfo(device);
@@ -58,12 +58,12 @@ importFile.addEventListener("change", async (e) => {
       // If none of the devices worked
       if (invalidDevices == newData.devices.length) throw new Error("None of the devices passed validation");
       // Success! Above code didn't throw errors
-      dataSplash.innerHTML = `Updating data...`;
+      feedback.innerHTML = `Updating data...`;
       await setDeviceInfo(newData);
       if (invalidDevices > 0) {
-        dataSplash.innerHTML = `Data imported, but ${invalidDevices} device${invalidDevices == 1 ? "" : "s"} failed validation`;
+        feedback.innerHTML = `Data imported, but ${invalidDevices} device${invalidDevices == 1 ? "" : "s"} failed validation`;
       } else {
-        dataSplash.innerHTML = "Data imported!";
+        feedback.innerHTML = "Data imported!";
       }
       // You can now populate fields or use the data as needed
     } catch (err) {
@@ -71,15 +71,15 @@ importFile.addEventListener("change", async (e) => {
       // If it failed, go back to OG data
       setDeviceInfo(ogData).then(() => {
         // Tell the user this is an invalid code
-        dataSplash.innerText = `Invalid data`;
+        feedback.innerText = `Invalid data`;
       }).catch(e => {
         console.error("Failed to set back to original data", e);
         // If the OG data had devices
         if (ogData.devices?.length > 0) {
-          dataSplash.innerText = `Failed to set back to old data${ogData.devices?.length > 0 ? '. Reimport this later!' : ''}`;
+          feedback.innerText = `Failed to set back to old data${ogData.devices?.length > 0 ? '. Reimport this later!' : ''}`;
           downloadFile(btoa(JSON.stringify(ogData)), "auto-2fa.txt");
         } else {
-          dataSplash.innerText = `Failed to verify data`;
+          feedback.innerText = `Failed to verify data`;
         }
       });
     } finally {
@@ -95,9 +95,9 @@ document.getElementById("exportButton").addEventListener("click", async function
   // Set text to be data. Scramble with Base64
   if ((await getDeviceInfo()).devices?.length > 0) {
     downloadFile(btoa(JSON.stringify(await getExportableData())), "auto-2fa.txt");
-    dataSplash.innerText = `Data exported!`;
+    feedback.innerText = `Data exported!`;
   } else {
-    dataSplash.innerText = `No data to export!`;
+    feedback.innerText = `No data to export!`;
   }
 });
 
@@ -123,13 +123,13 @@ document.getElementById("exportTOTPButton").addEventListener("click", async func
     }
   }
   if (!totps.length) {
-    dataSplash.innerHTML = "No devices have TOTP data!";
+    feedback.innerHTML = "No devices have TOTP data!";
   } else {
     downloadFile(totps.join("\n"), "duo-mobile-totps.txt");
     if (totps.length == info.devices.length) {
-      dataSplash.innerHTML = `Exported all devices`;
+      feedback.innerHTML = `Exported all devices`;
     } else {
-      dataSplash.innerHTML = `Exported ${totps.length} of ${info.devices.length}`;
+      feedback.innerHTML = `Exported ${totps.length} of ${info.devices.length}`;
     }
   }
 });

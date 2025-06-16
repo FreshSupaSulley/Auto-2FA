@@ -1,31 +1,134 @@
 <!DOCTYPE html>
 <script type="module" src="options.js"></script>
 <html>
+
 <head>
   <title>Auto 2FA Options</title>
   <link rel="stylesheet" href="styles.css" type="text/css">
+  <style>
+    html {
+      width: inherit
+    }
+
+    h1 {
+      font-weight: bold;
+    }
+
+    .center {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 16px;
+      padding: 16px;
+
+      h1 {
+        margin-bottom: 0;
+      }
+    }
+
+    table {
+      border-collapse: collapse;
+    }
+
+    table td,
+    table th {
+      /* border: 1px solid #ddd; */
+      padding: 8px;
+    }
+
+    table {
+      justify-self: center;
+      max-width: 600px;
+    }
+
+    td,
+    th {
+      border: 1px solid;
+    }
+
+    button {
+      border-radius: 16px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border-radius: 5px;
+      width: auto;
+    }
+
+    p {
+      font-weight: initial;
+    }
+
+    /* Evil red bg */
+    #deleteButton,
+    #resetButton {
+      &:hover {
+        color: white;
+        opacity: 1;
+        border-color: red;
+        background-color: red;
+      }
+    }
+  </style>
 </head>
 
-<body id="content">
+<body>
+  <!-- Logo -->
+  <p id="feedback"></p>
+  <div class="center">
+    <img style="width: 50px; margin: 0" src="images/Auto 2FA.svg" />
+    <h1>Manage Data</h1>
+  </div>
   <table>
-    <caption>
-      General Settings
-    </caption>
     <tr>
-      <th id="importSplash">Manage data</th>
+      <th>
+        <h2>Import data</h2>
+        <p>Replaces all data with a new data file</p>
+      </th>
+      <td>
+        <input type="file" id="importFile" accept=".txt" style="display: none" />
+        <button id="importButton">
+          Import
+        </button>
+      </td>
+      <!-- <th id="importSplash">Manage data</th>
       <td class="inputButtonCouple">
         <input type="file" id="importFile" accept=".txt" style="display: none" />
         <button id="importButton" style="border-bottom: inherit">
           Import
-        </button>
+        
+        <button type="submit" id="exportTOTPButton">Export TOTPs</button>
+      </td> -->
+    </tr>
+    <tr>
+      <th>
+        <h2>Export data</h2>
+        <p>Downloads data file</p>
+      </th>
+      <td>
         <button type="submit" id="exportButton">Export</button>
+      </td>
+    </tr>
+    <tr>
+      <th>
+        <h2>Export data as TOTP</h2>
+        <p>Exports all devices in TOTP form for importing in other programs</p>
+      </th>
+      <td>
         <button type="submit" id="exportTOTPButton">Export TOTPs</button>
       </td>
     </tr>
     <tr>
-      <th id="resetSplash">Delete all data</th>
+      <th>
+        <h2>Delete all data</h2>
+        <p>Deletes everything. Irreversable!</p>
+      </th>
       <td><button type="submit" id="resetButton">Delete all</button></td>
     </tr>
   </table>
 </body>
+
 </html>

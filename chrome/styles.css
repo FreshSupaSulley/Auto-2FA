@@ -38,7 +38,6 @@ hr {
 
 h1 {
     margin-top: 0;
-    text-align: left;
     font-weight: normal;
     font-size: 24px;
 }
@@ -50,8 +49,7 @@ h4 {
 }
 
 p {
-    font-size: 15px;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
     text-align: center;
     font-size: 14px;
 }
@@ -301,28 +299,6 @@ dialog {
 
 #deviceSettingsDiv {
     border-bottom: 1px solid grey;
-}
-
-#importButton,
-#exportButton,
-#exportTOTPButton {
-    padding: 6px 12px;
-    border-radius: 0px;
-    width: 100%;
-}
-
-/* Evil red bg */
-#deleteButton,
-#resetButton {
-    border-radius: 5px;
-    width: 100%;
-
-    &:hover {
-        color: white;
-        opacity: 1;
-        border-color: red;
-        background-color: red;
-    }
 }
 
 #approveTable {
