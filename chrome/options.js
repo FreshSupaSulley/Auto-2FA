@@ -164,11 +164,10 @@ function downloadFile(data, filename) {
 }
 
 // Reset button
-let resetSplash = document.getElementById("resetSplash");
 document.getElementById("resetButton").onclick = () => {
   showDeleteModal(`Are you sure you want to delete all data?`, async () => {
     await clearAll();
-    resetSplash.innerHTML = "Data reset";
+    feedback.innerHTML = "Data reset";
   });
 };
 
