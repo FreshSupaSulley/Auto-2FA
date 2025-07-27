@@ -21,7 +21,7 @@ Auto 2FA utilizes the knowledge gained from reverse engineering the official pho
 Security
 --------
 > [!CAUTION]
-> This extension is more unsafe than using the phone app. If you value security above convenience, don't use this extension.
+> This extension is less secure than the official phone app. If you value security above convenience, don't use this extension.
 
 To preface, I am not a cyber security expert. I have a basic understanding of 2FA. I do not recommend using this extension if Duo is protecting access to the nuclear football. Auto 2FA should only be used when both the risk and cost of compromising an account are practically zero.
 
