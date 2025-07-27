@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Auto 2FA Options</title>
+    <meta name="manifest.open_in_tab" content="true" />
+    <!-- In prod, the external styling sheet is loaded AFTER <style> regardless of the ordering in the dev files -->
+    <!-- So we're resolving CSS conflicts by replicating this structure in dev too -->
+    <style>
+      html {
+        max-width: initial !important;
+      }
+
+      .center {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        align-items: center;
+        padding: 16px;
+      }
+
+      table {
+        border-collapse: collapse;
+      }
+
+      table td,
+      table th {
+        padding: 8px;
+      }
+
+      table {
+        /* Margin auto for firefox */
+        margin-left: auto !important;
+        margin-right: auto !important;
+        max-width: 50%;
+      }
+
+      td,
+      th {
+        border: 1px solid;
+        font-weight: initial;
+      }
+
+      button {
+        /* a little ugly but whatever */
+        padding: 6px 12px !important;
+        width: auto !important;
+      }
+    </style>
+    <link rel="stylesheet" href="~/assets/styles.css" type="text/css" />
+  </head>
+
+  <body>
+    <script type="module" src="options.js"></script>
+    <!-- Logo -->
+    <p id="feedback"></p>
+    <div class="center">
+      <img style="width: 50px; margin: 0" src="images/Auto 2FA.svg" />
+      <h1>Manage Data</h1>
+    </div>
+    <table>
+      <tr>
+        <th>
+          <h3>Import data</h3>
+          <p>Replaces all data with a new data file</p>
+        </th>
+        <td>
+          <input type="file" id="importFile" accept=".txt" style="display: none" />
+          <button id="importButton">Import</button>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <h3>Export data</h3>
+          <p>Downloads data file</p>
+        </th>
+        <td>
+          <button type="submit" id="exportButton">Export</button>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <h3>Export data as TOTP</h3>
+          <p>Exports all devices in TOTP form for importing in other programs</p>
+        </th>
+        <td>
+          <button type="submit" id="exportTOTPButton">Export TOTPs</button>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <h3>Delete all data</h3>
+          <p>Deletes everything. Irreversable!</p>
+        </th>
+        <td><button type="submit" id="deleteButton">Delete all</button></td>
+      </tr>
+    </table>
+  </body>
+</html>

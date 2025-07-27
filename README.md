@@ -7,7 +7,7 @@ Auto 2FA is currently on [Chrome, Edge](https://chromewebstore.google.com/detail
 
 Disclaimer
 ----------
-This is an independent project and is not recognized, endorsed, or affiliated with Duo Mobile or Cisco Technology. All product names, logos, and brands are property of their respective owners.
+This is an independent project and is not recognized, endorsed, or affiliated with Duo Mobile or Cisco Technology. All product names, logos, and brands are property of their respective owners. If you use this extension, you understand the risks!
 
 How it Works
 ------------
@@ -21,11 +21,11 @@ Auto 2FA utilizes the knowledge gained from reverse engineering the official pho
 Security
 --------
 > [!CAUTION]
-> This extension is experimental! Auto 2FA relies entirely on the security of your browser. If a malicious party got access to your browser and you have syncing enabled for both Auto 2FA and your passwords, they could log in to your Duo Mobile protected service.
+> This extension is more unsafe than using the phone app. If you value security above convenience, don't use this extension.
 
 To preface, I am not a cyber security expert. I have a basic understanding of 2FA. I do not recommend using this extension if Duo is protecting access to the nuclear football. Auto 2FA should only be used when both the risk and cost of compromising an account are practically zero.
 
-Auto 2FA is a *practical* secure alternative to the Duo Mobile app. For typical Duo Mobile users, this extension strikes a great balance between security and convenience.
+Auto 2FA is a *practical* secure alternative to the Duo Mobile app. It relies entirely on the security of your browser. For typical Duo Mobile users, this extension strikes a great balance between security and convenience.
 
 2-step verification is something you know, and something you have. The premise of this extension is that you *know* your password, and you *have* Auto 2FA. But by using Auto 2FA, you're introducing new risks to your Duo Mobile protected account being compromised. Here's some examples:
 1. Your browser account (such as your Google profile if you're on Chrome) is hacked because you have a poor password, no 2FA, and syncing is enabled.
@@ -34,7 +34,9 @@ Auto 2FA is a *practical* secure alternative to the Duo Mobile app. For typical 
 4. You are socially engineered to export your own Duo Mobile device information to an unauthorized party.
 5. You click Auto 2FA by accident, and as it just so happens, someone who knows your username and your password tried to login at the same time and you just approved their login.
 
-What should be clear is that these kinds of attacks are pretty unlikely to happen to someone who has a basic sense of security. As a result of this reasoning, and in my humble (and biased) opinion, you can rest easy knowing using Auto 2FA won't practically increase your chances of being the victim of any related cyber-attacks, and can safely use this extension.
+Additionally, your data is **NOT** encrypted in your browser (at least right now, this might be a feature down the line).
+
+But what should be clear is that these kinds of attacks are pretty unlikely to happen to someone who has a basic sense of security. As a result of this reasoning, and in my humble (and biased) opinion, you can rest easy knowing using Auto 2FA won't *practically* increase your chances of being the victim of any related cyber-attacks, and can safely use this extension.
 
 #### Does this extension hack my Duo account to work?
 No. Auto 2FA establishes itself as a new device using the same process as the phone app.
@@ -60,7 +62,7 @@ Login Clicks
 You can set the amount of clicks required to log you in with the slider in settings. If there are multiple active login attempts, Auto 2FA will always require you to review and select the correct one regardless of this setting.
 
 ### Zero-clicks
-Least safe, most convenient. When you browse to a Duo login page (pages that match https://\*.duosecurity.com/frame/\*/auth/prompt\* or https://\*.duosecurity.com/frame/prompt\*), Auto 2FA will start trying to approve a single login the moment it finds one. No click required. This is unsafe as it will start checking for login attempts before yours fully loads. I'm considering requiring at least the IP addresses of the client and the transaction to match in order to approve this type of login (if you want this to be a feature, let me know).
+Least safe, most convenient. When you browse to a Duo login page (pages that match *https://\*.duosecurity.com/frame/\*/auth/prompt\** or *https://\*.duosecurity.com/frame/prompt\**), Auto 2FA will start trying to approve a single login the moment it finds one. No click required. This is unsafe as it will start checking for login attempts before yours fully loads. I'm considering requiring at least the IP addresses of the client and the transaction to match in order to approve this type of login.
 
 ### One-click
 The default behavior. Clicking on the extension will approve a single login.
@@ -70,9 +72,9 @@ Most safe, least convenient. This is the Duo Mobile app behavior. Every login at
 
 Privacy
 -------
-Auto 2FA syncs its Duo Mobile device information to your browser's account, meaning it's accessible to all browsers that the user is signed into if their sync preferences support extensions/add-ons (this is usually on by default). This is convenient for most users, as wherever they log in, they still have Auto 2FA with them to log in through their Duo Mobile account. However, this setting allows your Duo Mobile account to be at risk if your browser account is compromised (see [Security](#security)). You can disable syncing in your browser's settings.
+Auto 2FA syncs its Duo Mobile device information to your browser's account, meaning it's accessible to all browsers that the user is signed into if their sync preferences support extensions/add-ons (this is usually on by default). This is convenient for most users, as wherever they log in, they still have Auto 2FA with them to log in through their Duo Mobile account. However, this setting allows your Duo Mobile account to be at risk if your browser account is compromised (as explained in [Security](#security)). You can disable syncing in your browser's settings.
 
-No information created by this extension is sent anywhere but to Duo Mobile, and there are no outside servers involved. However, your Duo Mobile device information can be exported in settings. Do not send your data to anyone! This is strictly for manually transferring login data to other private machines.
+No information created by this extension is sent anywhere but to Duo Mobile, and there are no outside servers involved. However, your Duo Mobile device information can be exported in settings. Obviously, don't send this data to anyone! This is strictly for manually transferring login data to other private machines.
 
 ----------------
 Here are repositories that helped make Auto 2FA possible or achieve similar purposes:
@@ -83,4 +85,6 @@ Here are repositories that helped make Auto 2FA possible or achieve similar purp
 
 Contributing
 ------------
-Feel free to open pull requests, share security concerns, or adapt Auto 2FA into a project of your own.
+This extension uses [WXT](wxt.dev), an awesome web extension framework supports building to multiple platforms. If you'd like to contribute, get familiar with this framework first.
+
+Feel free to open pull requests / issues, share security concerns, or adapt Auto 2FA into a project of your own.
