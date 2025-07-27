@@ -6,29 +6,43 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - name: chrome
+            build: build
+            output: .output/chrome-mv3
+          - name: firefox
+            build: build:firefox
+            output: .output/firefox-mv2
     steps:
       - uses: actions/checkout@v3
       - name: Set up node
         uses: actions/setup-node@v4
       - name: Install dependencies
         run: npm ci
-      - name: Build chrome
+      - name: Build ${{ matrix.target.name }}
         run: |
-          npm run build
+          npm run ${{ matrix.target.build }}
           mkdir -p dist
-          zip -r dist/chrome.zip .output/chrome-mv3
-      - name: Build firefox
-        run: |
-          npm run build:firefox
-          mkdir -p dist
-          zip -r dist/firefox.zip .output/firefox-mv2
-      - name: Release
-        uses: softprops/action-gh-release@v2
+          cd ${{ matrix.target.output }}
+          zip -r ../../dist/${{ matrix.target.name }}.zip ./*
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          draft: true
-          generate_release_notes: true
-          files: |
-            dist/chrome.zip
-            dist/firefox.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ matrix.target.name }}-build
+          path: dist/${{ matrix.target.name }}.zip
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+    - uses: softprops/action-gh-release@v2
+      with:
+        draft: true
+        generate_release_notes: true
+        files: |
+          **/*.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
