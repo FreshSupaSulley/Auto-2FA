@@ -1,3 +1,6 @@
+# Sometimes my dumbass forgets to remove the zipped src folder when I need to submit source code to firefox
+src.zip
+
 .DS_Store
 
 # Logs
