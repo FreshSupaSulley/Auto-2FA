@@ -976,8 +976,15 @@ async function handleTransaction(info, transactions, txID) {
         input.addEventListener("input", (e) => {
           const value = e.target.value;
           const nextInput = container.children[i + 1];
-          if (value.length === 1 && nextInput) {
-            nextInput.focus();
+          if (value.length === 1) {
+            // If we have a next input to focus
+            if(nextInput) {
+              nextInput.focus();
+            } else {
+              // Time to submit
+              // ... should we use a <form> or something??
+              verifyButton.click();
+            }
           }
         });
         // Go back
@@ -988,6 +995,8 @@ async function handleTransaction(info, transactions, txID) {
         });
         container.appendChild(input);
       }
+      // NEW: focus the first element
+      window.requestAnimationFrame(() => container.firstChild.focus());
       // Store this transaction for after we receive the code
       verifiedTransactions = transactions;
       verifiedPushUrgID = txID;
