@@ -6,5 +6,5 @@ body:
     label: 'The "I tried" test'
     description: 'Please confirm the following:'
     options:
-      - label: I've read the [tutorial](/TUTORIAL.md) and did my best to understand how this extension works
+      - label: I've read the [tutorial](/FreshSupaSulley/Auto-2FA/TUTORIAL.md) and did my best to understand how this extension works
         required: true
