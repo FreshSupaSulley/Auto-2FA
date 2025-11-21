@@ -1,9 +1,10 @@
 name: Issue Template
-# description: Found a Bug that needs to be fixed?
+description: Want to open an issue?
 body:
 - type: checkboxes
   attributes:
     label: Dummy test
+    description: Uhhh
     options:
       - label: I've read the [tutorial](TUTORIAL.md)
         required: true
