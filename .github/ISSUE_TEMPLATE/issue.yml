@@ -1,0 +1,9 @@
+name: Issue Template
+# description: Found a Bug that needs to be fixed?
+body:
+- type: checkboxes
+  attributes:
+    label: Dummy test
+    options:
+      - label: I've read the [tutorial](TUTORIAL.md)
+        required: true
