@@ -4,7 +4,9 @@ Welcome to Auto 2FA!
 Normally, you'd enter your username / password, then a Duo screen pops up, and finally your phone gets a notification that someone is trying to login that you then approve. But Auto 2FA acts as the phone for you. Setting up Auto 2FA creates a "virtual device," then when you try to login, you'll tell Duo Mobile to send the login attempt to that virtual device. By the end of setup, you'll be able to login with your original device *and* Auto 2FA's virtual device.
 
 > [!IMPORTANT]
-> Your Duo account can have multiple devices, and you can pick the one you want to login with. You *have* to pick the device Auto 2FA created by clicking **Other options** and selecting Auto 2FA's virtual device.
+> Your Duo account can have multiple devices. You can change the one you want to login with everytime by clicking **Other options**. To use Auto 2FA, you need to pick the virtual device it created for you during setup:
+> 
+> <img width="40%" src="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/public/images/tutorial.png"></img>
 
 - [Setup](#setup)
 - [Usage](#usage)
@@ -17,7 +19,7 @@ Before you begin, navigate to your organization's Duo Mobile devices page. If yo
 > 
 > ![Select Universal or Traditional Instructions](https://github.com/user-attachments/assets/8d62b5ed-a71c-4eea-87d1-7bbff29efd5e)
 
-Quick links:
+**Quick links**:
 - [Universal Instructions](#universal-instructions)
 - [Traditional Instructions](#traditional-instructions)
 
