@@ -9,8 +9,8 @@ Before you begin, navigate to your organization's Duo Mobile devices page. If yo
 
 
 Quick links:
-* [Universal Instructions](#universal-instructions)
-* [Traditional Instructions](#traditional-instructions)
+\* [Universal Instructions](#universal-instructions)
+\* [Traditional Instructions](#traditional-instructions)
 
 # Universal Instructions
 ### 1. Add a new device
