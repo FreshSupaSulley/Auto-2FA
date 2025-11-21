@@ -1,10 +1,10 @@
-name: Issue Template
-description: Want to open an issue?
+name: General Issue
+description: Click me to open an issue
 body:
 - type: checkboxes
   attributes:
-    label: Dummy test
-    description: Uhhh
+    label: 'The "I tried" test'
+    description: 'Please confirm the following:'
     options:
-      - label: I've read the [tutorial](TUTORIAL.md)
+      - label: I've read the [tutorial](TUTORIAL.md) and did my best to understand how this extension works
         required: true
