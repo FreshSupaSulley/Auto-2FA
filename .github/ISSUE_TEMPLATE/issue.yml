@@ -8,3 +8,11 @@ body:
     options:
       - label: I've read the [tutorial](https://github.com/FreshSupaSulley/Auto-2FA/blob/main/TUTORIAL.md) and did my best to understand how this extension works
         required: true
+      - label: There aren't any other issues that talk about my issue
+        required: true
+- type: textarea
+  attributes:
+    label: Body
+    description: "Describe the problem you're having. Screenshots are be appreciated."
+  validations:
+    required: true
