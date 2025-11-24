@@ -1,5 +1,12 @@
-# Auto 2FA
-Login through Duo Mobile on [Chromium](https://chromewebstore.google.com/detail/auto-2fa/bnfooenhhgcnhdkdjelgmmkpaemlnoek) browsers and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/auto-2fa/). Safari is not supported (I'm broke).
+# Auto 2FA <img align="right" width="100" height="100" src="/public/images/Auto%202FA.svg">
+Login through Duo Mobile in your browser.
+
+## Install
+
+Available on Firefox and Chromium browsers. Too broke for Safari.
+
+<!-- Thank for Authenticator for your web store images <3 -->
+[<img src="https://raw.githubusercontent.com/wiki/Authenticator-Extension/Authenticator/readme-images/chrome-web-store.png" title="Chrome Web Store" width="170" height="48" />](https://chromewebstore.google.com/detail/auto-2fa/bnfooenhhgcnhdkdjelgmmkpaemlnoek) [<img src="https://raw.githubusercontent.com/wiki/Authenticator-Extension/Authenticator/readme-images/firefox-add-ons.png" title="Firefox Add-ons" width="170" height="48" />](https://addons.mozilla.org/en-US/firefox/addon/auto-2fa)
 
 > [!TIP]
 > See the [tutorial](https://github.com/FreshSupaSulley/Auto-2FA/blob/main/TUTORIAL.md) for a dummies guide to Auto 2FA.
