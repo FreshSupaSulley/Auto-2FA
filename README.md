@@ -1,8 +1,6 @@
 # Auto 2FA <img align="right" width="100" height="100" src="/public/images/Auto%202FA.svg">
 Login through Duo Mobile in your browser.
 
-## Install
-
 Available on Firefox and Chromium browsers. Too broke for Safari.
 
 <!-- Thank for Authenticator for your web store images <3 -->
