@@ -511,7 +511,6 @@ function Timer(fn, timeout, onStop = () => { }) {
 }
 
 let qrSearchText = document.getElementById("qrSearchText");
-let qrErrorText = document.getElementById("qrErrorText");
 
 // QR searcher
 let root = "Searching for a QR code";
@@ -608,7 +607,7 @@ async function changeScreen(id) {
 function updateSlide(newIndex) {
   if (newIndex == 3) {
     // Inject the QR scanning script
-    chrome.tabs.query({
+    browser.tabs.query({
       active: true,
       currentWindow: true
     }).then(([tab]) => {
