@@ -544,7 +544,7 @@ let checkQR = new Timer(async () => {
           break;
         }
         case "Tab not found": {
-          root = "Generate a QR code";
+          root = "Searching for a QR code";
           break;
         }
         case "QR not found": {
