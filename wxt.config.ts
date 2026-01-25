@@ -21,7 +21,7 @@ export default defineConfig({
       name: "Auto 2FA",
       description: "Login through Duo Mobile in your browser",
       version: "1.6.2",
-      permissions: ["storage"],
+      permissions: ["storage", "activeTab", "scripting"],
       host_permissions: ["https://*.duosecurity.com/*"],
       // Specific to firefox during dev
       ...(browser === "firefox" &&

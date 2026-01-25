@@ -13,6 +13,6 @@ body:
 - type: textarea
   attributes:
     label: Body
-    description: "Describe the problem you're having. Screenshots are be appreciated."
+    description: "Describe the problem you're having. Include any assets that may assist in understanding the issue (screenshots, error logs, example code, etc.)."
   validations:
     required: true

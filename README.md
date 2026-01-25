@@ -72,6 +72,6 @@ Here are repositories that helped make Auto 2FA possible or achieve similar purp
 
 Contributing
 -
-This extension uses [WXT](wxt.dev), an awesome web extension framework that supports building to multiple platforms. If you'd like to contribute, get familiar with this framework first.
+This extension uses [WXT](https://wxt.dev), an awesome web extension framework that supports building to multiple platforms. If you'd like to contribute, get familiar with this framework first (there's a basic command list in [src/README.md](https://src/README.md)).
 
 Feel free to open pull requests / issues, share security concerns, or adapt Auto 2FA into a project of your own.

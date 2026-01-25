@@ -607,6 +607,19 @@ async function changeScreen(id) {
 
 function updateSlide(newIndex) {
   if (newIndex == 3) {
+    // Inject the QR scanning script
+    chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    }).then(([tab]) => {
+      browser.scripting.executeScript({
+        target: {
+          tabId: tab.id
+        },
+        files: ["/scan_script.js"]
+      })
+    });
+    // AND start the timer to update the GUI
     checkQR.start();
   } else {
     checkQR.stop();
@@ -978,7 +991,7 @@ async function handleTransaction(info, transactions, txID) {
           const nextInput = container.children[i + 1];
           if (value.length === 1) {
             // If we have a next input to focus
-            if(nextInput) {
+            if (nextInput) {
               nextInput.focus();
             } else {
               // Time to submit
