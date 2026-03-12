@@ -157,7 +157,8 @@ async function activateDevice(rawCode) {
     app_id: "com.duosecurity.duomobile",
     full_disk_encryption: true,
     passcode_status: true,
-    app_version: "4.59.0",
+    app_version: "4.107.0", // need to update this periodically
+    // ^ latest version as of 3/12/26
     app_build_number: "459010",
     version: "13",
     manufacturer: "unknown",
