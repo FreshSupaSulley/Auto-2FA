@@ -612,13 +612,14 @@ function updateSlide(newIndex) {
       active: true,
       currentWindow: true
     }).then(([tab]) => {
+      console.log("Attempting to execute script on tab", tab);
       browser.scripting.executeScript({
         target: {
           tabId: tab.id
         },
         files: ["/scan_script.js"]
       })
-    });
+    })
     // AND start the timer to update the GUI
     checkQR.start();
   } else {
@@ -679,7 +680,7 @@ deviceName.oninput = async (e) => {
     deviceSelect.querySelector(`option[value="${info.pkey}"]`).innerText = value;
     // updatePage();
   }).catch((e) => {
-    deviceNameResponse.innerHTML = `<b>Invalid data</b>:<br>${e}`;
+    deviceNameResponse.innerHTML = `<b>Failed</b>:<br>${e}`;
   });
 };
 
@@ -699,8 +700,6 @@ clickSlider.oninput = async function (event) {
       updateClickSlider(value);
     }).catch(e => {
       console.error(e);
-      // Go back to old value
-      updateClickSlider();
       // In case the user is literally MASHING the slider just tell them if it refuses to save their data
       clickSliderState.innerText = e;
     });
