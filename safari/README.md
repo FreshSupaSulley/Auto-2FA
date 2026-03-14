@@ -1,2 +1,0 @@
-# Safari
-I love Xcode
