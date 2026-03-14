@@ -201,7 +201,12 @@ async function activateDevice(rawCode) {
 
         document.getElementById("newDeviceDisplay").innerHTML = `<b>${activationInfo.model}</b> (${activationInfo.platform})`;
         // Create new storage slot for device
-        await browser.storage.sync.set({ [newDevice.pkey]: newDevice });
+        try {
+          await browser.storage.sync.set({ [newDevice.pkey]: newDevice });
+        } catch (e) {
+          console.error("Failed to store data (probably a quota limit)", e);
+          throw "Failed to store data. Device was added, but you're out of space."
+        }
         // Add new device to info
         deviceInfo.devices.push(newDevice.pkey);
         // Set active device to one just added
@@ -534,7 +539,7 @@ let checkQR = new Timer(async () => {
         await activateDevice(code);
         changeScreen("activationSuccess");
       } catch (e) {
-        qrSearchText.innerText = "Something went wrong. Go to Step 6 instead.";
+        qrSearchText.innerText = `Something went wrong: ${e}`;
         console.error(e);
       }
     } catch (e) {
@@ -830,7 +835,12 @@ async function initialize() {
       if (slideIndex != 3 && slideIndex != 5) {
         tutorialFlash.start();
       }
-      document.getElementById("errorSplash").innerHTML = "";
+      // Check if they have too many devices, and warn them if so
+      if (data.devices.length > 30) { // 34 is the max sync so warn at 30
+        errorSplash.innerHTML = `You have a lot of devices! You may run out of space soon. See <a target="_blank" href="https://github.com/FreshSupaSulley/Auto-2FA/blob/main/TUTORIAL.md#storage">here</a> for more info.`;
+      } else {
+        errorSplash.innerHTML = ``;
+      }
       // Set HTML screen to activate
       changeScreen("activation");
     }
