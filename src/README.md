@@ -2,8 +2,13 @@
 This is the source code of the extension. We use [WXT](wxt.dev) for development.
 
 ## Quickstart
-If you're not familiar with WXT, here's the basics:
+*This is for Chromium browsers. See the command list below to test on Firefox.*
 
+1. `npm i`
+2. `npm run dev`
+3. Load `.output/chrome-mv3-dev` as an unpacked extension.
+
+## Commands
 | Command | Description |
 | - | - |
 | `npm i` | Downloads the necessary WXT node modules. Always do this first! |
