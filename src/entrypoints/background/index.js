@@ -403,7 +403,7 @@ export default defineBackground(() => {
         parsed || errorPayload
       );
       throw new Error(
-        `<pre>${statusText} (${statusCode}):<br>${JSON.stringify(
+        `<pre>${statusText} (${statusCode}): ${JSON.stringify(
           parsed || errorPayload,
           null,
           2
