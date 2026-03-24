@@ -6,9 +6,11 @@ body:
     label: 'The "I tried" test'
     description: 'Please confirm the following:'
     options:
-      - label: I've read the [tutorial](https://github.com/FreshSupaSulley/Auto-2FA/blob/main/TUTORIAL.md) and did my best to understand how this extension works
+      - label: Auto 2FA is up-to-date on my machine
         required: true
-      - label: There aren't any other issues that talk about my issue
+      - label: There aren't any other open issues that talk about my issue
+        required: true
+      - label: I know the basics of how this extension works (see the [tutorial](https://github.com/FreshSupaSulley/Auto-2FA/blob/main/TUTORIAL.md))
         required: true
 - type: textarea
   attributes:
