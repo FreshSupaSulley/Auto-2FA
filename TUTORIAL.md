@@ -110,11 +110,12 @@ Most safe, least convenient. This is the Duo Mobile app behavior. Every login at
 If you add a lot of devices to Auto 2FA (30 or more), you may run out of sync storage. You can disable syncing in the browser's settings to default to local storage instead, however, your data won't be synced to the cloud.
 
 # Login errors
-If you encounter an error screen trying to use a device Auto 2FA made for you, you might've removed the device from your Duo account!
-> If you delete the device from your organization's Duo device management software, the extension will break when you try to approve logins with that device because it no longer exists.
+<img width="226" height="247" alt="error" src="https://github.com/user-attachments/assets/17ebd67e-db58-42b8-a63c-91184748aa4f" />
 
-## What to do
-It depends on the error. If it's related to an outdated Duo app version, delete the broken device and create a new one by opening Auto 2FA and clicking "Add device..." in the device selection dropdown. If you're still getting errors, open an [issue](https://github.com/FreshSupaSulley/Auto-2FA/issues).
+If you see an error like this:
+1. Delete the broken device in settings.
+2. Create a new device.
+> If you're still getting errors even after creating a new device, that's not normal. Open an [issue](https://github.com/FreshSupaSulley/Auto-2FA/issues).
 
 ### Why "Duo Mobile X.XX.X is not allowed by your administrator" happens
 When devices are activated, they use a particular Duo app *build number* and *app version*. They are **never** updated after activation (I don't know how to). This means you could have a device that's decades old and one day your Duo administrator suddenly decides that the device is outdated.
