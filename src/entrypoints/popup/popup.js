@@ -157,13 +157,18 @@ async function activateDevice(rawCode) {
     app_id: "com.duosecurity.duomobile",
     full_disk_encryption: true,
     passcode_status: true,
-    app_version: "4.108.0", // need to update this periodically
-    // ^ latest version as of 3/16/26
-    app_build_number: "4108020", // need to update this periodically
+
+    // Latest data as of 4/19/26
+    app_version: "4.110.0", // need to update this periodically
+    app_build_number: "4110000", // need to update this periodically
+    
+    // Optional for me, might not be for some other users...? Literally no clue
+    app_install_id: "999f5587-65fb-4663-bd9f-f3bb62648da2",
+
     version: "13",
     manufacturer: "unknown",
     language: "en",
-    security_patch_level: "2022-11-05",
+    security_patch_level: "2022-11-05", // probably device-specific?
   };
   // New discovery: Platform = iOS is case-sensitive, Android is not
   if (Math.random() < 0.5) {
