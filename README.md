@@ -9,11 +9,18 @@ Available on Firefox and Chromium browsers. Too broke for Safari.
 > [!TIP]
 > See the [tutorial](https://github.com/FreshSupaSulley/Auto-2FA/blob/main/TUTORIAL.md) for a dummies guide to Auto 2FA.
 
+# New owner needed
+**I can't guarantee this extension works.**
+
+I built this project as an undergrad to get around Duo at my university. I'm graduated (and lost access to Duo) so I can no longer adequately maintain it.
+
+Please open an issue if you'd like to take over this project.
+
 Disclaimer
 -
 The motivation of this project was to avoid picking up my phone everytime I need to check something as trivial as my email inbox. This is an independent project and is not recognized, endorsed, or affiliated with Duo Mobile or Cisco Technology. All product names, logos, and brands are property of their respective owners. If you use this extension, you understand the risks!
 
-How it Works
+How it works
 -
 Auto 2FA utilizes the knowledge gained from reverse engineering the official phone app (checkout [this repo](https://github.com/revalo/duo-bypass)). Turns out it's a simple process:
 

@@ -1,6 +1,12 @@
 name: General Issue
 description: Click me to open an issue
 body:
+- type: markdown
+  attributes:
+    value: |-
+      I can no longer maintain this project, and can't guarantee I can fix your issue.
+      
+      I am looking for a new project owner! If you're interested, please let me know so we can transfer ownership to you.
 - type: checkboxes
   attributes:
     label: 'The "I tried" test'
