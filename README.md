@@ -1,3 +1,8 @@
+> [!WARNING]
+> This repository is archived and no longer maintained.
+>
+> I built this project as an undergrad to get around Duo at my university. I'm graduated (and lost access to Duo) so I can no longer adequately maintain it. It may continue to work for organizations that don't require up-to-date versions of the app. The Duo API needs to be reverse-engineered for the modern phone version (which seems have device attestation? yikes) in order to build a project similar to this one.
+
 # Auto 2FA <img align="right" width="100" height="100" src="/public/images/Auto%202FA.svg">
 Login through Duo Mobile in your browser.
 
@@ -8,13 +13,6 @@ Available on Firefox and Chromium browsers. Too broke for Safari.
 
 > [!TIP]
 > See the [tutorial](https://github.com/FreshSupaSulley/Auto-2FA/blob/main/TUTORIAL.md) for a dummies guide to Auto 2FA.
-
-# New owner needed
-**I can't guarantee this extension works.**
-
-I built this project as an undergrad to get around Duo at my university. I'm graduated (and lost access to Duo) so I can no longer adequately maintain it. It may continue to work for organizations that don't require up-to-date versions of the app, but it's likely it will soon become obsolete.
-
-Please open an issue if you'd like to take over this project.
 
 Disclaimer
 -
